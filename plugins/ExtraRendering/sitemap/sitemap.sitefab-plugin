@@ -1,0 +1,10 @@
+[Core]
+Name = Sitemap
+Module = sitemap
+Activated = True
+
+[Documentation]
+Author = Elie Bursztein
+Version = 0.1
+Website = https://www.elie.net
+Description = Create site sitemap

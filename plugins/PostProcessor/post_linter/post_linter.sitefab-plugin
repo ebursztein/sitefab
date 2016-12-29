@@ -1,0 +1,9 @@
+[Core]
+Name = Post linter
+Module = post_linter
+
+[Documentation]
+Author = Elie Bursztein
+Version = 0.1
+Website = https://www.elie.net
+Description = Check posts for errors

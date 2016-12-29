@@ -1,0 +1,9 @@
+[Core]
+Name = Sort collections
+Module = sort_collection
+
+[Documentation]
+Author = Elie Bursztein
+Version = 0.1
+Website = https://www.elie.net
+Description = Sort collections by publication time to allow easy chronological display from templates.

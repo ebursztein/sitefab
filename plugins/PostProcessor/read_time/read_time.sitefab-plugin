@@ -1,0 +1,8 @@
+[Core]
+Name = Read time
+Module = read_time
+Enable = True
+
+[Documentation]
+Filename = read_time.md
+Description = Compute how long it will take to read a given post

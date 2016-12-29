@@ -1,0 +1,10 @@
+[Core]
+Name = Post full url
+Module = compute_full_post_url
+Activated = True
+
+[Documentation]
+Author = Elie Bursztein
+Version = 0.1
+Website = https://www.elie.net
+Description = Compute the full qualified url for each post and store in the post.meta under full_url

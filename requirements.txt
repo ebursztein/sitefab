@@ -1,0 +1,8 @@
+pyyaml
+jinja2
+tqdm
+termcolor
+yapsy
+gensim
+3to2 
+language-check

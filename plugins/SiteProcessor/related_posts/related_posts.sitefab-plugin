@@ -1,0 +1,8 @@
+[Core]
+Name = Related Posts
+Module = related_posts
+Enable = True
+
+[Documentation]
+Documentation = related_posts.md
+Description = Use LSI to compute related posts.
