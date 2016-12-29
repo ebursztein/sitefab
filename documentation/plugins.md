@@ -96,13 +96,18 @@ Fixme
 
 
 ## FAQ
+### Which plugins framework is used?
+
+SiteFab use [YAPSY](https://github.com/tibonihoo/yapsy).
 
 ### How to get a variable defined in the plugin description file?
 
-use the API:
+The info from the configuration files are represented as [configParser](https://docs.python.org/2/library/configparser.html) object
+This object can be accessed as follow:
 
 ```python
-.details.get(section, property_name)
+# get the value of a given property which is under a given section
+plugin.details.get(section, property_name)
 ```
 
 for example to get the Module info under the section core:
@@ -136,13 +141,7 @@ The site variables from the *site_vars.yaml*  and *sitefab.yaml* configs are
 accessible as object via the site object. Here are few examples:
 
 ```python
-
-### site_vars ###
-pprint.pprint(site.vars)
-# getting the site baseurl is easy as:
-url = site.vars.url
-
-### config ###
+### config object ###
 pprint.pprint(site.config)
 
 # plugin configuration

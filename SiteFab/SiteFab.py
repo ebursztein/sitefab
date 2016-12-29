@@ -58,7 +58,7 @@ class SiteFab(object):
         #fixme no more plugins dir conf
         print files.get_code_path()
         debug_log_fname = os.path.join(self.get_logs_dir(), "debug.log") # where to redirect the standard python log
-        self.plugins = Plugins(self.get_plugins_dir(), debug_log_fname)
+        self.plugins = Plugins(self.get_plugins_dir(), debug_log_fname, self.config.plugins)
         self.plugins_results = defaultdict(int)
         
         # logger

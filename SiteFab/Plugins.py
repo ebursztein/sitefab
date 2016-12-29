@@ -2,6 +2,7 @@
 SiteFab Plugin system
 """
 
+import os
 from termcolor import colored, cprint
 import utils
 from tqdm import tqdm
@@ -59,7 +60,7 @@ class Plugins():
     Class responsible to manage the plugins
 
     """
-    def __init__(self, plugin_directory, debug_log_fname):
+    def __init__(self, plugin_directory, debug_log_fname, plugins_config):
         "Load plugins"
         self.plugins = PluginManager(plugin_info_ext='sitefab-plugin', categories_filter={ 
             "ContentPreparsing": ContentPreparsing,
@@ -71,6 +72,7 @@ class Plugins():
         self.plugins.setPluginPlaces([plugin_directory])
         self.plugins.locatePlugins()
         self.plugins.loadPlugins()
+        self.plugins_config =plugins_config
         # FIXME: make sure it is working
         logging.basicConfig(filename=debug_log_fname, level=logging.DEBUG)
 
@@ -88,7 +90,7 @@ class Plugins():
             return self.plugins.getAllPlugins()
 
     def get_num_plugins(self, category=None):
-        """Return the number of plugins available
+        """ Return the number of plugins available.
         
         :param str category: restrict to plugins that belong to a given category
         
@@ -98,6 +100,27 @@ class Plugins():
         plugins = self.get_plugins(category)
         return len(plugins)
 
+    def get_plugin_module_name(self, plugin):
+        """
+        Return the module name of a given plugin
+
+        :param iPlugin plugin: the plugin requested
+
+        :rtype: str
+        :return: the module name
+        """
+        module_path = plugin.details.get("Core", "module")
+        path, filename = os.path.split(module_path)
+        return filename
+
+    def is_plugin_enabled(self, plugin):
+        module_name = self.get_plugin_module_name(plugin)
+        if module_name in self.plugins_config and self.plugins_config[module_name].enable:
+            return True
+        else:
+            return False
+        
+
     def get_plugin_info(self, category=None):
         """Return the list of plugins available with their type
         
@@ -106,7 +129,6 @@ class Plugins():
         :rtype: list(str)
         :return: list of plugins name
         """
-
         pl = []
         if category:
             categories = [category] 
@@ -114,7 +136,8 @@ class Plugins():
             categories = self.plugins.getCategories()
         for cat in categories:
             for plugin in self.plugins.getPluginsOfCategory(cat):
-                s = [cat, plugin.name, plugin.description]
+                enabled = self.is_plugin_enabled(plugin)
+                s = [cat, plugin.name, plugin.description, enabled]
                 pl.append(s)
         return pl
 
@@ -148,16 +171,19 @@ class Plugins():
         :return: plugins execution statistics
         """
         results = {}
-        import pprint
         desc = colored("|-Execution", "magenta")
-        plugins = self.plugins.getPluginsOfCategory(plugin_class)
-        for plugin in tqdm(plugins, unit=' plugin', desc=desc, leave=True):
-            
-            
-            module = plugin.details.get("Core", "Module").split("/")[-1]
-            pclass = plugin_class.lower()
 
-            filename = "%s.%s.html" % (pclass, module)
+        plugins = self.plugins.getPluginsOfCategory(plugin_class)
+        enabled_plugins = []
+        for plugin in plugins:
+            if self.is_plugin_enabled(plugin):
+                enabled_plugins.append(plugin)
+
+        for plugin in tqdm(enabled_plugins, unit=' plugin', desc=desc, leave=True):
+            
+            module_name = self.get_plugin_module_name(plugin)
+            pclass = plugin_class.lower()
+            filename = "%s.%s.html" % (pclass, module_name)
             log_id = site.logger.create_log(pclass, plugin.name, filename)
 
             plugin_results = utils.create_objdict({

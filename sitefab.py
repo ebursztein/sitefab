@@ -9,12 +9,20 @@ from SiteFab.SiteFab import SiteFab
 from termcolor import colored, cprint
 from SiteFab.utils import print_color_list, section
 
-def print_plugins_list(site):
+def print_plugins_list(site, only_enable=True):
     "Output the list of plugins"
-    cprint("Loaded plugins", 'magenta')
     lst = []
     for pl in site.plugins.get_plugin_info():
-        lst.append("%s/%s: %s"% (pl[0], pl[1], pl[2]))
+        if only_enable:
+            if pl[3]:
+                lst.append("%s/%s: %s"% (pl[0], pl[1], pl[2]))
+        else:
+            if pl[3]:
+                status = colored("enable", 'green')
+            else:
+                status = colored("disable", 'red')
+
+            lst.append("[%s] %s/%s: %s"% (status, pl[0], pl[1], pl[2]))
     lst.sort()
     print_color_list(lst)
 
@@ -34,6 +42,7 @@ def generate(config):
     dirs.append("Plugins:\t%s" % site.get_plugins_dir())
     print_color_list(dirs)
     print "\n"
+    cprint("Active plugins", 'magenta')
     print_plugins_list(site)
 
     section("Parsing")
@@ -90,7 +99,8 @@ if __name__ == '__main__':
             generate(config)
         elif cmd == "plugins":
             site = SiteFab(config)
-            print_plugins_list(site)
+            cprint("Plugins status", 'magenta')
+            print_plugins_list(site, only_enable=False)
         else:
             print_help()
     else:
