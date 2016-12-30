@@ -1,7 +1,6 @@
 [Core]
 Name = Search page
 Module = search
-Enable = True
 
 [Documentation]
 Filename = search.md

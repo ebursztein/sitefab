@@ -19,6 +19,10 @@ function search_init(search_box_id, callback) {
     search_index = elasticlunr(function () {
         this.addField('title');
         this.addField('abstract');
+        this.addField('authors');
+        this.addField('conference');
+        this.addField('keywords');
+        this.addField('tfidf')
         this.setRef('id');
     });
     for (var idx in search_docs) {
@@ -39,7 +43,18 @@ function search(query, bool_operator="AND", partial=true) {
     //FIXME: better weights
     var results = search_index.search(query, {
         bool: bool_operator,
-        expand: partial
+        expand: partial,
+        fields: {
+          title: {boost: 4},
+          
+          abstract: {boost: 3},
+          authors: {boost: 3},
+          conference: {boost: 3},
+          
+          keywords: {boost: 2},
+          
+          tfidf: {boost: 1}
+        }
     })
 
     docs = Array();
