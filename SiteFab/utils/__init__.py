@@ -37,3 +37,20 @@ def create_objdict(dictionnary=None):
             else:
                 o[k] = v
     return o
+
+def print_header():
+        cprint('''
+                                                                       
+ ad88888ba   88                      88888888888          88           
+d8"     "8b  ""    ,d                88                   88           
+Y8,                88                88                   88           
+`Y8aaaaa,    88  MM88MMM  ,adPPYba,  88aaaaa  ,adPPYYba,  88,dPPYba,   
+  `"""""8b,  88    88    a8P_____88  88"""""  ""     `Y8  88P'    "8a  
+        `8b  88    88    8PP"""""""  88       ,adPPPPP88  88       d8  
+Y8a     a8P  88    88,   "8b,   ,aa  88       88,    ,88  88b,   ,a8"  
+ "Y88888P"   88    "Y888  `"Ybbd8"'  88       `"8bbdP"Y8  8Y"Ybbd8"'   
+                                                                       
+        ''', "blue")
+        cprint('''             
+                -= https://github.com/ebursztein/SiteFab =-                                                                                     
+        ''', "cyan")

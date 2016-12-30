@@ -7,7 +7,7 @@ import getopt
 
 from SiteFab.SiteFab import SiteFab
 from termcolor import colored, cprint
-from SiteFab.utils import print_color_list, section
+from SiteFab.utils import print_color_list, section, print_header
 
 def print_plugins_list(site, only_enable=True):
     "Output the list of plugins"
@@ -29,7 +29,6 @@ def print_plugins_list(site, only_enable=True):
 def generate(config):
     "generate command main function"
     section("Init")
-
     # initializing site
     site = SiteFab(config)
 
@@ -76,7 +75,9 @@ def print_help():
 
 if __name__ == '__main__':
     config = "sitefab.yaml"
-    
+
+    print_header()
+
     # args parsing
     short_options = "c:h"
     long_options = ["config=","help"]
