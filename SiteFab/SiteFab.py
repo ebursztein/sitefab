@@ -73,13 +73,14 @@ class SiteFab(object):
         self.filenames = utils.create_objdict()
         self.filenames.posts = files.get_content_files_list(self.get_content_dir())
 
-        # finding assests
-        #FIXME add asset here.
-
-        ### Cleanup ###
+        ### Cleanup the output directory ###
         files.clean_dir(self.get_output_dir())
         
     ### Engine Stages ###
+    def preprocessing(self):
+        "Perform pre-processing tasks"
+        self.execute_plugins([1], "SitePreparsing", " plugin")
+
     def parse(self):
         "parse md content into post objects"
 
@@ -87,10 +88,6 @@ class SiteFab(object):
         self.posts = []
         self.collections = defaultdict(list)
         self.posts_by_templates = defaultdict(list)
-
-        #Pre-parsing plugin 
-        print "\nPre-processing content"
-        self.execute_plugins(self.posts, "ContentPreparsing", " posts")
 
         print "\nParsing posts"
         for filename in tqdm(filenames, unit=' files', desc="Files"):
@@ -139,8 +136,8 @@ class SiteFab(object):
         print "\nRendering collections"
         self.render_collections()
         
-        print "\nRendering extra files"
-        self.execute_plugins([1], "ExtraRendering", " pages")
+        print "\nAdditional Rendering"
+        self.execute_plugins([1], "SiteRendering", " pages")
 
     def finale(self):
         "Last stage"

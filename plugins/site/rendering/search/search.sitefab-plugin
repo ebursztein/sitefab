@@ -3,5 +3,5 @@ Name = Search page
 Module = search
 
 [Documentation]
-Filename = search.md
+Filename = README.md
 Description = Generate a search page that run locally

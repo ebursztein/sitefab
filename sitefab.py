@@ -44,6 +44,9 @@ def generate(config):
     cprint("Active plugins", 'magenta')
     print_plugins_list(site)
 
+    section("Pre processing")
+    site.preprocessing()
+
     section("Parsing")
     # loading up the posts
     site.parse()

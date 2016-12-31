@@ -1,8 +1,8 @@
-from SiteFab.Plugins import ExtraRendering
+from SiteFab.Plugins import SiteRendering
 from SiteFab.SiteFab import SiteFab
 from SiteFab import files
 
-class Sitemap(ExtraRendering):
+class Sitemap(SiteRendering):
     def process(self, unused, site):
         template_name = site.config.plugins.sitemap.template
         

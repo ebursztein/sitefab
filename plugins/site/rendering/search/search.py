@@ -4,11 +4,11 @@ import os
 import math
 import re
 
-from SiteFab.Plugins import ExtraRendering
+from SiteFab.Plugins import SiteRendering
 from SiteFab.SiteFab import SiteFab
 from SiteFab import files
 
-class Search(ExtraRendering):
+class Search(SiteRendering):
     def process(self, unused, site):
         plugin_name = "search"
         output_path = site.config.plugins.search.output_path

@@ -2,12 +2,46 @@
 
 This document describe how to write a plugin for SiteFab
 
+## Workflow
+
+FIXME: add a diagram of how the plugins are called
+
+## Plugins directory structure
+
+Plugins are stored in the **Plugins/** directory which is organized as follow:
+
+- The first level represent the entity the plugin apply to
+- The 2nd level represent the phase in which the plugin is to be applied
+
+Note: as always with SiteFab this organization is just here for readability and what really define 
+which data the plugin get and when it is called is its configuration and its class.
+
+```bash
+plugins/
+  collection/
+        processor/
+        pendering/
+        ..
+  posts/
+        preparsing/
+        processor/
+        rendering/
+        ..
+  site/
+        ..
+  ..
+```
+
+
+
+
 ## Plugins structure
 
-Plugins use the [YAPSY framework](http://yapsy.sourceforge.net/) and require two files:
+Plugins use the [YAPSY framework](http://yapsy.sourceforge.net/) and require three files:
 
-1. **.sitefab-plugin** which describe the plugin
-2. **.py** which contains the actual code of the plugin
+1. A **.sitefab-plugin** description file which describes the plugin.
+2. A **.py** file which contains the actual code of the plugin.
+3. A **.md** markdown file which the document the plugin.
 
 ## Basic Example
 
@@ -15,18 +49,16 @@ Here is a basic plugin that add the fully qualified URL to each post meta inform
 
 ### plugin meta information file
 
-The meta information are located in the file named: **compute_full_post_url.sitefab-plugin**
+The meta information are located in the file named: **your_plugin_module_name.sitefab-plugin**
 
 ```ini
 [Core]
-Name = Post full url
-Module = compute_full_post_url
+Name = Copy directories
+Module = copy_dir
 
 [Documentation]
-Author = Elie Bursztein
-Version = 0.1
-Website = https://www.elie.net
-Description = Compute the full qualified url for each post and store in the post.meta under full_url
+Filename = README.md
+Description = Copy a set of directory from one place to another.
 ```
 
 A few notes:
@@ -34,6 +66,8 @@ A few notes:
 - The *Module* variable must be exactly the name of the python file that contains the code with the *.py* removed.
 - The *Name* and *Description* are used to inform the users what the plugin do. Those information are returned by the site.get_plugin_info() method.
 - The type of plugin **is not** defined in the description. It is defined by the class the plugin inherit from.
+- The *Documentation* file is mostly always named README.md so it show-up automatically on github but you can use any other filename if you want.
+To know what to include in the documentation file refers to the [documentation](#documentation)section below.
 
 ### plugin code
 
@@ -59,9 +93,64 @@ See below for the list of plugin class available and their process function prot
 **Important**: While every plugin has access to the full site object to get the information it need, the site object should not be manipulated directly except
 if it is a site plugin. Choosing the most specific plugin type is required.
 
+### Documentation
+
+Plugin documentation are written in standard markdown format. They are collected to create an index of available plugin when the code is released.
+Each plugin documentation follows the following template:
+
+```markdown
+# Plugin name
+A description of what the plugin do.
+
+## Usage
+
+How to use the plugin. Preferably with a full template code example 
+and a description of the options
+
+### Usage example
+
+### Configuration
+
+## Changlog
+
+A simple list that list what changed. Something like:
+
+- 12/23/16
+ - Documentation updated to reflect how the plugin work
+
+## Credit
+Who wrote the plugin, which library it use, who got the idea etc.
+
+```
+
 ## Type of plugins
 
-### PostProcessor
+**FIXME** Reorder the description to fit the directory hierachy
+
+### Pre Parsing
+
+### Site wide
+
+Plugins that are used to initialize the structure and set global variable. For example copying assets to the release directory.
+
+### content
+
+These plugins execute before the parsing
+
+```python
+class ContentPreparsing():
+    "Plugins that process content files before the parsing"
+
+    def process(self, filename, site):
+        """ Process a parsed post to add extra meta or change its HTML  
+            :param str filename: the filename of the content file process
+            :param FabSite site: the site object 
+        """
+```
+
+### Processing
+
+#### Post Processor
 
 Used to manipulate the content of post. Run between parsing and rendering.
 
@@ -76,7 +165,7 @@ class PostProcessor():
         """
 ```
 
-### CollectionProcessor
+#### Collection Processor
 
 Used to manipulate the content of a collection (e.g adding meta data like statistics). Run between parsing and rendering.
 
@@ -88,6 +177,27 @@ class CollectionProcessor():
         """ Process a parsed post to add extra meta or change its HTML
             :param collection collection: the collection to process
             :param FabSite site: the site object
+        """
+```
+
+#### Site processor
+
+For example related posts
+
+### Rendering
+
+#### Extra rendering
+
+After the posts and collections are rendered, these plugins are invoked to generate extra-pages, javascript file etc...
+For example both the sitemap and the search.js generation are done as ExtraRendering plugins.
+
+```python
+class ExtraRendering():
+    "Plugins that render additional pages"
+
+    def process(self, unused, site):
+        """ Generate additional page or file  
+            :param FabSite site: the site object 
         """
 ```
 

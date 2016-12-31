@@ -11,15 +11,6 @@ import logging
 
 
 ### Plugin type classes ###
-class ContentPreparsing():
-    "Plugins that process content files before the parsing"
-
-    def process(self, filename, site):
-        """ Process a parsed post to add extra meta or change its HTML  
-            :param str filename: the filename of the content file process
-            :param FabSite site: the site object 
-        """
-
 class PostProcessor():
     "Plugins that process each post between the parsing and the rendering"
 
@@ -38,6 +29,14 @@ class CollectionProcessor():
             :param FabSite site: the site object 
         """
 
+class  SitePreparsing():
+    "Site wide plugins that execute before the parsing start. Plugin are called only once."
+
+    def process(self, unused, site):
+        """ Process the content of the site once  
+        :param FabSite site: the site object 
+        """
+
 class SiteProcessor():
     "Plugins that process the whole site once"
 
@@ -46,8 +45,8 @@ class SiteProcessor():
             :param FabSite site: the site object 
         """
 
-class ExtraRendering():
-    "Plugins that render additional pages"
+class SiteRendering():
+    "Plugins that render additional pages. Plugin only called once"
 
     def process(self, unused, site):
         """ Generate additional page or file  
@@ -63,11 +62,13 @@ class Plugins():
     def __init__(self, plugin_directory, debug_log_fname, plugins_config):
         "Load plugins"
         self.plugins = PluginManager(plugin_info_ext='sitefab-plugin', categories_filter={ 
-            "ContentPreparsing": ContentPreparsing,
+            
             "PostProcessor": PostProcessor,
             "CollectionProcessor": CollectionProcessor,
+            
+            "SitePreparsing": SitePreparsing,
             "SiteProcessor": SiteProcessor,
-            "ExtraRendering": ExtraRendering
+            "SiteRendering": SiteRendering
             })
         self.plugins.setPluginPlaces([plugin_directory])
         self.plugins.locatePlugins()
