@@ -295,7 +295,8 @@ class SiteFab(object):
         self.plugins.display_execution_results(results, self)
         
         # sum all plugins data for recap
-        for plugin, values in results.iteritems():
+        for result in results:
+            plugin, values = result
             for k, v in values.iteritems():
                 self.plugins_results[k] += v
 

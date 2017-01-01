@@ -55,7 +55,7 @@ The meta information are located in the file named: **your_plugin_module_name.si
 [Core]
 Name = Copy directories
 Module = copy_dir
-
+Dependencies = module_x
 [Documentation]
 Filename = README.md
 Description = Copy a set of directory from one place to another.
@@ -64,6 +64,7 @@ Description = Copy a set of directory from one place to another.
 A few notes:
 
 - The *Module* variable must be exactly the name of the python file that contains the code with the *.py* removed.
+- *Dependencies* is optional and is used to ensure that plugins are executed in the proper order and the needed one are activated. Not the ordering working for plugins of the same classes. Activation check works accross all class of plugins.
 - The *Name* and *Description* are used to inform the users what the plugin do. Those information are returned by the site.get_plugin_info() method.
 - The type of plugin **is not** defined in the description. It is defined by the class the plugin inherit from.
 - The *Documentation* file is mostly always named README.md so it show-up automatically on github but you can use any other filename if you want.

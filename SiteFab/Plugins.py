@@ -8,7 +8,10 @@ import utils
 from tqdm import tqdm
 from yapsy.PluginManager import PluginManager
 import logging 
+from toposort import toposort, toposort_flatten
 
+
+logging.basicConfig(level=logging.DEBUG)
 
 ### Plugin type classes ###
 class PostProcessor():
@@ -75,7 +78,7 @@ class Plugins():
         self.plugins.loadPlugins()
         self.plugins_config =plugins_config
         # FIXME: make sure it is working
-        logging.basicConfig(filename=debug_log_fname, level=logging.DEBUG)
+        #logging.basicConfig(filename=debug_log_fname, level=logging.DEBUG)
 
     def get_plugins(self, category=None):
         """Return the list of plugins
@@ -102,8 +105,7 @@ class Plugins():
         return len(plugins)
 
     def get_plugin_module_name(self, plugin):
-        """
-        Return the module name of a given plugin
+        """ Return the module name of a given plugin
 
         :param iPlugin plugin: the plugin requested
 
@@ -113,6 +115,29 @@ class Plugins():
         module_path = plugin.details.get("Core", "module")
         path, filename = os.path.split(module_path)
         return filename
+
+    def get_plugin_dependencies(self, plugin):
+        """ Return the dependency of a given plugin
+
+        :param iPlugin plugin: the plugin requested
+
+        :rtype: list
+        :return: list of plugins name the plugin depend on
+        """
+
+        # No dependencies
+        if not plugin.details.has_option("Core", "Dependencies"):
+            return set()
+
+        dependencies = set()
+        st = plugin.details.get("Core", "Dependencies")
+        if "," in st:
+            elts = st.split(",")
+            for elt in elts:
+                dependencies.add(dep.strip())
+        else:
+            dependencies.add(st)
+        return dependencies
 
     def is_plugin_enabled(self, plugin):
         module_name = self.get_plugin_module_name(plugin)
@@ -147,13 +172,14 @@ class Plugins():
         """
         cprint("|-Execution result", "magenta")
         count = 0
-        for plugin, stats in results.iteritems():
+        for result in results:
+            plugin_name, stats = result  
             if count % 2:
                 c = "blue"
             else:
                 c = "cyan"
 
-            name = colored("  |-%15s" % plugin, c)
+            name = colored("  |-%15s" % plugin_name, c)
             ok = colored("ok:%s"% stats[site.OK], "green")
             skip = colored("skip:%s" % stats[site.SKIPPED], "yellow")
             err = colored("error:%s" % stats[site.ERROR], "red")
@@ -171,18 +197,26 @@ class Plugins():
         :rtype: dict(dict(list))
         :return: plugins execution statistics
         """
-        results = {}
-        desc = colored("|-Execution", "magenta")
-
+        module_name_to_plugin = {} # used to get back from the module name to the plugin
+        
+        # computing plugin dependencies
+        dependencie_map = {}
         plugins = self.plugins.getPluginsOfCategory(plugin_class)
-        enabled_plugins = []
         for plugin in plugins:
             if self.is_plugin_enabled(plugin):
-                enabled_plugins.append(plugin)
+                module_name = self.get_plugin_module_name(plugin)
+                module_name_to_plugin[module_name] = plugin
+                dependencie_map[module_name] = self.get_plugin_dependencies(plugin)
+        plugins_to_process = toposort_flatten(dependencie_map)
 
-        for plugin in tqdm(enabled_plugins, unit=' plugin', desc=desc, leave=True):
-            
-            module_name = self.get_plugin_module_name(plugin)
+        desc = colored("|-Execution", "magenta")
+        results = []
+        for module_name in tqdm(plugins_to_process, unit=' plugin', desc=desc, leave=True):
+            if module_name in module_name_to_plugin:
+                plugin = module_name_to_plugin[module_name]
+            else:
+                raise "The following plugin module name listed in dependencies don't exist ", module_name
+        
             pclass = plugin_class.lower()
             filename = "%s.%s.html" % (pclass, module_name)
             log_id = site.logger.create_log(pclass, plugin.name, filename)
@@ -203,6 +237,6 @@ class Plugins():
                 site.logger.record_event(log_id, name, severity, details)
             
 
-            results[plugin.name] = plugin_results
+            results.append([plugin.name, plugin_results])
             site.logger.write_log(log_id)
         return results
