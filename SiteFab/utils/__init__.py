@@ -1,10 +1,15 @@
+import sys
 import operator
 from objdict import objdict
 from termcolor import colored, cprint
 
 ### colored output ###
 def warning(txt):
-    cprint("\nWarning:%s\n" % txt, 'red')
+    cprint("\n[Warning] %s\n" % txt, 'Yello')
+
+def error(txt):
+    cprint("\n[Error] %s" % txt, 'red')
+    sys.exit(-1)
 
 def section(val):
     cprint ("\n[%s]" % val, 'yellow')

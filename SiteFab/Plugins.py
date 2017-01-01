@@ -9,10 +9,8 @@ from tqdm import tqdm
 from yapsy.PluginManager import PluginManager
 import logging 
 from toposort import toposort, toposort_flatten
-
-
-logging.basicConfig(level=logging.DEBUG)
-
+#logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 ### Plugin type classes ###
 class PostProcessor():
     "Plugins that process each post between the parsing and the rendering"
@@ -62,6 +60,15 @@ class Plugins():
     Class responsible to manage the plugins
 
     """
+
+    # for plugin info structure
+    PLUGIN_CAT = 0
+    PLUGIN_NAME = 1
+    PLUGIN_DESC = 2
+    PLUGIN_ENABLE = 3
+    PLUGIN_MODULE_NAME = 4
+
+
     def __init__(self, plugin_directory, debug_log_fname, plugins_config):
         "Load plugins"
         self.plugins = PluginManager(plugin_info_ext='sitefab-plugin', categories_filter={ 
@@ -76,7 +83,16 @@ class Plugins():
         self.plugins.setPluginPlaces([plugin_directory])
         self.plugins.locatePlugins()
         self.plugins.loadPlugins()
-        self.plugins_config =plugins_config
+        self.plugins_config = plugins_config
+
+        # List of enabled plugins
+        self.plugins_enabled = {}
+        for pl in self.get_plugins_info():
+            if pl[self.PLUGIN_ENABLE]:
+                self.plugins_enabled[pl[self.PLUGIN_MODULE_NAME]] = 1
+        
+        print "== Plugins =="
+        print self.plugins_enabled
         # FIXME: make sure it is working
         #logging.basicConfig(filename=debug_log_fname, level=logging.DEBUG)
 
@@ -147,7 +163,7 @@ class Plugins():
             return False
         
 
-    def get_plugin_info(self, category=None):
+    def get_plugins_info(self, category=None):
         """Return the list of plugins available with their type
         
         :param str category: restrict to plugins that belong to a given category
@@ -163,7 +179,8 @@ class Plugins():
         for cat in categories:
             for plugin in self.plugins.getPluginsOfCategory(cat):
                 enabled = self.is_plugin_enabled(plugin)
-                s = [cat, plugin.name, plugin.description, enabled]
+                module_name = self.get_plugin_module_name(plugin)
+                s = [cat, plugin.name, plugin.description, enabled, module_name]
                 pl.append(s)
         return pl
 
@@ -206,8 +223,19 @@ class Plugins():
             if self.is_plugin_enabled(plugin):
                 module_name = self.get_plugin_module_name(plugin)
                 module_name_to_plugin[module_name] = plugin
-                dependencie_map[module_name] = self.get_plugin_dependencies(plugin)
-        plugins_to_process = toposort_flatten(dependencie_map)
+                dependencies = self.get_plugin_dependencies(plugin)
+                for dep_mod_name in dependencies:
+                    if dep_mod_name not in self.plugins_enabled:
+                        utils.error("Plugin:%s can't be executed because plugin %s is not enable" % (module_name, dep_mod_name))
+                dependencie_map[module_name] = dependencies
+
+        # Toplogical sorting
+        try:
+            plugins_to_process = toposort_flatten(dependencie_map)
+        except Exception as e:
+            utils.error("Circular dependencies between plugins. Can't execute plugins:%s" % s)
+
+
 
         desc = colored("|-Execution", "magenta")
         results = []
@@ -215,7 +243,7 @@ class Plugins():
             if module_name in module_name_to_plugin:
                 plugin = module_name_to_plugin[module_name]
             else:
-                raise "The following plugin module name listed in dependencies don't exist ", module_name
+                raise Exception("The following plugin module name listed in dependencies don't exist %s " % module_name)
         
             pclass = plugin_class.lower()
             filename = "%s.%s.html" % (pclass, module_name)

@@ -153,7 +153,7 @@ class SiteFab(object):
 
 
         cprint("\nPlugins", 'magenta')
-        cprint("|-Num plugins: %s" % (self.plugins.get_num_plugins()), "cyan")
+        cprint("|-Num plugins: %s" % len(self.plugins.plugins_enabled), "cyan")
         if self.plugins_results[self.ERROR]:            
             cprint("|-Num Errors:%s (check the logs!)" % self.plugins_results[self.ERROR], 'red')
 

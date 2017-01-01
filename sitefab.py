@@ -12,7 +12,7 @@ from SiteFab.utils import print_color_list, section, print_header
 def print_plugins_list(site, only_enable=True):
     "Output the list of plugins"
     lst = []
-    for pl in site.plugins.get_plugin_info():
+    for pl in site.plugins.get_plugins_info():
         if only_enable:
             if pl[3]:
                 lst.append("%s/%s: %s"% (pl[0], pl[1], pl[2]))
