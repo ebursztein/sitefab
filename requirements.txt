@@ -6,5 +6,3 @@ yapsy
 gensim
 3to2 
 toposort
-
-language-check
