@@ -71,9 +71,9 @@ def print_help():
         "plugins: list available plugins"
         ]
 
-    cprint("usage: SiteFab -c <config_file> -s <site_vars_file> command", 'yellow')
+    cprint("usage: SiteFab -c <config_file> command", 'yellow')
     cprint("commands", 'magenta')
-    print_color_list(cmds)
+    print_color_list(cmds, prefix="")
     sys.exit(2)
 
 if __name__ == '__main__':
