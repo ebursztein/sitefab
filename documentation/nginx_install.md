@@ -15,7 +15,7 @@ brew install nginx
 ## Dev version
 ### Edit configuration.
 OSX location: **/usr/local/etc/nginx/nginx.conf**
-Replace the server block by 
+Replace the server block by the following configuration and make sure that **root** is pointing to where the site is (release directory)
 ```
     server {
         listen       8080;
@@ -29,9 +29,6 @@ Replace the server block by
 		    
     }
 ```
-
-make sure that **root** is pointing to where the site is.
-
 
 ### Launching Nginx
 Simple Launch
