@@ -205,12 +205,13 @@ class SiteFab(object):
         return len(posts)
 
     def render_posts(self):
-        "Render posts using jinja2 templates."
+        """Render posts using jinja2 templates."""
         
         for post in tqdm(self.posts, unit=' pages', miniters=1, desc="Posts"):
             template_name = "%s.html" % post.meta.template
-            template = self.jinja2.get_template(template_name)            
-            rv = template.render(content=post.html, meta=post.meta, collections=self.collections, posts_by_templates=self.posts_by_templates)
+            template = self.jinja2.get_template(template_name)
+            html = post.html.decode("utf-8", 'ignore')
+            rv = template.render(content=html, meta=post.meta, collections=self.collections, posts_by_templates=self.posts_by_templates)
             path = "%s%s/" % (self.get_output_dir(), post.meta.permanent_url)
             path = path.replace('//', '/')
             files.write_file(path, 'index.html', rv)
