@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+    <h1>{{ meta.title }}</h1>
+    {{ meta.abstract }}
+    {{ meta.creation_date }}
+
+    <a href="/tag/{{ meta.category }}">{{ meta.category }}</a>
+
+    {{ content }}
+
+
+{% endblock %}

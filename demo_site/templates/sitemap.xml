@@ -1,0 +1,19 @@
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    {% for post in posts %}
+    <url>
+        <loc>{{post.meta.full_url}}</loc>
+        <priority>1.0</priority>
+    <url>
+    {% endfor %}
+{#
+    {% for col in collections %}
+    <url>
+        <loc>{{col.meta.full_url}}</loc>
+        <priority>1.0</priority>
+    <url>
+    {% endfor %}
+#}
+
+</urlset>
+
+

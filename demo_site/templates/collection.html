@@ -1,0 +1,6 @@
+<h1>{{meta.collection_name}}</h1>
+<ul>
+    {% for post in collection.posts %}
+    <li>{{post.meta.creation_date}} - {{post.meta.title}}</li>
+    {% endfor %}
+</ul>

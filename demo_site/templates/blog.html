@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+
+
+{%  block body %}
+<ul>
+{% for post in posts_by_templates.blog_post.posts[:10] %}
+    <li><a href="{{ post.meta.permanent_url }}">{{ post.meta.title }}</a></li>
+{% endfor %}
+</ul>
+
+Security:
+    <ul>
+{% for post in collections.security.posts %}
+    <li><a href="{{ post.meta.permanent_url }}">{{ post.meta.title }}</a></li>
+{% endfor %}
+</ul>
+
+{%  endblock %}

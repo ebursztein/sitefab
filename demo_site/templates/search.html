@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <script src="/static/js/search.js"></script>
+    </head>
+    <body>
+        <input id="searchbox" type="search" value="" placeholder="search" size="30">
+        <div id="search_results"></div>
+
+
+        <script>
+
+            var search_results = document.getElementById('search_results') 
+
+            function search_callback(docs, query) {
+                /* Function called with search results
+                @param docs: the list of doc that matches the query
+                @param query: the query string
+                */
+                html = "<ul>"
+                for (var i = 0; docs[i]; i++) {
+                    doc = docs[i];
+                    html += '<li><a href="'+ doc.permanent_url + '"> [' + doc.score + "]" + doc.title + "</a></li>";
+                }
+                html += "</ul>" 
+                search_results.innerHTML = html;
+            }
+
+            function getURLParameter(name) {
+                return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+            }
+
+            search_init("searchbox", search_callback);
+
+            //do the search based of url parameters if needed
+            query = getURLParameter('q');
+            if (query) {
+                console.log(query);
+                results = search(query)
+                search_callback(results, query);
+            }
+        </script>
+    </body>
+</html>
