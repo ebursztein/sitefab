@@ -1,11 +1,25 @@
 # SiteFab
 
+A flexible yet simple website static generator.
+
+## Getting Started
+Follow our [Getting Started Guide](/documentation/getting_started.md) to get up and runnning in less than 10 minutes.
+
 ## Features
 
 Here are some of the key features offered by SiteFab
 
 - **Related posts**: Compute the list of related post using the LSI algorithm thanks to [GenSim](https://radimrehurek.com/gensim/)
 - **Client side search**: Search through posts localy using javascript thanks to [ElasticLunr](http://elasticlunr.com/)
+- **Flexible plugins system**: Easily extend SiteFab to suit your need.
+
+## Diving in
+
+- Learn how to [write a page](/documentation/page.md)
+- Get a list of [available plugins](/documentation/plugins.md)
+- [Configure Nginx](/documentation/nginx_install.md) to serve your site and use pretty urls.
+- Discover how to [customize your templates](/documentation/templates.md)
+
 
 ## Philosophy
 
