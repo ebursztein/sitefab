@@ -8,7 +8,7 @@ To generate a page, two files are required:
 
 ## Content file
 
-here is how a content file is structured
+Here is how a content file is structured
 
 ### Frontmatter
 
