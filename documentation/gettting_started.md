@@ -37,7 +37,7 @@ The easiest way to get started is to use the demo site which is located in the t
 
 4. The rendered site is in the **generated/** directory. You can visualize the rendered files either by opening the index file in your browser or via a local server. 
 	
-	See our [nginx installation guide](documentation/nginx_install.md) to learn how to install nginx and get the pretty print URLs working.
+	See our [nginx installation guide](/documentation/nginx_install.md) to learn how to install nginx and get the pretty print URLs working.
 
 
 ## Configuring your site
