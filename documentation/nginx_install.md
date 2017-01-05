@@ -24,7 +24,7 @@ Replace the server block by the following configuration and make sure that **roo
 	    rewrite ^/(.*)/$ /$1 permanent;
       	try_files $uri/index.html $uri.html $uri/ $uri =404; 
 
-        root   /Users/elie/Sites/elie/;
+        root   /Users/elie/Sites/elie/generated/;
         index  index.html index.htm;
 		    
     }
