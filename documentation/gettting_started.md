@@ -55,7 +55,7 @@ Configuration files are written in [YAML](http://docs.ansible.com/ansible/YAMLSy
 
 All is left is to write your pages:
 
-- **Page content** is written in [Markdown format](https://guides.github.com/features/mastering-markdown/) and embedded a [front matter](/documentation/page.md#frontmatter) that is used to configure the output (e.g stipulates the template to use) and specify meta information. To create a page simply add a file in the `content/` directory of  your project
+- **Page content** is written in [Markdown format](https://guides.github.com/features/mastering-markdown/) and embedded a [front matter](/documentation/content.md#frontmatter) that is used to configure the output (e.g stipulates the template to use) and specify meta information. To create a page simply add a file in the `content/` directory of  your project
 
 - **Page template** are written in Jinja2 and have access to environement variables that give you access to the page content as HTML, the post information and many more useful data. See the [template documentation](/documentation/template.md) for more information on how to write templates.
 
