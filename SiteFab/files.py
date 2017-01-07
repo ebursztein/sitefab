@@ -51,7 +51,8 @@ def read_file(filename, cache=True):
         return cached_files[filename]
     
     if os.path.isfile(filename):
-        content = open(filename).read()
+        with codecs.open(filename, "r", "utf-8-sig") as f:
+            content = f.read().encode("utf-8")
         if cache:
             cached_files[filename] = content
         return content 

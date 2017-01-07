@@ -50,7 +50,8 @@ class HTMLRendererMixin(object):
             template = self.jinja2.get_template('a')
             self.info.links.append(link)
 
-        rv = template.render(href=src, text=content, title=title, embed=embed).encode('utf-8')
+        rv = template.render(href=src, text=content, title=title, embed=embed)
+        rv = rv.encode('utf-8')
         return rv
 
     def image(self, src, title, alt_text):

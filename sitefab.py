@@ -9,6 +9,9 @@ from SiteFab.SiteFab import SiteFab
 from termcolor import colored, cprint
 from SiteFab.utils import print_color_list, section, print_header
 
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 def print_plugins_list(site, only_enable=True):
     "Output the list of plugins"
     lst = []
