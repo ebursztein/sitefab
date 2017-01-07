@@ -1,6 +1,7 @@
 # coding: utf-8
 import logging
 import re
+import jinja2
 
 import mistune
 from mistune import Renderer
@@ -10,10 +11,19 @@ from SiteFab import utils
 class HTMLRendererMixin(object):
     """Customized HTML renderer"""
     def link(self, link, title, content):
-        if "no_embed=1" not in link and ("https://youtu.be/" in link or "https://www.youtube.com/" in link):
+        
+        embed = False
+
+        # Youtube
+        if "https://youtu.be/" in link or "https://www.youtube/" in link:
+            embed = True
+
             if "embed" in link:  # Already correct link
                 src = link
-            else:
+                template = self.jinja2.get_template('youtube')
+            
+            elif "&no_embed=1" not in link:
+                #already embeded url or need to convert?
                 if "https://youtu.be/" in link:
                     src = "https://www.youtube.com/embed/" + link.replace("https://youtu.be/", "")
                 else:
@@ -23,46 +33,49 @@ class HTMLRendererMixin(object):
                         src = "https://www.youtube.com/embed/" + vid
                     else:
                         print "error can't detect video id for link: %s" % link
+                template = self.jinja2.get_template('youtube')
+                self.info.videos.append(link)
+            
+            else:
+                # Youtube videos that are not embedded
+                embed = False
+                src = link.replace("&no_embed=1", "")
+                template = self.jinja2.get_template('a')
+                self.info.links.append(link)
 
-            rv = '<div class="video_wrapper"><iframe src="%s" frameborder="0" allowfullscreen></iframe></div>' % (src)
-            self.info.videos.append(link)
+
+        # Normal links
         else:
-            link = link.replace("&no_embed=1", "")
-            rv = '<a href="%s">%s</a>' % (link, content)
+            src = link
+            template = self.jinja2.get_template('a')
             self.info.links.append(link)
 
+        rv = template.render(href=src, text=content, title=title, embed=embed).encode('utf-8')
         return rv
 
     def image(self, src, title, alt_text):
-        m = re.search(r'(\d+)', src)
-        try:
-            ts = m.group(1)
-            width = 0
-            from model.Image import Image
-            image = Image.getImageByTs(ts)
-            if image:
-                width = image.width
-                logging.debug("found image %s, width: %s" % (ts, width))
-        except Exception as e:
-            width = 0
-        rv = """<p> <noscript> <img style="display:block;" class="image_blog_nojs" src="%s"/> </noscript> <img class="image_blog" data-src="%s" data-addmodal="1" data-nocrop="1" data-container-width-id="post_body" data-width="%s"/> </p>
-        """ % (src, src, width)
+        
         self.info.images.append(src)
+        
+        template = self.jinja2.get_template('img')
+        rv = template.render(src=src, alt=alt_text, title=title).encode('utf-8')
         return rv
 
     def header(self, text, level, raw=None):
-        rv = '<h%d id="toc-%d">%s</h%d>\n' % (
-            level, self.toc_count, text, level
-        )
+        
+        template = self.jinja2.get_template('h')
+        rv = template.render(level=level, text=text, id=self.toc_count).encode('utf-8')
+
         self.toc_tree.append((self.toc_count, text, level, raw))
         self.toc_count += 1
         return rv
 
-    def init(self):
+    def init(self, jinja2):
         """Our own init function."""
         # reset toc
         self.toc_tree = []
         self.toc_count = 0
+        self.jinja2 = jinja2
 
         # Various information collected during the parsing 
         self.info = metas = utils.create_objdict({
@@ -150,13 +163,19 @@ class HTMLRenderer(HTMLRendererMixin, Renderer):
     pass
 
 
-def parse(text):
+def parse(text, jinja2):
     """Parse MD to html
-    @return html, toc: return the html generated and the toc
+
+    Args:
+        text (str): the md text to parse
+        templates (dicts): the templates used for emititing HTML objects
+
+    Returns
+        list: [html, toc]
     """
     renderer = HTMLRenderer()
     md = mistune.Markdown(renderer=renderer)
-    renderer.init()
+    renderer.init(jinja2)
     html = md.parse(text)
     info = renderer.get_info()
     info.toc = renderer.get_json_toc()

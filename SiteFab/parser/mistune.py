@@ -5,7 +5,7 @@
 
     The fastest markdown parser in pure Python with renderer feature.
 
-    :copyright: (c) 2014 - 2015 by Hsiaoming Yang.
+    :copyright: (c) 2014 - 2016 by Hsiaoming Yang.
 """
 
 import re
@@ -555,10 +555,8 @@ class InlineLexer(object):
                     return m, out
             return False  # pragma: no cover
 
-        self.line_started = False
         while text:
             ret = manipulate(text)
-            self.line_started = True
             if ret is not False:
                 m, out = ret
                 output += out
@@ -830,6 +828,8 @@ class Renderer(object):
 
         :param text: text content.
         """
+        if self.options.get('parse_block_html'):
+            return text
         return escape(text)
 
     def escape(self, text):

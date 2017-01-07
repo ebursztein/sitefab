@@ -38,10 +38,13 @@ def load_config(config_file):
 cached_files = {}
 def read_file(filename, cache=True):
     """Read a file and return its content. Use cached version unless specified.
+    Args:
+        filename (str): the filename to read from
+        cache (bool): wether or not to read result from cache?
     
-    :params str filename: the filename to read from
-    :params book cache: caching/reading result from cache?
-    
+    Returns
+        str: the content of the file
+
     """
     
     if cache and filename in cached_files:
@@ -69,17 +72,26 @@ def write_file(path, filename, content):
     with codecs.open(file_path, "w", "utf-8-sig") as f:
         f.write(content)
 
-def get_content_files_list(content_dir):
-    """ Return the list of content file available in a directory.
+def get_files_list(content_dir, extensions="*.md"):
+    """ Return the list of files in a directory and its sub directories that match a set of extensions.
        Args:
         content_dir (str): file path where content is located.
+        extensions(str or list): single extension like "*.md" or array of extensions ["*.jpg", "*.png"]
     Return:
         list: list of content filename.
+
+    Note: matching is done the Usenix file matching way much like ls 
     """
+
+    # normalize the input
+    if type(extensions) == str:
+        extensions = [extensions]
+
     matches = []
     for root, dirnames, filenames in os.walk(content_dir):
-        for filename in fnmatch.filter(filenames, '*.md'):
-            matches.append(os.path.join(root, filename))
+        for extension in extensions:
+            for filename in fnmatch.filter(filenames, extension):
+                matches.append(os.path.join(root, filename))
     return matches
 
 def clean_dir(directory):

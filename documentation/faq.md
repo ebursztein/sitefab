@@ -1,5 +1,11 @@
 # Frequently asked questions
 
+## How to configure the parser output?
+
+See the [parser documentation](/documentation/parser.md).
+
+**TL;DR**: It is easy and there are two ways: the first one is to edit the templates used to emit the html elements
+the second is to programatically change the templates using the Parser object API. 
 
 ## Why plugins are configured in the config.yaml file?
 

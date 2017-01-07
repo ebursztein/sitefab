@@ -1,0 +1,6 @@
+{# embed indicates if the user wants the video to be directly embeded or just a link to it #}
+{% if embed %}
+<div class="video_wrapper"><iframe alt="{{text}}" src="{{ href }}" frameborder="0" allowfullscreen></iframe></div>
+{% else %}
+<a href="{{ href }}">{{text}}</a>
+{% endif %}

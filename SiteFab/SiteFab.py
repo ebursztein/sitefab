@@ -7,7 +7,7 @@ from termcolor import colored, cprint
 
 import time
 import files
-import parser
+from parser.parser import Parser
 from Logger import Logger
 from Plugins import Plugins
 
@@ -54,8 +54,11 @@ class SiteFab(object):
         # template rendering engine init
         self.jinja2 = Environment(loader=FileSystemLoader(self.get_template_dir()))
         
+        # parser
+        parser_templates_path = os.path.join(files.get_site_path(),  self.config.parser.template_dir)
+        self.parser = Parser(parser_templates_path)
+
         # plugins
-        #fixme no more plugins dir conf
         print files.get_code_path()
         debug_log_fname = os.path.join(self.get_logs_dir(), "debug.log") # where to redirect the standard python log
         self.plugins = Plugins(self.get_plugins_dir(), debug_log_fname, self.config.plugins)
@@ -64,14 +67,14 @@ class SiteFab(object):
         # logger
         cfg = utils.create_objdict()
         cfg.output_dir = self.get_logs_dir()
-        cfg.template_dir = os.path.join(files.get_code_path() + "/templates/") #internal template not the one from the users.
-        cfg.log_template = "log.html" #FIXME: put the path into a config dir
+        cfg.template_dir = os.path.join(files.get_site_path(),  self.config.logger.template_dir) #log template not the one from the users.
+        cfg.log_template = "log.html"
         cfg.log_index_template = "log_index.html"
         self.logger = Logger(cfg, self)
 
         # finding content and assets
         self.filenames = utils.create_objdict()
-        self.filenames.posts = files.get_content_files_list(self.get_content_dir())
+        self.filenames.posts = files.get_files_list(self.get_content_dir(), "*.md")
 
         ### Cleanup the output directory ###
         files.clean_dir(self.get_output_dir())
@@ -92,7 +95,7 @@ class SiteFab(object):
         print "\nParsing posts"
         for filename in tqdm(filenames, unit=' files', desc="Files"):
             file_content = files.read_file(filename)
-            post = parser.parse(file_content)
+            post = self.parser.parse(file_content)
             self.posts.append(post)
             
             # template

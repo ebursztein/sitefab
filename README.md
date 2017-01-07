@@ -15,10 +15,21 @@ Here are some of the key features offered by SiteFab
 
 ## Diving in
 
+### Getting started
+
+- Have a  [basic site up and running](/documentation/getting_started.md)  in less than 10 minutes.
 - Learn how to [write a page](/documentation/page.md)
+- Get [answers](/documentation/faq.md) for the most frequent questions.
+
+### Customizating the generation
+
 - Get a list of [available plugins](/documentation/plugins.md)
-- [Configure Nginx](/documentation/nginx_install.md) to serve your site and use pretty urls.
 - Discover how to [customize your templates](/documentation/templates.md)
+- Understand how to [personalize the parser](/documentation/parser.md) to suite your need such as adding a CSS class to the `<img>` tag.
+
+### Serving your site
+
+- [Configure Nginx](/documentation/nginx_install.md) to serve your site and use pretty urls.
 
 
 ## Philosophy
