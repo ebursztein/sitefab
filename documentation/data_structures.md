@@ -45,7 +45,7 @@ The post.info.toc is a **list** that represents the post table of content. The f
 
 - Field [0] The name of the section
 - Field [1] The level of section. Basically 1 == H1, 2 == H2, ...
-- Field [2] The auto-incremente id associated with the section. Mainly useful to generate unique anchor in the template.
+- Field [2] The auto-increment id associated with the section. Mainly useful to generate unique anchor in the template.
 
 
 

@@ -6,7 +6,7 @@ Here is how to get up and running with Site Fab. Creating a website is done in t
 2. Initialize your site and add content
 3. Generate  your pages
 
-## Installating SiteFab
+## Installing SiteFab
 
 Currently the only way to install SiteFab is to install it from the source.
 
@@ -33,7 +33,7 @@ The easiest way to get started is to use the demo site which is located in the t
 
 2. Change directory to the newly created one: `cd my_site`
 
-3. Generate the site: `python ../sitefab.py -c config/demo_site.yaml generate`
+3. Generate the site: `python ../sitefab.py -c config/sitefab.yaml generate`
 
 4. The rendered site is in the **generated/** directory. You can visualize the rendered files either by opening the index file in your browser or via a local server. 
 	
