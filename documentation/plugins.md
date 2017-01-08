@@ -117,6 +117,13 @@ read_time:
     wpm: 260 # avg number of words read per minute
 ```
 
+In the plugin code you simply access the various parameters you specified via `site.config.plugins.read_time.wpm`
+
+In our read_time plugin example, to get the average number of word per minutes (wpm), the plugin will do:
+```python
+wpm = site.config.plugins.read_time.wpm
+```
+
 Notes:
 - All plugins are disable by default to not suprise the user.
 - the version is reflected from the definition file so that SiteFab know when to update.
