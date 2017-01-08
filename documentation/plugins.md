@@ -37,11 +37,12 @@ plugins/
 
 ## Plugins structure
 
-Plugins use the [YAPSY framework](http://yapsy.sourceforge.net/) and require three files:
+Plugins use the [YAPSY framework](http://yapsy.sourceforge.net/) and require four files:
 
 1. A **.sitefab-plugin** description file which describes the plugin.
 2. A **.py** file which contains the actual code of the plugin.
 3. A **.md** markdown file which the document the plugin.
+4. A **.yaml** yaml file that contains the plugin default configuration.
 
 ## Basic Example
 
@@ -55,20 +56,26 @@ The meta information are located in the file named: **your_plugin_module_name.si
 [Core]
 Name = Copy directories
 Module = copy_dir
+Version = 1
 Dependencies = module_x
+
 [Documentation]
 Filename = README.md
 Description = Copy a set of directory from one place to another.
+
+[Configuration]
+Filename = config.yaml
 ```
 
-A few notes:
-
-- The *Module* variable must be exactly the name of the python file that contains the code with the *.py* removed.
-- *Dependencies* is optional and is used to ensure that plugins are executed in the proper order and the needed one are activated. Not the ordering working for plugins of the same classes. Activation check works accross all class of plugins.
+Where
 - The *Name* and *Description* are used to inform the users what the plugin do. Those information are returned by the site.get_plugin_info() method.
+- The *Module* variable must be exactly the name of the python file that contains the code with the *.py* removed.
+- *Version* allows to track change and when to notify the users when a plugin was changed.
+- *Dependencies* is optional and is used to ensure that plugins are executed in the proper order and the needed one are activated. Not the ordering working for plugins of the same classes. Activation check works accross all class of plugins.
 - The type of plugin **is not** defined in the description. It is defined by the class the plugin inherit from.
-- The *Documentation* file is mostly always named README.md so it show-up automatically on github but you can use any other filename if you want.
-To know what to include in the documentation file refers to the [documentation](#documentation)section below.
+- The *Documentation* file prefered name is README.md so it show-up automatically on github. However you can use another filename if you want.
+To know what to include in the documentation file refers to the [documentation](#Documentation) section below.
+- The *configuration* file is used to provide the default configuration for the various plugin option. See the [configuration](#Configuration) section below.
 
 ### plugin code
 
@@ -93,6 +100,26 @@ See below for the list of plugin class available and their process function prot
 
 **Important**: While every plugin has access to the full site object to get the information it need, the site object should not be manipulated directly except
 if it is a site plugin. Choosing the most specific plugin type is required.
+
+### Configuration
+Each plugin must come with a default configuration. It is used to generate the default "plugins.yaml" file so users know what to configure.
+
+Here is for example the configuration of the read_time plugin:
+```yaml
+wpm: 260 # avg number of words read per minute
+```
+
+This configuration is reflected in the plugins.yaml as follow:
+```yaml
+read_time:
+    enable: False
+    version: 1
+    wpm: 260 # avg number of words read per minute
+```
+
+Notes:
+- All plugins are disable by default to not suprise the user.
+- the version is reflected from the definition file so that SiteFab know when to update.
 
 ### Documentation
 

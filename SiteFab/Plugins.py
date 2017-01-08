@@ -119,6 +119,39 @@ class Plugins():
         """
         plugins = self.get_plugins(category)
         return len(plugins)
+    
+    def get_plugin_dir(self, plugin):
+        """ Return the directory where the plugin is stored 
+        
+        :param iPlugin plugin: the plugin requested
+
+        :rtype: str
+        :return: the module name
+        """
+
+        module_path = plugin.details.get("Core", "module")
+        path, filename = os.path.split(module_path)
+        return path
+
+    def get_plugin_default_configuration_filename(self, plugin):
+        """ Return the path to the plugin default configuration filename
+        """
+        try:
+            fname = plugin.details.get("Configuration", "Filename")
+        except:
+            return ""
+        path = self.get_plugin_dir(plugin)
+        return os.path.join(path, fname)
+
+    def get_plugin_documentation_filename(self, plugin):
+        """ Return the path to the plugin documentation
+        """
+        try:
+            fname = plugin.details.get("Documentation", "Filename")
+        except:
+            return ""
+        path = self.get_plugin_dir(plugin)
+        return os.path.join(path, fname)
 
     def get_plugin_module_name(self, plugin):
         """ Return the module name of a given plugin

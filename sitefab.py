@@ -9,6 +9,7 @@ from SiteFab.SiteFab import SiteFab
 from termcolor import colored, cprint
 from SiteFab.utils import print_color_list, section, print_header
 
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -113,12 +114,21 @@ if __name__ == '__main__':
         cmd = args[0]
         if cmd == "generate":
             generate(config)
-        elif cmd == "sitefab_build":
-            # this function rebuild the documentation & configurations
+        
         elif cmd == "plugins":
             site = SiteFab(config)
             cprint("Plugins status", 'magenta')
             print_plugins_list(site, only_enable=False)
+        
+        ### Developper command ###
+        elif cmd == "sitefab_build":
+            # this function rebuild the documentation & configurations
+            from SiteFab.dev import build
+            site = SiteFab(config)
+            build.sitefab_build(site)
+
+        
+        
         else:
             print_help()
     else:

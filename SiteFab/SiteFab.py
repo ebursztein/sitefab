@@ -15,8 +15,6 @@ import utils
 from utils import warning
 
 
-
-
 class SiteFab(object):
     """ Object representation of the site being built. 
     
