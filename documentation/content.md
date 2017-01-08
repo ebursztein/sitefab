@@ -2,7 +2,7 @@
 
 To generate a page, two files are required:
 
-- a *Content file*: Written in [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) the content file contains the content of the page, its meta data and its configuration. The meta data and configuration are stored in the frontmatter in the [YAML format](http://docs.ansible.com/ansible/YAMLSyntax.html).
+- a *Content file*: Written in [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) the content file contains the content of the page, its meta data and its configuration. The meta data and configuration are stored in the frontmatter in the [YAML format](http://docs.ansible.com/ansible/YAMLSyntax.html). The meta data are made accessible to the template in the [meta object](/documentation/post.md)
 
 - a *Template file*: Written in Jinga2 format the template file is used to specify how the page is rendered.
 
@@ -35,11 +35,8 @@ the title specified in the meta data can be accessed in the template page as fol
 | **tags**      	  | list 		| Optional  | List of tags associated with the page         | |
 | **abstract**        | string 		| Mandatory  | short description of the page. used in meta and search| this is how to hack iot device|
 | **template**        | filename 	| Mandatory  | which template to use to render the page (without the *.html* extension) | post |
-| **lang**      	  | ISO code 	| Optional  | language of the page | used for i18n |
-| **rss**      	      | bool 		| Optional  | Add the page content to the RSS feed? | true |
-| **facebook**        | bool 		| Mandatory  | Add the page to the Facebook Instant Article feed | true |
-| **apple**      	  | bool		| Mandatory  | Add the page to the Apple news feed | true |
-| **hidden**         | bool         | Optional (defaul:false)  | Don't list the post in collections or RSS or any other list| true |
+| **lang**      	  | ISO code (default:site lang)	| Optional  | language of the page used for i18n | en |
+| **hidden**         | bool         | Optional (default:false)  | Don't list the post in collections or RSS or any other list| true |
 
 
 #### Example
@@ -52,9 +49,6 @@ title: I am a legend hacking Hearthstone using statistical learning methods
 banner: https://www.elie.net/image/public/1476002309/i-am-a-legend-hacking-hearthstone-using-statistical-learning-methods.jpg
 permanent_url: publication/i-am-a-legend-hacking-hearthstone-using-statistical-learning-method
 lang: en
-rss: true
-facebook: true
-apple: true
 
 creation_date: 18 oct 2016 13:29
 

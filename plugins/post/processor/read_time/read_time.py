@@ -12,7 +12,7 @@ class ReadTime(PostProcessor):
             num_sec = words / wps
 
             # accounting for images based of medium recommendation
-            num_images = min(post.info.stats.num_images, 12)
+            num_images = min(post.meta.statistics.num_images, 12)
             for n in range(num_images, 0, -1):
                num_sec += n
             

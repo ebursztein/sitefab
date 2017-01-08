@@ -93,6 +93,8 @@ class HTMLRendererMixin(object):
             code = escape(code)
             lang = None
        
+        self.info.code.append(code)
+
         # template
         #fixing class name
         code = code.replace('class="highlight"', 'class="hll"')
@@ -117,20 +119,26 @@ class HTMLRendererMixin(object):
             "links": [],
             "images": [],
             "videos": [],
+            "code": []
         })
 
-        self.info.stats = utils.create_objdict({
+        self.stats = utils.create_objdict({
             "num_links": 0,
             "num_images": 0,
             "num_videos": 0,
+            "num_code": 0,
         })
 
+
     def get_info(self):
-        info = self.info
-        info['stats']['num_links'] = len(info['links'])
-        info['stats']['num_videos'] = len(info['videos'])
-        info['stats']['num_images'] = len(info['images'])
-        return info
+        return self.info
+    
+    def get_stats(self):
+        stats = self.stats
+        stats['num_links'] = len(self.info['links'])
+        stats['num_videos'] = len(self.info['videos'])
+        stats['num_images'] = len(self.info['images'])
+        return stats
 
     ### TOC code ###
 

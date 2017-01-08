@@ -112,7 +112,8 @@ class Parser():
         self.renderer.init(self.jinja2, self.code_formatter) # reset all the needed counters
 
         parsed_post.html = self.md_parser.parse(parsed_post.md)
-        parsed_post.info = self.renderer.get_info()
-        parsed_post.info.toc = self.renderer.get_json_toc()
+        parsed_post.meta.statistics = self.renderer.get_stats()
+        parsed_post.meta.toc = self.renderer.get_json_toc()
+        parsed_post.elements = self.renderer.get_info()
 
         return parsed_post

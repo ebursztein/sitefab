@@ -68,15 +68,24 @@ def generate(config):
 def print_help():
     "Display help and exist"
     
+    cprint("usage: SiteFab -c <config_file> command", 'yellow')
+
     cmds = [
         "generate: generate the site", 
         "deploy: deploy generated site to remote server",
         "plugins: list available plugins"
         ]
 
-    cprint("usage: SiteFab -c <config_file> command", 'yellow')
     cprint("commands", 'magenta')
-    print_color_list(cmds, prefix="")
+    print_color_list(cmds, prefix="\t")
+    
+    dev_cmds = [
+        "sitfab_build: generate the default configs and documentation",
+        ]
+
+    cprint("Developper command", 'magenta')
+    print_color_list(dev_cmds, prefix="\t")
+
     sys.exit(2)
 
 if __name__ == '__main__':
@@ -104,6 +113,8 @@ if __name__ == '__main__':
         cmd = args[0]
         if cmd == "generate":
             generate(config)
+        elif cmd == "sitefab_build":
+            # this function rebuild the documentation & configurations
         elif cmd == "plugins":
             site = SiteFab(config)
             cprint("Plugins status", 'magenta')
