@@ -6,19 +6,23 @@ import frontmatter
 import linter
 import markdown
 from markdown import HTMLRenderer
+
 import mistune
 from mistune import Renderer
+
+from pygments.formatters import html
+
 
 from SiteFab import utils
 from SiteFab import files
 
 class Parser():
     
-    def __init__(self, templates_dir, linter_config=None):
+    def __init__(self, config, linter_config=None):
         """ Initialize a new parser for a given type of parsing
 
         Args:
-            templates_dir (str): path where the templates for the token emissions are stored.
+            config (dictobj): parser configuration 
             linter_config (str): The path to the linter config file. Can be None if no linting
         
         Return:
@@ -31,10 +35,11 @@ class Parser():
 
         #FIXME verify the linter config exist
         self.linter_config = linter_config
+        self.config = config
 
         #Loadings template strings in memory so we can manipulate them
         self.templates = {}
-        for fname in files.get_files_list(templates_dir, "*.html"):
+        for fname in files.get_files_list(self.config.templates_path, "*.html"):
             template_name = os.path.basename(fname).replace(".html", "")
             template = files.read_file(fname)
             #print "%s -> %s" % (template_name, template)
@@ -48,6 +53,14 @@ class Parser():
         self.renderer = HTMLRenderer()
         self.md_parser = mistune.Markdown(renderer=self.renderer)
     
+        #code higlighterr
+        if self.config.code_display_line_num:
+            linenos = 'table'
+        else:
+            linenos = False
+        
+        self.code_formatter = html.HtmlFormatter(style=self.config.code_highlighting_theme, nobackground=False, linenos=linenos)
+
     def lint(self, post, online_checks=False, check_content=False):
         """ Lint post for various errors.
 
@@ -96,7 +109,8 @@ class Parser():
         parsed_post.meta, parsed_post.md = frontmatter.parse(md_file)
 
         # parsing markdown and extractring info
-        self.renderer.init(self.jinja2) # reset all the needed counters
+        self.renderer.init(self.jinja2, self.code_formatter) # reset all the needed counters
+
         parsed_post.html = self.md_parser.parse(parsed_post.md)
         parsed_post.info = self.renderer.get_info()
         parsed_post.info.toc = self.renderer.get_json_toc()

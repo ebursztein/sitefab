@@ -55,8 +55,8 @@ class SiteFab(object):
         self.jinja2 = Environment(loader=FileSystemLoader(self.get_template_dir()))
         
         # parser
-        parser_templates_path = os.path.join(files.get_site_path(),  self.config.parser.template_dir)
-        self.parser = Parser(parser_templates_path)
+        self.config.parser.templates_path =  os.path.join(files.get_site_path(),  self.config.parser.template_dir)
+        self.parser = Parser(self.config.parser)
 
         # plugins
         print files.get_code_path()

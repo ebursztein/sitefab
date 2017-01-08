@@ -12,6 +12,7 @@ Here are some of the key features offered by SiteFab
 - **Related posts**: Compute the list of related post using the LSI algorithm thanks to [GenSim](https://radimrehurek.com/gensim/)
 - **Client side search**: Search through posts localy using javascript thanks to [ElasticLunr](http://elasticlunr.com/)
 - **Flexible plugins system**: Easily extend SiteFab to suit your need.
+- **Templatized parser**: Quickly customizes the HTML output of the [parser](/documentation/parser.md) by simply editing template.
 
 ## Diving in
 

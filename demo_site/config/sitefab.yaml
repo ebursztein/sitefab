@@ -54,6 +54,8 @@ plugins:
 ### Parser configuration ###
 parser:
     template_dir: "config/generator_templates/parser/html/"  # template used to format the element emitted by the parser.
+    code_highlighting_theme: "monokai" # choose from https://help.farbox.com/pygments.html
+    code_display_line_num: True # display line number?
 
 ### Logging configuration ###
 logger:

@@ -3,7 +3,12 @@ import logging
 import re
 import jinja2
 
-from mistune import Renderer
+# syntax coloring
+from pygments import highlight
+from pygments.lexers import get_lexer_by_name, guess_lexer
+
+
+from mistune import Renderer, escape
 from SiteFab import utils
 
 youtube_matcher = re.compile("v=([^&]+)")
@@ -71,13 +76,42 @@ class HTMLRendererMixin(object):
         self.toc_count += 1
         return rv
 
-    def init(self, jinja2):
-        """Our own init function."""
+
+    def block_code(self, code, lang):
+        "Block code highlighter and formater"
+        css = ""
+
+        try:
+            if not lang:
+                lexer = guess_lexer(code, stripall=True)
+            else:
+                lexer = get_lexer_by_name(lang, stripall=True)
+            detected = True
+            code = highlight(code, lexer, self.code_formatter)
+            css = self.code_formatter.get_style_defs()
+        except:
+            code = escape(code)
+            lang = None
+       
+        # template
+        #fixing class name
+        code = code.replace('class="highlight"', 'class="hll"')
+        template = self.jinja2.get_template('code')
+        rv = template.render(code=code, lang=lang, css=css)
+        rv = rv.encode('utf-8')
+        return rv
+
+    def init(self, jinja2, code_formatter):
+        """Init function called before each parsing.
+        
+        Note
+            Used to ensure all the needed variables are reset between parsing execution        
+        """
         # reset toc
         self.toc_tree = []
         self.toc_count = 0
         self.jinja2 = jinja2
-
+        self.code_formatter = code_formatter
         # Various information collected during the parsing 
         self.info = metas = utils.create_objdict({
             "links": [],
