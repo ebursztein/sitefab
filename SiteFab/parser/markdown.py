@@ -3,10 +3,10 @@ import logging
 import re
 import jinja2
 
-import mistune
 from mistune import Renderer
 from SiteFab import utils
 
+youtube_matcher = re.compile("v=([^&]+)")
 
 class HTMLRendererMixin(object):
     """Customized HTML renderer"""
@@ -27,7 +27,7 @@ class HTMLRendererMixin(object):
                 if "https://youtu.be/" in link:
                     src = "https://www.youtube.com/embed/" + link.replace("https://youtu.be/", "")
                 else:
-                    d = re.search("v=([^&]+)", link)
+                    d = youtube_matcher.search(link)
                     if d:
                         vid = d.group(1)
                         src = "https://www.youtube.com/embed/" + vid
@@ -162,22 +162,3 @@ class HTMLRendererMixin(object):
 
 class HTMLRenderer(HTMLRendererMixin, Renderer):
     pass
-
-
-def parse(text, jinja2):
-    """Parse MD to html
-
-    Args:
-        text (str): the md text to parse
-        templates (dicts): the templates used for emititing HTML objects
-
-    Returns
-        list: [html, toc]
-    """
-    renderer = HTMLRenderer()
-    md = mistune.Markdown(renderer=renderer)
-    renderer.init(jinja2)
-    html = md.parse(text)
-    info = renderer.get_info()
-    info.toc = renderer.get_json_toc()
-    return html, info

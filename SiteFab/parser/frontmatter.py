@@ -4,11 +4,14 @@ import datetime
 import time
 from SiteFab import utils
 
+date_matcher = re.compile('(\d+) +(\w{3}) +(\d+) +(\d+):(\d+)')
+frontmatter_matcher = re.compile(r'(^\s*---.*?---\s*$)', re.DOTALL|re.MULTILINE)
+
 def parse_date_to_ts(date_str):
     """ create the timestamp coresponding to a given date string"""
     if not date_str:
         return None
-    m = re.search(r'(\d+) +(\w{3}) +(\d+) +(\d+):(\d+)', date_str)
+    m = date_matcher.search(date_str)
     
     if not m:
         return None
@@ -43,7 +46,7 @@ def parse(post):
     """
     md = post
     metas = None
-    d = re.search(r'(^\s*---.*?---\s*$)', post, re.DOTALL|re.MULTILINE)
+    d = frontmatter_matcher.search(post)
     if d:
         metas = utils.create_objdict()   
         frontmatter = d.group(1);

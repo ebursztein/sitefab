@@ -5,6 +5,9 @@ import fb
 import frontmatter
 import linter
 import markdown
+from markdown import HTMLRenderer
+import mistune
+from mistune import Renderer
 
 from SiteFab import utils
 from SiteFab import files
@@ -41,6 +44,10 @@ class Parser():
         # allows pluging to modify them before hand if needed.
         self.jinja2 = None 
 
+        # markdown parser
+        self.renderer = HTMLRenderer()
+        self.md_parser = mistune.Markdown(renderer=self.renderer)
+    
     def lint(self, post, online_checks=False, check_content=False):
         """ Lint post for various errors.
 
@@ -83,14 +90,15 @@ class Parser():
         if not self.jinja2:
             self.jinja2 = jinja2.Environment(loader=jinja2.DictLoader(self.templates))
 
-
-        #FIXME: use frm  utils.objdict import objdict
         parsed_post = utils.create_objdict()
 
         # parsing frontmatter and getting the md
         parsed_post.meta, parsed_post.md = frontmatter.parse(md_file)
 
         # parsing markdown and extractring info
-        parsed_post.html, parsed_post.info = markdown.parse(parsed_post.md, self.jinja2)
-        
+        self.renderer.init(self.jinja2) # reset all the needed counters
+        parsed_post.html = self.md_parser.parse(parsed_post.md)
+        parsed_post.info = self.renderer.get_info()
+        parsed_post.info.toc = self.renderer.get_json_toc()
+
         return parsed_post
