@@ -1,10 +1,10 @@
 # Reading Time Plugin
 
-Compute how long the article will talke to read for an average speed.
+Compute how long the article will take to read for an average speed.
 
 ## Usage
 
-Add the following snipset to your template to display the time it takes to read the post.
+Add the following snippet to your template to display the time it takes to read the post.
 
 ```python
 {% if post.meta.read_time %}
@@ -14,7 +14,7 @@ Add the following snipset to your template to display the time it takes to read 
 
 ## Changelog
 
-- 12/27/16 intial version
+- 12/27/16 initial version
 
 ## Credits
 

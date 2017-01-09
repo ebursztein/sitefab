@@ -7,3 +7,4 @@ gensim
 3to2 
 toposort
 Pygments
+Pillow
