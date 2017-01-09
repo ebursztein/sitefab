@@ -11,7 +11,7 @@ def sitefab_build(site):
     plugin_list_md = "# plugins list\n"
     plugin_list_md += "List of available plugins\n\n"
     plugin_list_md += "|Name | Description | dependencies|\n"
-    plugin_list_md += "|----:|------------:|------------:|\n"
+    plugin_list_md += "|-----|:------------|:------------|\n"
 
     plugins = site.plugins.get_plugins()
     for plugin in plugins:
