@@ -5,14 +5,13 @@ A flexible yet simple website static generator.
 ## Getting Started
 Follow our [Getting Started Guide](/documentation/getting_started.md) to get up and runnning in less than 10 minutes.
 
-## Features
+## Key Features
 
 Here are some of the key features offered by SiteFab
 
 - **Related posts**: Compute the list of related post using the LSI algorithm thanks to [GenSim](https://radimrehurek.com/gensim/)
 - **Client side search**: Search through posts localy using javascript thanks to [ElasticLunr](http://elasticlunr.com/)
-- **Flexible plugins system**: Easily extend SiteFab to suit your need.
-- **Templatized parser**: Quickly customizes the HTML output of the [parser](/documentation/parser.md) by simply editing template.
+- **Easily customizable**: A very [flexible plugin system](/documentation/plugins.md) and a [templatized parser](/documentation/parser.md) make it very easy to customize SiteFab to you need.
 
 ## Diving in
 
@@ -24,7 +23,7 @@ Here are some of the key features offered by SiteFab
 
 ### Customizating the generation
 
-- Get a list of [available plugins](/documentation/plugins.md)
+- Explore all the [available plugins](/documentation/plugin_list.md)
 - Discover how to [customize your templates](/documentation/templates.md)
 - Understand how to [personalize the parser](/documentation/parser.md) to suite your need such as adding a CSS class to the `<img>` tag.
 

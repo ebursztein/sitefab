@@ -1,6 +1,6 @@
 # Writing a SiteFab plugin
 
-This document describe how to write a plugin for SiteFab
+This document describe how to write a plugin for SiteFab. A list of available plugins is available [here](/documentation/plugin_list.md)
 
 ## Workflow
 
