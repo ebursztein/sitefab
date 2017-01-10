@@ -38,4 +38,4 @@ class RelatedPosts(SiteProcessor):
             return (SiteFab.OK, "Related posts via LSI", log_details)
         except Exception as e:
             return (SiteFab.ERROR, "Related posts via LSI", e)
-        
+

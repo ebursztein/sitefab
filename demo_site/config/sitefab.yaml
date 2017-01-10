@@ -1,3 +1,5 @@
+name: "Elie's website"
+logo_url: "static/images/favicon/apple-touch-icon.png"
 #specify how various directory are named. Path are relative to the root of the site
 url: "http://localhost:8080/" #site url
 
@@ -44,6 +46,18 @@ plugins:
     read_time:
         enable: True
         wpm: 260 # avg number of words read per minute
+
+    jsonld:
+        enable: True
+
+    jsonld_collection:
+        enable: True
+
+    compute_full_post_url:
+        enable: True
+
+    compute_full_collection_url:
+        enable: True
 
     search:
         enable: True
