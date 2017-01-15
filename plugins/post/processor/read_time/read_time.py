@@ -3,13 +3,11 @@ from SiteFab.SiteFab import SiteFab
 
 class ReadTime(PostProcessor):
     def process(self, post, site, config):
-        wpm = config.wpm
-        print config
         if post.md and len(post.md):
             
             # basic read time
             words = post.md.count(" ")
-            wps = float(wpm) / 60
+            wps = float(config.wpm) / 60
             num_sec = words / wps
 
             # accounting for images based of medium recommendation
