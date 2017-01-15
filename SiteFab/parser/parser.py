@@ -6,6 +6,7 @@ import frontmatter
 import linter
 import markdown
 from markdown import HTMLRenderer
+import json
 
 import mistune
 from mistune import Renderer
@@ -15,6 +16,14 @@ from pygments.formatters import html
 
 from SiteFab import utils
 from SiteFab import files
+
+def parse_post((filename, parser_config)):
+    file_content = files.read_file(filename)
+    cfg = utils.dict_to_objdict(parser_config)
+    parser = Parser(cfg)
+    post = parser.parse(file_content)
+    d = utils.objdict_to_dict(post)
+    return json.dumps(d)
 
 class Parser():
     
@@ -103,7 +112,7 @@ class Parser():
         if not self.jinja2:
             self.jinja2 = jinja2.Environment(loader=jinja2.DictLoader(self.templates))
 
-        parsed_post = utils.create_objdict()
+        parsed_post = utils.dict_to_objdict()
 
         # parsing frontmatter and getting the md
         parsed_post.meta, parsed_post.md = frontmatter.parse(md_file)

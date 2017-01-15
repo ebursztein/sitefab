@@ -115,14 +115,14 @@ class HTMLRendererMixin(object):
         self.jinja2 = jinja2
         self.code_formatter = code_formatter
         # Various information collected during the parsing 
-        self.info = metas = utils.create_objdict({
+        self.info = metas = utils.dict_to_objdict({
             "links": [],
             "images": [],
             "videos": [],
             "code": []
         })
 
-        self.stats = utils.create_objdict({
+        self.stats = utils.dict_to_objdict({
             "num_links": 0,
             "num_images": 0,
             "num_videos": 0,
