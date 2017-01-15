@@ -1,11 +1,12 @@
 ---
 template: publication
-title: I am a legend hacking Hearthstone using statistical learning methods
-banner: https://www.elie.net/image/public/1476002309/i-am-a-legend-hacking-hearthstone-using-statistical-learning-methods.jpg
+title: "I am a legend hacking Hearthstone using statistical learning methods"
+banner: static/images/banner/i-am-a-legend-hacking-hearthstone-using-statistical-learning-methods.jpg
 permanent_url: publication/i-am-a-legend-hacking-hearthstone-using-statistical-learning-method
-
+microdata_type: ScholarlyArticle
 creation_date: 18 oct 2016 13:29
 category: video game
+lang: en
 
 tags: 
  - hearthstone
@@ -29,9 +30,9 @@ conference_location: Santorini, Greece
 conference_publisher: IEEE
 
 files:
-  paper: https://cdn.elie.net/publications/i-am-a-legend-hacking-hearthstone-using-statistical-learning-methods.pdf
+  - paper: https://cdn.elie.net/publications/i-am-a-legend-hacking-hearthstone-using-statistical-learning-methods.pdf
 
-abstract: this paper demonstrate how to apply machine learning to Hearthstone to predict opponent future plays and game outcome.
+abstract: "This paper demonstrate how to apply machine learning to Hearthstone to predict opponent future plays and game outcome."
 
 ---
 In this paper, we demonstrate the feasibility of a

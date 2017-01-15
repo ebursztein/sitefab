@@ -1,3 +1,5 @@
+name: "Elie's website"
+logo_url: "static/images/favicon/apple-touch-icon.png"
 #specify how various directory are named. Path are relative to the root of the site
 url: "http://localhost:8080/" #site url
 
@@ -17,7 +19,6 @@ collections:
 
 ### Plugins configuration ###
 plugins_configuration_file: "config/plugins.yaml" # Configuration path is relative the site root.
-
 
 ### Parser configuration ###
 parser:

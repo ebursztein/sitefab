@@ -1,0 +1,8 @@
+[Core]
+Name = Jsonld
+Module = jsonld
+Dependencies = compute_full_post_url
+
+[Documentation]
+Filename = README.md
+Description = Compute Jsonld object for each page based on meta

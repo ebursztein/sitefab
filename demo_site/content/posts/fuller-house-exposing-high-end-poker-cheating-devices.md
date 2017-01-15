@@ -3,6 +3,11 @@ language: en
 template: blog_post
 title: "Full(er) House: Exposing high-end poker cheating devices"
 category: security
+microdata_type: BlogPosting
+lang: en
+
+banner: static/images/banner/fuller-house-exposing-high-end-poker-cheating-devices.jpg
+
 
 tags: 
   - machine learning
@@ -19,8 +24,6 @@ creation_date: 21 oct 2016 00:00
 update_date: 20 nov 2016 02:00
 
 permanent_url: blog/security/fuller-house-exposing-high-end-poker-cheating-devices
-
-banner: https://www.elie.net/image/public/1476988497/fuller-house-exposing-high-end-poker-cheating-devices.jpg
 
 authors:
   - Elie, Bursztein

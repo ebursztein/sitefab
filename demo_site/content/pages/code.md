@@ -1,8 +1,10 @@
 ---
 template: code
-title: Code hilighting demo
+title: "Code highlighting demo"
 creation_date: 29 jul 2001 00:00
 update_date: 20 nov 2016 18:01
+microdata_type: WebPage
+lang: en
 
 
 permanent_url: "code"
@@ -10,7 +12,7 @@ permanent_url: "code"
 authors:
   - Elie, Bursztein
 
-abstract: Demo of the code highlighting
+abstract: "Demo of the code highlighting"
 
 ---
 # Python

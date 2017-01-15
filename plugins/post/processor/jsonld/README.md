@@ -1,20 +1,20 @@
-# Reading Time Plugin
+# Jsonld Plugin
 
-Compute how long the article will take to read for an average speed.
+Create Jsonld object based on meta in page
 
 ## Usage
 
-Add the following snippet to your template to display the time it takes to read the post.
+Add the following snippet to your template to display the jsonld of the page.
 
 ```python
-{% if post.meta.read_time %}
-{{ post.meta.read_time}} min read
+{% if meta.jsonld %}
+{{ meta.jsonld}}
 {% endif %}
 ```
 
 ## Changelog
 
-- 12/27/16 initial version
+- 12/27/16 intial version
 
 ## Credits
 
