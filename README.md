@@ -27,10 +27,10 @@ Here are some of the key features offered by SiteFab
 - Discover how to [customize your templates](/documentation/templates.md)
 - Understand how to [personalize the parser](/documentation/parser.md) to suite your need such as adding a CSS class to the `<img>` tag.
 
-### Serving your site
+### Serving and maintainig your site
 
 - [Configure Nginx](/documentation/nginx_install.md) to serve your site and use pretty urls.
-
+- [Upgrade](/documentation/upgrade.md) SiteFab to the latest version to benefits from new plugins and options.
 
 ## Philosophy
 
