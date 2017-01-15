@@ -39,7 +39,7 @@ PostProcessor:
   
   # Compute how long it will take to read a given post
   read_time:
-    enable: true
+    enable: false
     wpm: 260
 
 ##########################
@@ -50,10 +50,6 @@ SitePreparsing:
   
   # Copy directories
   copy_dir:
-    enable: false
-  
-  # Create reactive images
-  reactive_images:
     enable: false
 
 ##########################
