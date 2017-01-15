@@ -30,8 +30,8 @@ class Logger():
         """ Create a new log
             Usually used to store a plugin output or a phase information
         """
-        log = utils.create_objdict()
-        log.meta = utils.create_objdict()
+        log = utils.dict_to_objdict()
+        log.meta = utils.dict_to_objdict()
         log.events = []
 
         log.meta.name = name
@@ -53,7 +53,7 @@ class Logger():
             return False
         
         # recording event
-        event = utils.create_objdict()
+        event = utils.dict_to_objdict()
         event.time = time.time()
         event.target = target
         event.severity = severity

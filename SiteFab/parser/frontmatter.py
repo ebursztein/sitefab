@@ -48,7 +48,7 @@ def parse(post):
     metas = None
     d = frontmatter_matcher.search(post)
     if d:
-        metas = utils.create_objdict()   
+        metas = utils.dict_to_objdict()   
         frontmatter = d.group(1);
         md = md.replace(frontmatter, "")
         frontmatter = frontmatter.replace("---", '')

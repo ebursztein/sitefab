@@ -24,15 +24,22 @@ def load_config(config_file):
     Return:
         objdict: configuration file parsed as dict or empty if parsing fail
     """
-    with open(config_file, 'r') as stream:
-        try:
-            config_yaml = yaml.load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-            return None
+    
+    try:
+        stream = open(config_file, 'r')
+    except:
+        st  = "%s does not exist" % config_file
+        utils.warning(st)
+        return None
+
+    try:
+        config_yaml = yaml.load(stream)
+    except yaml.YAMLError as exc:
+        print(exc)
+        return None
     
     # Making it a nice object
-    config = utils.create_objdict(config_yaml)    
+    config = utils.dict_to_objdict(config_yaml)    
     return config
 
 cached_files = {}

@@ -322,7 +322,7 @@ class Plugins():
             filename = "%s.%s.html" % (pclass, module_name)
             log_id = site.logger.create_log(pclass, plugin.name, filename)
 
-            plugin_results = utils.create_objdict({
+            plugin_results = utils.dict_to_objdict({
                 site.OK: 0,
                 site.SKIPPED: 0,
                 site.ERROR: 0

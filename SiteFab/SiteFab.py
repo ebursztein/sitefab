@@ -1,13 +1,18 @@
 import os
 import operator
+import time
 from tqdm import tqdm
 from collections import defaultdict
 from jinja2 import Environment, FileSystemLoader
 from termcolor import colored, cprint
+from multiprocessing import Pool as ThreadPool 
+from itertools import repeat
 
-import time
 import files
-from parser.parser import Parser
+import copy
+import json
+
+from parser.parser import Parser, parse_post
 from Logger import Logger
 from Plugins import Plugins
 
@@ -35,6 +40,7 @@ class SiteFab(object):
         # Timers
         self.timings  = utils.create_objdict()
         self.timings.start = time.time()
+        self.timings.init_start = time.time()
 
         ### Configuring ###
         self.current_dir = os.getcwd()
@@ -54,7 +60,7 @@ class SiteFab(object):
         
         # parser
         self.config.parser.templates_path =  os.path.join(files.get_site_path(),  self.config.parser.template_dir)
-        self.parser = Parser(self.config.parser)
+        #self.parser = Parser(self.config.parser)
 
         # plugins
         plugins_config_filename = os.path.join(files.get_site_path(), self.config.plugins_configuration_file)
@@ -78,32 +84,40 @@ class SiteFab(object):
 
         ### Cleanup the output directory ###
         files.clean_dir(self.get_output_dir())
+        self.timings.init_stop = time.time()
         
     ### Engine Stages ###
     def preprocessing(self):
         "Perform pre-processing tasks"
+        self.timings.preprocessing_start = time.time()
         self.execute_plugins([1], "SitePreparsing", " plugin")
+        self.timings.preprocessing_stop = time.time()
 
     def parse(self):
         "parse md content into post objects"
-
+        self.timings.parse_start = time.time()
         filenames = self.filenames.posts
         self.posts = []
         self.collections = defaultdict(list)
         self.posts_by_templates = defaultdict(list)
 
         print "\nParsing posts"
-        for filename in tqdm(filenames, unit=' files', desc="Files"):
-            file_content = files.read_file(filename)
-            post = self.parser.parse(file_content)
+        # thread pool
+        tpool = ThreadPool(processes=self.config.threads)
+        parser_config = utils.objdict_to_dict(self.config.parser)
+        progress_bar = pbar = tqdm(total=len(filenames), unit=' files', desc="Files", leave=True)
+        # chunksize = (len(filenames) / (self.config.threads * 2)) < using a different chunksize don't seems to make a huge difference
+        for res in tpool.imap_unordered(parse_post, zip(filenames, repeat(parser_config)), chunksize=1):
+            res = json.loads(res)
+            post = utils.dict_to_objdict(res)
+            # insert in post list
             self.posts.append(post)
-            
-            # template
+            # insert in template
             if post.meta.template not in self.posts_by_templates:
                 self.posts_by_templates[post.meta.template] = self.create_collection(post.meta.template)
             self.posts_by_templates[post.meta.template].posts.append(post)
             
-            ## collections
+            ## insert in collections
             cols = []
             if post.meta.category:
                 cols.append(post.meta.category)
@@ -114,10 +128,16 @@ class SiteFab(object):
                 if col not in self.collections:
                     self.collections[col] = self.create_collection(col)
                 self.collections[col].posts.append(post)
-      
+            progress_bar.update()
+        
+        tpool.close()
+        tpool.join()
+        self.timings.parse_stop = time.time()
+    
     def process(self):
         "Processing stage"
 
+        self.timings.process_start = time.time()
         # Posts processing
         print "\nPosts plugins"
         self.execute_plugins(self.posts, "PostProcessor", " posts")
@@ -129,10 +149,12 @@ class SiteFab(object):
         # site wide processing
         print "\nSite wide plugins"
         self.execute_plugins([1], "SiteProcessor", " site")
+        self.timings.process_stop = time.time()
 
     def render(self):
         "Rendering stage"
         
+        self.timings.render_start = time.time()
         print "\nRendering posts"
         self.render_posts()
         
@@ -141,17 +163,34 @@ class SiteFab(object):
         
         print "\nAdditional Rendering"
         self.execute_plugins([1], "SiteRendering", " pages")
+        self.timings.render_stop = time.time()
 
     def finale(self):
         "Last stage"
         
-        #last thing to do is to output the logs index
+        # Last thing to do is to output the logs index
         self.logger.write_log_index()
-        total_ts = round(time.time() - self.timings.start, 2)
         
-        cprint("\nStatistics", 'magenta')
-        cprint("|-Generation time: %s sec" % (total_ts), "cyan")
-        cprint("|-Num Posts: %s" % len(self.posts), "blue")
+        # Output
+        cprint("Thread used:%s" % self.config.threads, "cyan")
+        
+        total_ts = round(time.time() - self.timings.start, 2)
+        init_ts = round(self.timings.init_stop - self.timings.init_start,2)
+        preprocessing_ts = round(self.timings.preprocessing_stop - self.timings.preprocessing_start,2)
+        parsing_ts = round(self.timings.parse_stop - self.timings.parse_start, 2)
+        processing_ts = round(self.timings.process_stop - self.timings.process_start, 2)
+        rendering_ts = round(self.timings.render_stop - self.timings.render_start, 2)
+
+        cprint("\nPerformance", 'magenta')
+        cprint("|-Total Generation time: %s sec" % (total_ts,), "cyan")
+        cprint("|--Init time: %s sec" % (init_ts), "blue")
+        cprint("|--Preprocessing time: %s sec" % (preprocessing_ts), "blue")
+        cprint("|--Parsing time: %s sec" % (parsing_ts), "blue")
+        cprint("|--Processing time: %s sec" % (processing_ts), "blue")
+        cprint("|--Rendering time: %s sec" % (rendering_ts), "blue")
+
+        cprint("\nContent", 'magenta')
+        cprint("|-Num Posts: %s" % len(self.posts), "cyan")
         cprint("|-Num Collections: %s" % len(self.collections), "cyan")
 
 
@@ -249,10 +288,10 @@ class SiteFab(object):
     def create_collection(self, name):
         "Create a post structure"
         
-        collection = utils.create_objdict()
+        collection = utils.dict_to_objdict()
         collection.posts = []
 
-        collection.meta = utils.create_objdict()
+        collection.meta = utils.dict_to_objdict()
         collection.meta.name = name
         collection.meta.num_posts = 0
         

@@ -14,7 +14,8 @@ def sitefab_build(site):
     "Sitefab_build command"
 
     # plugin site configuration
-    upgrade_plugin_configuration_file(site)
+    #FIXME: make sure the plugin configuratiokn update the demo_site configuration
+    #upgrade_plugin_configuration_file(site)
 
     # Pluging documentation
     build_plugin_documentation(site)
@@ -26,7 +27,7 @@ def upgrade_plugin_configuration_file(site):
         "CollectionProcessor"
     }
 
-    plugin_config_filename = os.path.join(files.get_code_path(), "demo_site", "config", "plugins.yaml")
+    plugin_config_filename = os.path.join(files.get_site_path(), site.config.plugins_configuration_file)
 
     stats = defaultdict(list)
     configuration = {}
@@ -90,6 +91,7 @@ def upgrade_plugin_configuration_file(site):
         dump = dump.replace(c, new_str)
 
     # writing configuration
+    print plugin_config_filename
     with open(plugin_config_filename, 'w') as yaml_file:
         yaml_file.write( dump )
 

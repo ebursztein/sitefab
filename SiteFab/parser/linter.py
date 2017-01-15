@@ -83,7 +83,7 @@ def lint(post, config_file="linter_config.yaml", online_checks=False, check_cont
     if not config:
         return None
     
-    errors = utils.create_objdict()
+    errors = utils.dict_to_objdict()
     errors.frontmatter = check_frontmatter(post, config)
     errors.structure = check_structure(post, config)
     errors.seo = check_seo(post, config)    
