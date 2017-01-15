@@ -75,16 +75,17 @@ def upgrade_plugin_configuration_file(site):
 
     # Getting the YAML formated dump
     dump = yaml.dump(configuration, default_flow_style = False, allow_unicode = True, encoding = None)
-    
-    # Adding plugins description as comments
-    for module_name, description in descriptions.iteritems():
-        new_str = "\n  # %s\n  %s" % (description, module_name)
-        dump = dump.replace(module_name, new_str)
 
-    # adding categorie description
+    # Adding plugins description as comments
+    # for module_name, description in descriptions.iteritems():
+    #     old_str = "%s:" % module_name
+    #     new_str = "\n  # %s\n  %s" % (description, old_str)
+    #     dump = dump.replace(old_str, new_str)
+
+    # adding category description
     for cat in site.plugins.categories:
         c = cat[0]
-        description  = cat[2]
+        description = cat[2]
         new_str = "\n##########################\n# %s\n# %s\n##########################\###\n%s" % (c, description, c)
         dump = dump.replace(c, new_str)
 
@@ -92,7 +93,7 @@ def upgrade_plugin_configuration_file(site):
     with open(plugin_config_filename, 'w') as yaml_file:
         yaml_file.write( dump )
 
-    #printing results
+    # printing results
     if len(stats['new plugins']):
         print "%s: %s" % (colored("new plugins", "cyan"), colored(", ".join(stats['new plugins']), "yellow"))
         

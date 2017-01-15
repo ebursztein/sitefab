@@ -221,7 +221,7 @@ class Plugins():
         if "," in st:
             elts = st.split(",")
             for elt in elts:
-                dependencies.add(dep.strip())
+                dependencies.add(elt.strip())
         else:
             dependencies.add(st)
         return dependencies
@@ -302,7 +302,7 @@ class Plugins():
                         utils.error("Plugin:%s can't be executed because plugin %s is not enable" % (module_name, dep_mod_name))
                 dependencie_map[module_name] = dependencies
 
-        # Toplogical sorting
+        # Topological sorting
         try:
             plugins_to_process = toposort_flatten(dependencie_map)
         except Exception as e:
