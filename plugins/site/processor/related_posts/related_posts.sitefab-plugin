@@ -1,8 +1,10 @@
 [Core]
 Name = Related Posts
 Module = related_posts
-Enable = True
 
 [Documentation]
-Documentation = related_posts.md
+Documentation = README.md
 Description = Use LSI to compute related posts.
+
+[Configuration]
+Filename = config.yaml

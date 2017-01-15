@@ -6,7 +6,7 @@ Create Jsonld object based on meta in collection
 
 Add the following snippet to your template to display the jsonld of the page.
 
-```python
+```html
 {% if collection.meta.jsonld %}
 {{ collection.meta.jsonld}}
 {% endif %}

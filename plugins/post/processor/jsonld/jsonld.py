@@ -19,7 +19,7 @@ class Jsonld(PostProcessor):
         'en': "English"
     }
 
-    def process(self, post, site):
+    def process(self, post, site, config):
         jsonld_data = {}
         if post.meta.microdata_type:
             #

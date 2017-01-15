@@ -9,10 +9,10 @@ from SiteFab.SiteFab import SiteFab
 from SiteFab import files
 
 class Search(SiteRendering):
-    def process(self, unused, site):
+    def process(self, unused, site, config):
         plugin_name = "search"
-        output_path = site.config.plugins.search.output_path
-        num_tfidf_keywords = site.config.plugins.search.num_tfidf_keywords
+        output_path = config.output_path
+        num_tfidf_keywords = config.num_tfidf_keywords
         base_js_filename = "search.js" 
         
         #get the search basic javascript

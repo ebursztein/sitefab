@@ -1,0 +1,2 @@
+output_path: "static/js/" # where to output the search.js. relative to the output dir
+num_tfidf_keywords: 20

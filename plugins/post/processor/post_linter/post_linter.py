@@ -6,10 +6,11 @@ import os
 
 class PostLinter(PostProcessor):
     #FIMXE load the config in the init?
-    def process(self, post, site):
-        config_file = os.path.join(files.get_site_path(), site.config.plugins.post_linter.config_file)
-        online_check = site.config.plugins.post_linter.online_check
-        check_content = site.config.plugins.post_linter.check_content
+
+    def process(self, post, site, config):
+        config_file = os.path.join(files.get_site_path(), config.config_file)
+        online_check = config.online_check
+        check_content = config.check_content
         errors = parser.lint(post, config_file=config_file, online_checks=online_check, check_content=check_content)
         if errors:
             formatted_errors = parser.format_errors(errors, config_file)

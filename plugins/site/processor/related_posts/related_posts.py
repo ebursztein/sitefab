@@ -1,16 +1,15 @@
 from SiteFab.Plugins import SiteProcessor
 from SiteFab.SiteFab import SiteFab
-from collections import defaultdict
 
 import gensim
 from gensim import corpora, models, similarities
-from SiteFab.utils import section
+
 
 class RelatedPosts(SiteProcessor):
-    def process(self, unused, site):
+    def process(self, unused, site, config):
         
         try:
-            num_related_posts = site.config.plugins.related_posts.num_related_posts
+            num_related_posts = config.num_related_posts
             # Tokenize
             docs = []
             for post in site.posts:

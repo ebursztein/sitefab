@@ -3,7 +3,7 @@ from SiteFab.SiteFab import SiteFab
 
 
 class FullUrl(CollectionProcessor):
-    def process(self, collection, site):
+    def process(self, collection, site, config):
         safe = collection.meta.name.replace(" ", "-")
         url = "%s%s%s" % (site.config.url, site.config.collections.output_dir, safe)
         collection.meta.full_url = url

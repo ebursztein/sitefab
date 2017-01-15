@@ -3,7 +3,9 @@ Name = Post linter
 Module = post_linter
 
 [Documentation]
-Author = Elie Bursztein
-Version = 0.1
-Website = https://www.elie.net
+Filename = README.md
 Description = Check posts for errors
+Version = 1
+
+[Configuration]
+Filename = "config.yaml"

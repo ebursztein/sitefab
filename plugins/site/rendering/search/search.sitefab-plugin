@@ -1,7 +1,11 @@
 [Core]
 Name = Search page
 Module = search
+Version = 1
 
 [Documentation]
 Filename = README.md
 Description = Generate a search page that run locally
+
+[Configuration]
+Filename = config.yaml

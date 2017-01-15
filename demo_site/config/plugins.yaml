@@ -4,18 +4,10 @@
 # Plugins that process each collection after posts are parsed
 ##########################\###
 CollectionProcessor:
-  
-  # Compute the full qualified url for each post and store in the post.meta under full_url
   compute_full_collection_url:
-    enable: false
-  
-  # Compute Jsonld object for each page based on meta
-  
-  # Compute Jsonld object for each collection based on meta
+    enable: true
   jsonld_collection:
     enable: false
-  
-  # Sort collections by publication time to allow easy chronological display from templates.
   sort_collection:
     enable: false
 
@@ -24,22 +16,17 @@ CollectionProcessor:
 # Plugins that process each post after they are parsed
 ##########################\###
 PostProcessor:
-  
-  # Compute the full qualified url for each post and store in the post.meta under full_url
   compute_full_post_url:
-    enable: false
-  
-  # Compute Jsonld object for each page based on meta
+    enable: true
   jsonld:
     enable: false
-  
-  # Check posts for errors
   post_linter:
+    check_content: false
+    config_file: config/linter_config.yaml
     enable: false
-  
-  # Compute how long it will take to read a given post
+    online_checks: false
   read_time:
-    enable: true
+    enable: false
     wpm: 260
 
 ##########################
@@ -47,35 +34,34 @@ PostProcessor:
 # Site wide plugins that execute before the parsing start.
 ##########################\###
 SitePreparsing:
-  
-  # Copy directories
   copy_dir:
     enable: false
-  
-  # Create reactive images
-  reactive_images:
-    enable: false
+    targets:
+    - assets/js > generated/static/js
+    - assets/css > generated/static/css
+    - assets/images > generated/static/images
 
 ##########################
 # SiteProcessor
 # Plugins that process the whole site once after parsing.
 ##########################\###
 SiteProcessor:
-  
-  # Use LSI to compute related posts.
   related_posts:
     enable: false
+    num_related_posts: 6
 
 ##########################
 # SiteRendering
 # Plugins that render additional pages after the rendering.
 ##########################\###
 SiteRendering:
-  
-  # Generate a search page that run locally
+  rss:
+    enable: false
+    template: rss.xml
   search:
     enable: false
-  
-  # Create site sitemap
+    num_tfidf_keywords: 20
+    output_path: static/js/
   sitemap:
-    enable: false
+    enable: true
+    template: sitemap.xml

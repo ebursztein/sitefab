@@ -9,7 +9,7 @@ class JsonldCollection(CollectionProcessor):
     Write microdata jsonld_collection
 
     """
-    def process(self, collection, site):
+    def process(self, collection, site, config):
         pre_txt = '<script type="application/ld+json">'
         post_txt = '</script>'
 

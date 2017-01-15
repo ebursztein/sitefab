@@ -6,3 +6,4 @@ Dependencies = compute_full_collection_url
 [Documentation]
 Filename = README.md
 Description = Compute Jsonld object for each collection based on meta
+
