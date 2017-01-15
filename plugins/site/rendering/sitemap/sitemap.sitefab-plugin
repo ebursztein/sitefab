@@ -1,10 +1,12 @@
 [Core]
 Name = Sitemap
 Module = sitemap
-Activated = True
+Version = 1
+Dependencies =  compute_full_post_url, compute_full_collection_url
 
 [Documentation]
-Author = Elie Bursztein
-Version = 0.1
-Website = https://www.elie.net
-Description = Create site sitemap
+Filename = README.md
+Description = Generate Sitemap
+
+[Configuration]
+Filename = config.yaml
