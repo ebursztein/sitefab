@@ -72,7 +72,7 @@ class Plugins():
         ["SiteRendering", SiteRendering,  "Plugins that render additional pages after the rendering."],
 
         ["PostProcessor", PostProcessor,"Plugins that process each post after they are parsed"],
-        
+
         ["CollectionProcessor", CollectionProcessor, "Plugins that process each collection after posts are parsed"],
 
     ]
@@ -104,8 +104,6 @@ class Plugins():
             if pl[self.PLUGIN_ENABLE]:
                 self.plugins_enabled[pl[self.PLUGIN_MODULE_NAME]] = 1
         
-        print "== Plugins =="
-        print self.plugins_enabled
         # FIXME: make sure it is working
         #logging.basicConfig(filename=debug_log_fname, level=logging.DEBUG)
 

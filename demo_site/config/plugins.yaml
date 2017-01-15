@@ -5,6 +5,16 @@
 ##########################\###
 CollectionProcessor:
   
+  # Compute the full qualified url for each post and store in the post.meta under full_url
+  compute_full_collection_url:
+    enable: false
+  
+  # Compute Jsonld object for each page based on meta
+  
+  # Compute Jsonld object for each collection based on meta
+  jsonld_collection:
+    enable: false
+  
   # Sort collections by publication time to allow easy chronological display from templates.
   sort_collection:
     enable: false
@@ -19,13 +29,17 @@ PostProcessor:
   compute_full_post_url:
     enable: false
   
+  # Compute Jsonld object for each page based on meta
+  jsonld:
+    enable: false
+  
   # Check posts for errors
   post_linter:
     enable: false
   
   # Compute how long it will take to read a given post
   read_time:
-    enable: yes
+    enable: true
     wpm: 260
 
 ##########################

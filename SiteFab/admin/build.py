@@ -1,9 +1,14 @@
 import os
 import yaml
 from tqdm import tqdm
+from termcolor import colored, cprint
+from collections import defaultdict
 
 from SiteFab import files
 
+def sitefab_upgrade(site):
+    "Upgrade site config(s) to benefits from new plugins and options"
+    upgrade_plugin_configuration_file(site)
 
 def sitefab_build(site):
     "Sitefab_build command"
@@ -23,6 +28,7 @@ def upgrade_plugin_configuration_file(site):
 
     plugin_config_filename = os.path.join(files.get_code_path(), "demo_site", "config", "plugins.yaml")
 
+    stats = defaultdict(list)
     configuration = {}
     descriptions = {} # add description in the documentation
      
@@ -34,6 +40,9 @@ def upgrade_plugin_configuration_file(site):
             
             module_name = site.plugins.get_plugin_module_name(plugin)
             current_config = site.plugins.get_plugin_config(plugin)
+
+            if current_config == {}:
+                stats['new plugins'].append(module_name)
             
             #doc
             descriptions[module_name] = plugin.description
@@ -59,6 +68,8 @@ def upgrade_plugin_configuration_file(site):
                     # new option adding default value
                     else:
                         new_config[k] = default_config[k]
+                        st = "%s -> %s" % (module_name, k)
+                        stats['new options'].append(st)
 
             configuration[cat][module_name] = new_config
 
@@ -81,6 +92,18 @@ def upgrade_plugin_configuration_file(site):
     with open(plugin_config_filename, 'w') as yaml_file:
         yaml_file.write( dump )
 
+    #printing results
+    if len(stats['new plugins']):
+        print "%s: %s" % (colored("new plugins", "cyan"), colored(", ".join(stats['new plugins']), "yellow"))
+        
+    if len(stats['new options']):
+        print "%s:\n\t%s" % (colored("new options", "blue"), colored("\n\t ".join(stats['new options']), "yellow"))
+
+    if len(stats['new plugins']) or len(stats['new options']):
+        st = "Updgrade complete! Don't forget to edit your plugin configuration file to enable new plugins / tweak the new options"
+        cprint(st, "green")
+    else:
+        cprint("Nothing to upgrade.", "cyan")
 
 def build_plugin_documentation(site):
     "Build the plugins documentation"

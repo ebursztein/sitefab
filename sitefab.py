@@ -8,6 +8,7 @@ import getopt
 from SiteFab.SiteFab import SiteFab
 from termcolor import colored, cprint
 from SiteFab.utils import print_color_list, section, print_header
+from SiteFab.admin import build
 
 
 reload(sys)
@@ -74,7 +75,8 @@ def print_help():
     cmds = [
         "generate: generate the site", 
         "deploy: deploy generated site to remote server",
-        "plugins: list available plugins"
+        "plugins: list available plugins",
+        "upgrade: upgrade SiteFab plugins."
         ]
 
     cprint("commands", 'magenta')
@@ -120,10 +122,15 @@ if __name__ == '__main__':
             cprint("Plugins status", 'magenta')
             print_plugins_list(site, only_enable=False)
         
+        elif cmd == "upgrade":
+            site = SiteFab(config)
+            cprint("Upgrading", 'magenta')
+            build.sitefab_upgrade(site)
+            
+
         ### Developper command ###
         elif cmd == "sitefab_build":
             # this function rebuild the documentation & configurations
-            from SiteFab.dev import build
             site = SiteFab(config)
             build.sitefab_build(site)
 
