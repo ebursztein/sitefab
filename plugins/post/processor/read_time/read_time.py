@@ -2,8 +2,9 @@ from SiteFab.Plugins import PostProcessor
 from SiteFab.SiteFab import SiteFab
 
 class ReadTime(PostProcessor):
-    def process(self, post, site):
-        wpm = site.config.plugins.read_time.wpm
+    def process(self, post, site, config):
+        wpm = config.wpm
+        print config
         if post.md and len(post.md):
             
             # basic read time

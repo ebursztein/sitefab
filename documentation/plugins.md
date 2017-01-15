@@ -85,7 +85,7 @@ The code file for the plugin is named: ****compute_full_post_url.sitefab-plugin*
 from SiteFab.Plugins import PostProcessor
 
 class FullUrl(PostProcessor):
-    def process(self, post, site):
+    def process(self, post, site, config):
         if post.meta.permanent_url:
             post.meta.full_url = "%s/%s" % (site.vars.url, post.meta.permanent_url)
             return True
@@ -113,20 +113,19 @@ This configuration is reflected in the plugins.yaml as follow:
 ```yaml
 read_time:
     enable: False
-    version: 1
     wpm: 260 # avg number of words read per minute
 ```
 
-In the plugin code you simply access the various parameters you specified via `site.config.plugins.read_time.wpm`
+In the plugin code you simply access the various parameters you specified via the `config` variable.
 
 In our read_time plugin example, to get the average number of word per minutes (wpm), the plugin will do:
 ```python
-wpm = site.config.plugins.read_time.wpm
+wpm = config.wpm
 ```
 
 Notes:
 - All plugins are disable by default to not suprise the user.
-- the version is reflected from the definition file so that SiteFab know when to update.
+- The plugin.yaml default file is constructed from the plugin default configurations using the command `SiteFab -c config/sitefab.yam sitefab_build`.
 
 ### Documentation
 
@@ -176,7 +175,7 @@ These plugins execute before the parsing
 class ContentPreparsing():
     "Plugins that process content files before the parsing"
 
-    def process(self, filename, site):
+    def process(self, filename, site, config):
         """ Process a parsed post to add extra meta or change its HTML  
             :param str filename: the filename of the content file process
             :param FabSite site: the site object 
@@ -193,7 +192,7 @@ Used to manipulate the content of post. Run between parsing and rendering.
 class PostProcessor():
     "Plugins that process each post between the parsing and the rendering"
 
-    def process(self, post, site):
+    def process(self, post, site, config):
         """ Process a parsed post to add extra meta or change its HTML  
             :param post post: the post to process
             :param FabSite site: the site object
@@ -208,7 +207,7 @@ Used to manipulate the content of a collection (e.g adding meta data like statis
 class CollectionProcessor():
     "Plugins that process each collection between the parsing and the rendering"
 
-    def process(self, post, site):
+    def process(self, post, site, config):
         """ Process a parsed post to add extra meta or change its HTML
             :param collection collection: the collection to process
             :param FabSite site: the site object
@@ -230,7 +229,7 @@ For example both the sitemap and the search.js generation are done as ExtraRende
 class ExtraRendering():
     "Plugins that render additional pages"
 
-    def process(self, unused, site):
+    def process(self, unused, site, config):
         """ Generate additional page or file  
             :param FabSite site: the site object 
         """

@@ -15,43 +15,48 @@ logging.basicConfig(level=logging.INFO)
 class PostProcessor():
     "Plugins that process each post between the parsing and the rendering"
 
-    def process(self, post, site):
+    def process(self, post, site, config):
         """ Process a parsed post to add extra meta or change its HTML  
             :param post post: the post to process
-            :param FabSite site: the site object 
+            :param FabSite site: the site object
+            :param dict config: plugin configuration 
         """
 
 class CollectionProcessor():
     "Plugins that process each collection between the parsing and the rendering"
     
-    def process(self, post, site):
+    def process(self, post, site, config):
         """ Process a parsed post to add extra meta or change its HTML  
             :param collection collection: the collection to process
-            :param FabSite site: the site object 
+            :param FabSite site: the site object
+            :param dict config: plugin configuration 
         """
 
 class  SitePreparsing():
     "Site wide plugins that execute before the parsing start. Plugin are called only once."
-
-    def process(self, unused, site):
+    
+    def process(self, unused, site, config):
         """ Process the content of the site once  
         :param FabSite site: the site object 
+        :param dict config: plugin configuration 
         """
 
 class SiteProcessor():
     "Plugins that process the whole site once"
-
-    def process(self, unused, site):
+    
+    def process(self, unused, site, config):
         """ Process the content of the site once  
-            :param FabSite site: the site object 
+            :param FabSite site: the site object
+            :param dict config: plugin configuration  
         """
 
 class SiteRendering():
     "Plugins that render additional pages. Plugin only called once"
 
-    def process(self, unused, site):
+    def process(self, unused, site, config):
         """ Generate additional page or file  
-            :param FabSite site: the site object 
+            :param FabSite site: the site object
+            :param dict config: plugin configuration 
         """
 
 ### Plugin management ###
@@ -60,6 +65,17 @@ class Plugins():
     Class responsible to manage the plugins
 
     """
+
+    categories = [
+        ["SitePreparsing", SitePreparsing, "Site wide plugins that execute before the parsing start."],
+        ["SiteProcessor", SiteProcessor, "Plugins that process the whole site once after parsing."],
+        ["SiteRendering", SiteRendering,  "Plugins that render additional pages after the rendering."],
+
+        ["PostProcessor", PostProcessor,"Plugins that process each post after they are parsed"],
+        
+        ["CollectionProcessor", CollectionProcessor, "Plugins that process each collection after posts are parsed"],
+
+    ]
 
     # for plugin info structure
     PLUGIN_CAT = 0
@@ -71,15 +87,12 @@ class Plugins():
 
     def __init__(self, plugin_directory, debug_log_fname, plugins_config):
         "Load plugins"
-        self.plugins = PluginManager(plugin_info_ext='sitefab-plugin', categories_filter={ 
-            
-            "PostProcessor": PostProcessor,
-            "CollectionProcessor": CollectionProcessor,
-            
-            "SitePreparsing": SitePreparsing,
-            "SiteProcessor": SiteProcessor,
-            "SiteRendering": SiteRendering
-            })
+
+        categories_filter = {}
+        for cat in self.categories:
+            categories_filter[cat[0]] = cat[1]
+
+        self.plugins = PluginManager(plugin_info_ext='sitefab-plugin', categories_filter=categories_filter)
         self.plugins.setPluginPlaces([plugin_directory])
         self.plugins.locatePlugins()
         self.plugins.loadPlugins()
@@ -140,6 +153,7 @@ class Plugins():
             fname = plugin.details.get("Configuration", "Filename")
         except:
             return ""
+        fname  = fname.replace('"', '')
         path = self.get_plugin_dir(plugin)
         return os.path.join(path, fname)
 
@@ -153,6 +167,16 @@ class Plugins():
         path = self.get_plugin_dir(plugin)
         return os.path.join(path, fname)
 
+    def get_plugin_class_name(self, plugin):
+        """ Return the class of a given plugin
+
+        :param iPlugin plugin: the plugin requested
+
+        :rtype: str
+        :return: the module classname
+        """
+        return plugin.categories[0]
+
     def get_plugin_module_name(self, plugin):
         """ Return the module name of a given plugin
 
@@ -164,6 +188,22 @@ class Plugins():
         module_path = plugin.details.get("Core", "module")
         path, filename = os.path.split(module_path)
         return filename
+
+    def get_plugin_config(self, plugin):
+        """ Return the configuration of a given plugin
+
+        :param iPlugin plugin: the plugin requested
+
+        :rtype: dict
+        :return: plugin configuration
+        """
+        module_name = self.get_plugin_module_name(plugin)
+        class_name = self.get_plugin_class_name(plugin)
+        try:
+            config = self.plugins_config[class_name][module_name]
+        except:
+            config = {}
+        return config
 
     def get_plugin_dependencies(self, plugin):
         """ Return the dependency of a given plugin
@@ -189,8 +229,8 @@ class Plugins():
         return dependencies
 
     def is_plugin_enabled(self, plugin):
-        module_name = self.get_plugin_module_name(plugin)
-        if module_name in self.plugins_config and self.plugins_config[module_name].enable:
+        config = self.get_plugin_config(plugin)
+        if config.get('enable'):
             return True
         else:
             return False
@@ -247,15 +287,17 @@ class Plugins():
         :rtype: dict(dict(list))
         :return: plugins execution statistics
         """
-        module_name_to_plugin = {} # used to get back from the module name to the plugin
+
+        dependencie_map = {} #dependencies map
+        module_name_to_plugin = {} # used to get back from the module name to the plugin        
         
-        # computing plugin dependencies
-        dependencie_map = {}
         plugins = self.plugins.getPluginsOfCategory(plugin_class)
         for plugin in plugins:
             if self.is_plugin_enabled(plugin):
                 module_name = self.get_plugin_module_name(plugin)
                 module_name_to_plugin[module_name] = plugin
+                
+                # dependencies
                 dependencies = self.get_plugin_dependencies(plugin)
                 for dep_mod_name in dependencies:
                     if dep_mod_name not in self.plugins_enabled:
@@ -288,8 +330,10 @@ class Plugins():
                 site.ERROR: 0
             })
 
+            config = self.get_plugin_config(plugin)
+
             for item in tqdm(items, unit=unit, desc=plugin.name, leave=False):
-                result = plugin.plugin_object.process(item, site)
+                result = plugin.plugin_object.process(item, site, config)
                 plugin_results[result[0]] += 1
                 
                 severity = result[0]

@@ -1,0 +1,33 @@
+plugins:
+    copy_dir:
+        enable: True
+        targets:
+            - "assets/js > generated/static/js"
+            - "assets/css > generated/static/css"
+            - "assets/images > generated/static/images"
+
+    reactive_images:
+        enable: True
+
+    post_linter:
+        enable: False
+        config_file: "config/linter_config.yaml"
+        online_checks: False
+        check_content: False #use language_check to verify the content
+
+    sitemap:
+        enable: False
+        template: "sitemap.xml" #which template to use for the sitemap
+
+    related_posts:
+        enable: False
+        num_related_posts: 6 # number of related posts to output
+
+    read_time:
+        enable: True
+        wpm: 260 # avg number of words read per minute
+
+    search:
+        enable: True
+        output_path: "static/js/" # where to output the search.js. relative to the output dir
+        num_tfidf_keywords: 20

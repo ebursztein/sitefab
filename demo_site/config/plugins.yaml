@@ -1,0 +1,67 @@
+
+##########################
+# CollectionProcessor
+# Plugins that process each collection after posts are parsed
+##########################\###
+CollectionProcessor:
+  
+  # Sort collections by publication time to allow easy chronological display from templates.
+  sort_collection:
+    enable: false
+
+##########################
+# PostProcessor
+# Plugins that process each post after they are parsed
+##########################\###
+PostProcessor:
+  
+  # Compute the full qualified url for each post and store in the post.meta under full_url
+  compute_full_post_url:
+    enable: false
+  
+  # Check posts for errors
+  post_linter:
+    enable: false
+  
+  # Compute how long it will take to read a given post
+  read_time:
+    enable: yes
+    wpm: 260
+
+##########################
+# SitePreparsing
+# Site wide plugins that execute before the parsing start.
+##########################\###
+SitePreparsing:
+  
+  # Copy directories
+  copy_dir:
+    enable: false
+  
+  # Create reactive images
+  reactive_images:
+    enable: false
+
+##########################
+# SiteProcessor
+# Plugins that process the whole site once after parsing.
+##########################\###
+SiteProcessor:
+  
+  # Use LSI to compute related posts.
+  related_posts:
+    enable: false
+
+##########################
+# SiteRendering
+# Plugins that render additional pages after the rendering.
+##########################\###
+SiteRendering:
+  
+  # Generate a search page that run locally
+  search:
+    enable: false
+  
+  # Create site sitemap
+  sitemap:
+    enable: false

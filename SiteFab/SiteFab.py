@@ -57,9 +57,11 @@ class SiteFab(object):
         self.parser = Parser(self.config.parser)
 
         # plugins
-        print files.get_code_path()
+        plugins_config_filename = os.path.join(files.get_site_path(), self.config.plugins_configuration_file)
+        plugins_config = files.load_config(plugins_config_filename)
+
         debug_log_fname = os.path.join(self.get_logs_dir(), "debug.log") # where to redirect the standard python log
-        self.plugins = Plugins(self.get_plugins_dir(), debug_log_fname, self.config.plugins)
+        self.plugins = Plugins(self.get_plugins_dir(), debug_log_fname, plugins_config)
         self.plugins_results = defaultdict(int)
         
         # logger
