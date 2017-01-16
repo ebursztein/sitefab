@@ -7,9 +7,9 @@ CollectionProcessor:
   compute_full_collection_url:
     enable: true
   jsonld_collection:
-    enable: false
+    enable: true
   sort_collection:
-    enable: false
+    enable: true
 
 ##########################
 # PostProcessor
@@ -19,14 +19,14 @@ PostProcessor:
   compute_full_post_url:
     enable: true
   jsonld:
-    enable: false
+    enable: true
   post_linter:
     check_content: false
     config_file: config/linter_config.yaml
     enable: false
     online_checks: false
   read_time:
-    enable: false
+    enable: true
     wpm: 260
 
 ##########################
@@ -35,11 +35,12 @@ PostProcessor:
 ##########################\###
 SitePreparsing:
   copy_dir:
-    enable: false
+    enable: true
     targets:
     - assets/js > generated/static/js
     - assets/css > generated/static/css
     - assets/images > generated/static/images
+    - assets/svg > generated/static/svg
 
 ##########################
 # SiteProcessor
@@ -47,7 +48,7 @@ SitePreparsing:
 ##########################\###
 SiteProcessor:
   related_posts:
-    enable: false
+    enable: true
     num_related_posts: 6
 
 ##########################
@@ -56,10 +57,19 @@ SiteProcessor:
 ##########################\###
 SiteRendering:
   rss:
-    enable: false
+    enable: true
+    accent_color: 03A9F4
+    analytics_code: UA-112090-10
+    banner: /static/images/banner/fuller-house-exposing-high-end-poker-cheating-devices.jpg
+    icon: /static/images/favicon/favicon-160x160.png
+    layout_type: card
+    logo_svg: /static/svg/
+    subtitle: Blog about web technologies and games with a focus performance and security.
     template: rss.xml
+    title: Elie on Internet Security and Performance
+    url: rss
   search:
-    enable: false
+    enable: true
     num_tfidf_keywords: 20
     output_path: static/js/
   sitemap:

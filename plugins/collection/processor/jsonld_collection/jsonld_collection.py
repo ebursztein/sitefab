@@ -25,4 +25,4 @@ class JsonldCollection(CollectionProcessor):
 
         collection.meta.jsonld = jsonld_text
 
-        return SiteFab.OK, collection.meta.jsonld, jsonld_data
+        return SiteFab.OK, collection.meta.name, collection.meta.jsonld
