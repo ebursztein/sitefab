@@ -5,6 +5,7 @@ title: "Full(er) House: Exposing high-end poker cheating devices"
 category: security
 microdata_type: BlogPosting
 lang: en
+hidden: true
 
 banner: static/images/banner/fuller-house-exposing-high-end-poker-cheating-devices.jpg
 

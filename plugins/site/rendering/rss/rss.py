@@ -25,7 +25,7 @@ class Rss(SiteRendering):
 
         rss_items = []
         for post in site.posts:
-            if post.meta.microdata_type != "BlogPosting" and post.meta.microdata_type != "ScholarlyArticle":
+            if post.meta.hidden or (post.meta.microdata_type != "BlogPosting" and post.meta.microdata_type != "ScholarlyArticle"):
                 continue
 
             formatted_rss_creation_date = datetime.fromtimestamp(int(post.meta.creation_date_ts)).strftime('%Y-%m-%dT%H:%M:%SZ')

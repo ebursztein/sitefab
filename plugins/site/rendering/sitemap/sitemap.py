@@ -12,9 +12,12 @@ class Sitemap(SiteRendering):
             template = site.jinja2.get_template(template_name)
         except:
             return SiteFab.ERROR, "sitemap", "can't find template:%s" % template_name
-        
+
         # Rendering
+        post_list = []
         for post in site.posts:
+            if post.meta.hidden:
+                continue
             # add priority and frequency
             post.meta.priority = 0.7
             post.meta.frequency = "monthly"
@@ -29,6 +32,7 @@ class Sitemap(SiteRendering):
             if post.meta.microdata_type == "CollectionPage":  # publications page
                 post.meta.priority = 0.8
                 post.meta.frequency = "daily"
+            post_list.append(post)
 
         for collection in site.collections.values():
             # add priority and frequency
@@ -36,7 +40,7 @@ class Sitemap(SiteRendering):
             collection.meta.frequency = "daily"
 
         try:
-            rv = template.render(posts=site.posts, collections=site.collections.values())
+            rv = template.render(posts=post_list, collections=site.collections.values())
         except Exception as e:
             return (SiteFab.ERROR, "sitemap", e)
 
