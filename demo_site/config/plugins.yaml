@@ -18,7 +18,7 @@ CollectionProcessor:
 PostProcessor:
   backup_media:
     backup_dir: backup/
-    enable: false
+    enable: true
   compute_full_post_url:
     enable: true
   jsonld:
@@ -51,7 +51,7 @@ SitePreparsing:
 ##########################\###
 SiteProcessor:
   related_posts:
-    enable: true
+    enable: false
     num_related_posts: 6
 
 ##########################

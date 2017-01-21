@@ -67,18 +67,24 @@ def read_file(filename, cache=True):
         utils.warning("file:%s don't exist" % filename)
         return ""
 
-def write_file(path, filename, content):
+def write_file(path, filename, content, binary=False):
     """ Write a file at a given path. Create directory if necessary
 
     Args:
+    binary (bool): write a binary file? default False.
 
     Returns
     """
     if not os.path.exists(path):
         os.makedirs(path)
     file_path = os.path.join(path, filename)
-    with codecs.open(file_path, "w", "utf-8-sig") as f:
+    if not binary:
+        with codecs.open(file_path, "w", "utf-8-sig") as f:
+            f.write(content)
+    else:
+        f = open(file_path, "wb")
         f.write(content)
+        f.close()
 
 def get_files_list(content_dir, extensions="*.md"):
     """ Return the list of files in a directory and its sub directories that match a set of extensions.
