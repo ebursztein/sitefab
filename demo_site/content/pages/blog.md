@@ -6,8 +6,9 @@ update_date: 20 nov 2016 18:01
 microdata_type: Blog
 lang: en
 
-permanent_url: "blog/"
+permanent_url: "blog"
 
+banner: /static/images/fuller-house-exposing-high-end-poker-cheating-devices.jpg
 authors:
   - Elie, Bursztein
 

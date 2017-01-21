@@ -220,6 +220,11 @@ For example related posts
 
 ### Rendering
 
+#### Site Rendering
+
+** Warning:** When accessing Collections via site object be aware that collections are a dict. To get their content make
+sure to use `site.collections.values()`
+
 #### Extra rendering
 
 After the posts and collections are rendered, these plugins are invoked to generate extra-pages, javascript file etc...

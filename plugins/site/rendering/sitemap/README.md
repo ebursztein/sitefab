@@ -11,7 +11,6 @@ For example in config.yaml
 ```yaml
 template: "rss.xml"
 ```
-
 will use sitemap.xml in /templates to generate sitemap
 
 ## Credit

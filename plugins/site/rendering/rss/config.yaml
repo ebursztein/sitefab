@@ -1,1 +1,10 @@
 template: "rss.xml"
+title: "Elie on Internet Security and Performance"
+subtitle: "Blog about web technologies and games with a focus performance and security."
+banner: /static/images/banner/fuller-house-exposing-high-end-poker-cheating-devices.jpg
+icon: /static/images/favicon/favicon-160x160.png
+logo_svg: /static/svg/test.svg
+accent_color: 03A9F4
+analytics_code: UA-112090-10
+layout_type: card
+url: "rss"

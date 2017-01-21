@@ -2,7 +2,7 @@
 Name = RSS
 Module = rss
 Version = 1
-Dependencies =  compute_full_post_url, compute_full_collection_url
+Dependencies =  compute_full_post_url
 
 [Documentation]
 Description = RSS
