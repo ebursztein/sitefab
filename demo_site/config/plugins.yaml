@@ -16,6 +16,9 @@ CollectionProcessor:
 # Plugins that process each post after they are parsed
 ##########################\###
 PostProcessor:
+  backup_media:
+    backup_dir: backup/
+    enable: false
   compute_full_post_url:
     enable: true
   jsonld:
