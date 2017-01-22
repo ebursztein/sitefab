@@ -16,6 +16,9 @@ CollectionProcessor:
 # Plugins that process each post after they are parsed
 ##########################\###
 PostProcessor:
+  backup_media:
+    backup_dir: backup/
+    enable: true
   compute_full_post_url:
     enable: true
   jsonld:
@@ -48,7 +51,7 @@ SitePreparsing:
 ##########################\###
 SiteProcessor:
   related_posts:
-    enable: true
+    enable: false
     num_related_posts: 6
 
 ##########################

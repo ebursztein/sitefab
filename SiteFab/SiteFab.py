@@ -133,7 +133,7 @@ class SiteFab(object):
         tpool.close()
         tpool.join()
         self.timings.parse_stop = time.time()
-    
+
     def process(self):
         "Processing stage"
 

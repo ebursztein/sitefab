@@ -1,0 +1,11 @@
+[Core]
+Name = Backup Media
+Module = backup_media
+
+[Documentation]
+Filename = README.md
+Description = Backup all the files listed in .md in a backup directory (images,pdf)
+Version = 1
+
+[Configuration]
+Filename = "config.yaml"
