@@ -1,5 +1,4 @@
 ---
-language: en
 template: blog_post
 title: "Full(er) House: Exposing high-end poker cheating devices"
 category: security

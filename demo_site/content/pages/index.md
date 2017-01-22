@@ -1,5 +1,4 @@
 ---
-language: en
 template: index
 title: "Elie's personal website"
 creation_date: 29 jul 2001 00:00

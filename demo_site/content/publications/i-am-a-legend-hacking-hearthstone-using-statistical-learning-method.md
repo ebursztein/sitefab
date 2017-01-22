@@ -30,7 +30,7 @@ conference_location: Santorini, Greece
 conference_publisher: IEEE
 
 files:
-  - paper: https://cdn.elie.net/publications/i-am-a-legend-hacking-hearthstone-using-statistical-learning-methods.pdf
+    paper: https://cdn.elie.net/publications/i-am-a-legend-hacking-hearthstone-using-statistical-learning-methods.pdf
 
 abstract: "This paper demonstrate how to apply machine learning to Hearthstone to predict opponent future plays and game outcome."
 
