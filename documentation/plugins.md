@@ -35,7 +35,7 @@ plugins/
 
 
 
-## Plugins structure
+## Plugin structure
 
 Plugins use the [YAPSY framework](http://yapsy.sourceforge.net/) and require four files:
 
@@ -239,6 +239,24 @@ class ExtraRendering():
             :param FabSite site: the site object 
         """
 ```
+
+## Useful functions
+
+### Modifying the HTML rendering of a given HTML element
+
+To modify how a given element will be rendered by the parser a plugin can override its jinja template as follow:
+
+```python
+site.inject_parser_html_template("plugin_name", "html_elt", "template")
+```
+
+Where:
+
+- **plugin name** is the name of the plugin.
+- **html_elt** is the HTML element to override. For example `img`
+- **template** is the new HTML template that will be used for rendering the targeted HTML element
+
+FIXME: add a concrete example
 
 ## Logging
 Fixme

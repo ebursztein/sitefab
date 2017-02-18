@@ -320,7 +320,7 @@ class Plugins():
             
             dependencie_map[module_name] = dependencies
         
-        print dependencie_map
+        #print dependencie_map
 
         # Topological sorting
         try:
@@ -328,8 +328,8 @@ class Plugins():
         except Exception as e:
             utils.error("Circular dependencies between plugins. Can't execute plugins:%s" % e)
         
-        print plugins_to_process
-        print module_name_to_plugin
+        #print plugins_to_process
+        #print module_name_to_plugin
 
         desc = colored("|-Execution", "magenta")
         results = []

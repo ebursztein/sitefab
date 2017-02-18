@@ -18,7 +18,7 @@ CollectionProcessor:
 PostProcessor:
   backup_media:
     backup_dir: backup/
-    enable: true
+    enable: false
   compute_full_post_url:
     enable: true
   jsonld:
@@ -44,6 +44,13 @@ SitePreparsing:
     - assets/css > generated/static/css
     - assets/images > generated/static/images
     - assets/svg > generated/static/svg
+  responsive_images:
+    enable: true
+    targets:
+    - assets/js > generated/static/js
+    - assets/css > generated/static/css
+    - assets/images > generated/static/images
+    - assets/svg > generated/static/svg
 
 ##########################
 # SiteProcessor
@@ -60,10 +67,10 @@ SiteProcessor:
 ##########################\###
 SiteRendering:
   rss:
-    enable: true
     accent_color: 03A9F4
     analytics_code: UA-112090-10
     banner: /static/images/banner/fuller-house-exposing-high-end-poker-cheating-devices.jpg
+    enable: true
     icon: /static/images/favicon/favicon-160x160.png
     layout_type: card
     logo_svg: /static/svg/

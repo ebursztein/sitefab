@@ -37,8 +37,7 @@ class Parser():
         Return:
             None
 
-        note: moving to an object was needed for perfomance reasons. You don't want to 
-        reinitialize all the templating system for every post.
+        note: one parser is instanciated by thread. potentially batching more than one post per thread might help with performance.
 
         """
 
@@ -54,8 +53,11 @@ class Parser():
             #print "%s -> %s" % (template_name, template)
             self.templates[template_name] = template
 
-        # templates are not compiled yet, they will be when parsing will be called the first time to
-        # allows pluging to modify them before hand if needed.
+        # Replacing standard template with the one injected by plugins
+        for elt, template in config.injected_html_templates.iteritems():
+            self.templates[elt] = template
+            
+        # templates are not compiled yet, they will be when parsing will be called the first time 
         self.jinja2 = None 
 
         # markdown parser
@@ -84,6 +86,13 @@ class Parser():
 
         result = linter.lint(post, self.linter_config, online_checks, check_content)
         return result
+
+    def list_templates(self):
+        "Return the list of available templates"
+        return self.templates.keys()
+
+    
+
 
     def has_errors(self, post, config_file):
         """Validate that post has basic no errors.
