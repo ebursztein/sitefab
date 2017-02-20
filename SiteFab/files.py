@@ -4,7 +4,6 @@ import codecs
 import os
 import shutil
 
-#from utils.objdict import objdict
 import utils as utils
 
 def get_code_path():
@@ -114,5 +113,7 @@ def get_files_list(content_dir, extensions="*.md"):
 
 def clean_dir(directory):
     if os.path.exists(directory):
-        shutil.rmtree(directory)
+        shutil.rmtree(directory, ignore_errors=True)
+    if os.path.exists(directory):
+        utils.error("%s not deleted." % directory)
     os.mkdir(directory) 

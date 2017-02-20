@@ -36,7 +36,6 @@ def generate(config):
     section("Init")
     # initializing site
     site = SiteFab(config)
-
     cprint("Directories", 'magenta')
     dirs = []
     dirs.append("Ouput:\t%s" % site.get_output_dir())
@@ -44,6 +43,7 @@ def generate(config):
     dirs.append("Content:\t%s" % site.get_content_dir())
     dirs.append("Template:\t%s" % site.get_template_dir())
     dirs.append("Plugins:\t%s" % site.get_plugins_dir())
+    dirs.append("Cache:\t%s" % site.get_cache_dir())
     print_color_list(dirs)
     print "\n"
     cprint("Active plugins", 'magenta')

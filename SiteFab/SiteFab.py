@@ -410,6 +410,10 @@ class SiteFab(object):
         "return the absolute path of the template dir"
         return os.path.join(files.get_site_path(), self.config.dir.logs)
     
+    def get_cache_dir(self):
+        "return the absolute path of the cache dir"
+        return os.path.join(files.get_site_path(), self.config.dir.cache)
+
     def get_plugins_dir(self):
         "return the absolute path for the plugins dir"
         return os.path.join(files.get_code_path() + "/plugins/")
