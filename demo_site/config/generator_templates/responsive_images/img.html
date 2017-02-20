@@ -1,0 +1,15 @@
+{% if src in plugin_data.responsive_images %}
+    <strong>FOUND IT</strong>
+    <picture>
+        <source srcset="{{ plugin_data.responsive_images[src].srcset }}"> 
+        <img src="{{ src }}">
+    </picture>
+    <!-- img src="{{ src }}" sizes="100vw" srcset="{{ plugin_data.responsive_images[src].srcset }}" -->
+    <!--
+    disable_sizes="{{plugin_data.responsive_images[src].sizes}} 100vw"
+            disable_media="{{plugin_data.responsive_images[src].media}}"
+    -->
+{% else %}
+    <strong> OH NO! Can't find it</strong>
+    <img src="{{ src }}" alt="{{ alt }}">
+{% endif %}

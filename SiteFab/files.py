@@ -101,6 +101,10 @@ def get_files_list(content_dir, extensions="*.md"):
     if type(extensions) == str:
         extensions = [extensions]
 
+    for ext in extensions:
+        if "*." not in ext:
+            utils.warning("extension: %s will not match as it is missing .* somewhere" % ext)
+
     matches = []
     for root, dirnames, filenames in os.walk(content_dir):
         for extension in extensions:

@@ -45,12 +45,23 @@ SitePreparsing:
     - assets/images > generated/static/images
     - assets/svg > generated/static/svg
   responsive_images:
+    additional_formats:
+    - .webp
+    cache_min_image_width: 750
+    cache_name: responsive_images
     enable: true
-    targets:
-    - assets/js > generated/static/js
-    - assets/css > generated/static/css
-    - assets/images > generated/static/images
-    - assets/svg > generated/static/svg
+    input_dir: generated/static/images/
+    output_dir: generated/static/images/resized/
+    template_file: config/generator_templates/responsive_images/img.html
+    thumbnail_size:
+    - 300
+    - 400
+    - 500
+    - 600
+    - 700
+    - 800
+    - 900
+    - 1000
 
 ##########################
 # SiteProcessor

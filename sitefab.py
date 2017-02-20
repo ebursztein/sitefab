@@ -51,12 +51,11 @@ def generate(config):
 
     section("Pre processing")
     site.preprocessing()
-
+    # parsing content into post objects
     section("Parsing")
-    # loading up the posts
     site.parse()
 
-    #FIXME all the data processing -- Image, Related blog post etc
+    # processing posts and collections to add extra info
     section("Processing")
     site.process()
 

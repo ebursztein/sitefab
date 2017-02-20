@@ -1,0 +1,10 @@
+[Core]
+Name = Responsive Images
+Module = responsive_images
+Dependencies =  copy_dir
+[Documentation]
+Description = Create responsive images by using the picture element and creating multiple resolutions images
+Filename = README.md
+
+[Configuration]
+Filename = "config.yaml"

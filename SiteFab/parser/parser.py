@@ -127,7 +127,7 @@ class Parser():
         parsed_post.meta, parsed_post.md = frontmatter.parse(md_file)
 
         # parsing markdown and extractring info
-        self.renderer.init(self.jinja2, self.code_formatter) # reset all the needed counters
+        self.renderer.init(self.jinja2, self.code_formatter, self.config.plugin_data)
 
         parsed_post.html = self.md_parser.parse(parsed_post.md)
         parsed_post.meta.statistics = self.renderer.get_stats()

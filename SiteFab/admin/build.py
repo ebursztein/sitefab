@@ -1,8 +1,10 @@
 import os
+#import yaml
 import yaml
 from tqdm import tqdm
 from termcolor import colored, cprint
 from collections import defaultdict
+import json
 
 from SiteFab import files
 
@@ -75,7 +77,8 @@ def upgrade_plugin_configuration_file(site):
             configuration[cat][module_name] = new_config
 
     # Getting the YAML formated dump
-    dump = yaml.dump(configuration, default_flow_style = False, allow_unicode = True, encoding = None)
+    configuration = json.loads(json.dumps(configuration)) #CRAZY but fix most of the inconsistency of YAML..
+    dump = yaml.safe_dump(configuration, default_flow_style = False, allow_unicode = True, encoding = None)
 
     # Adding plugins description as comments
     # for module_name, description in descriptions.iteritems():

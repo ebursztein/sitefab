@@ -62,6 +62,7 @@ class SiteFab(object):
         self.config.parser.templates_path =  os.path.join(files.get_site_path(),  self.config.parser.template_dir)
         self.config.parser.injected_html_templates = {} # Used to allows plugins to dynamically inject html templates.
         self.config.parser.injected_html_templates_owner = {} # store who was responsible for the injection
+        self.config.parser.plugin_data = {} # store plugin data that need to be passed to the parser. E.g resized images
 
         # plugins
         plugins_config_filename = os.path.join(files.get_site_path(), self.config.plugins_configuration_file)
@@ -110,7 +111,7 @@ class SiteFab(object):
         # thread pool creation
         tpool = ThreadPool(processes=self.config.threads)
         parser_config = utils.objdict_to_dict(self.config.parser)
-        progress_bar = pbar = tqdm(total=len(filenames), unit=' files', desc="Files", leave=True)
+        progress_bar = tqdm(total=len(filenames), unit=' files', desc="Files", leave=True)
         # chunksize = (len(filenames) / (self.config.threads * 2)) < using a different chunksize don't seems to make a huge difference
         for res in tpool.imap_unordered(parse_post, zip(filenames, repeat(parser_config)), chunksize=1):
             res = json.loads(res)
