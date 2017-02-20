@@ -2,12 +2,10 @@
 template: blog_post
 title: "Full(er) House: Exposing high-end poker cheating devices"
 category: security
+
 microdata_type: BlogPosting
 lang: en
-hidden: true
-
-banner: static/images/banner/fuller-house-exposing-high-end-poker-cheating-devices.jpg
-
+hidden: false
 
 tags: 
   - machine learning
@@ -24,6 +22,8 @@ creation_date: 21 oct 2016 00:00
 update_date: 20 nov 2016 02:00
 
 permanent_url: blog/security/fuller-house-exposing-high-end-poker-cheating-devices
+
+banner: /static/images/banner/fuller-house-exposing-high-end-poker-cheating-devices.jpg
 
 authors:
   - Elie, Bursztein
@@ -51,7 +51,7 @@ Before delving into the inner workings of the device, here is a short demo of it
 
 ## Acquiring the device
 
-![Poker cheating reseller](https://www.elie.net/image/public/1476981471/poker-cheating-device-reselller.jpg)
+![Poker cheating reseller](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/poker-cheating-device-reselller.jpg)
 
 Finding a few more posts on English forums convinced me that those devices were real and gave me clue of what I was looking for. I was able to find a few potential online sellers, including the one depicted in the screenshot above.
 
@@ -62,13 +62,13 @@ Inspecting the few screenshots of the device available on resellers websites, al
 After a few rounds of negotiation, I was able to acquire the device, some accessories and a few marked decks for roughly $1300 thanks to the help of my Chinese contacts. While still expensive, going straight to the device maker was still way cheaper than the online re-seller and guaranteed that I got the real deal. That is, after I took a leap of faith and sent them the money via Western Union :)
 
 ## Device overview
-![Poker cheating device side view](https://www.elie.net/image/public/1476981620/poker-device.jpg)
+![Poker cheating device side view](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/poker-device.jpg)
 
 Upon ordering the poker cheating device I kinda expected, based on the screenshots I had seen early on, to get a dedicated piece of hardware that kinda looked like a fake phone. However, to my surprise, the device, showcased in the picture above, far exceeded my expectations by being a fully functional phone with extra hardware dedicated to cheating. Also to my surprise, the device not only allows to cheat at Poker but to cheat at almost any kind of card games you can think of.
 
 Using a modified phone as a cheating device offers the key advantage that it is impossible to tell that it is a cheating device unless you know what to look for. It is also a decent smartphone that can make phone calls and run all the apps you love.
 
-![Real phone](https://www.elie.net/image/public/1476981729/real-phone.jpg)
+![Real phone](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/real-phone.jpg)
 
 In term of exterior appearance, the device appears to be a knock-off of a popular phone, which is depicted in the photo above. Like the Core, the device has 8GB of storage and 1GB of RAM. Overall, the quality of the device clearly indicates that high-end poker cheating devices comprise a very lucrative and organized black market.
 
@@ -80,19 +80,19 @@ The hardware used for cheating is controlled by a custom Android app through a c
 
 Note that taking a screenshot of the cheating app turned out to be more difficult than expected because the ROM is hardened against analysis. In particular, they removed the ADB server (Android debugging) and the ability to take a screenshot when the phone is operating in cheating mode. However, with a bit of work, I was able to re-establish the functionalities needed to take the screenshots of the app used in this section.
 
-![Phone app menu](https://www.elie.net/image/public/1476982272/android-menu.jpg)
+![Phone app menu](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/android-menu.jpg)
 
 As visible in the screenshot above, the cheating interface appears in the app menu as a normal Android app that is simply named “game”.
 
-![App login](https://www.elie.net/image/public/1476982293/game-app-login.jpg)
+![App login](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/game-app-login.jpg)
 
 Upon launching the app, you are greeted by a password prompt. As a security measure against the device being lost in transit, this password is communicated to the buyer only when they have confirmed that they have received the device. Ironically, there is a hardcoded backdoor password in the app, which makes this security measure pointless if you know the backdoor password.
 
-![App main menu](https://www.elie.net/image/public/1476982311/game-app-main-screen.jpg)
+![App main menu](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/game-app-main-screen.jpg)
 
 The main menu has six main icons as visible in the screenshot. The most important ones are: the game hall, which allows you to activate or buy more games; the settings menu, which allows you to configure the device; and the purchased screen, which activates the cheating device for a given game. Let’s look at these three in turn.
 
-![App game selection](https://www.elie.net/image/public/1476982347/game-hall.jpg)
+![App game selection](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/game-hall.jpg)
 
 The game hall menu lists all the games supported by the device with a basic description of each. In total, there are hundreds of supported games, which supports the hypothesis that high-end cheating devices are used not only for poker but any form of gambling that involves cards.
 
@@ -100,13 +100,13 @@ The game hall menu lists all the games supported by the device with a basic desc
 
 The settings screen allows you to configure, among other things, connections to accessories (covered in the next post) and how the prediction of the winner is reported. For example, the device can continuously tell you who is winning or tell you only once.
 
-![App purchase screen](https://www.elie.net/image/public/1476982364/purchased.jpg)
+![App purchase screen](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/purchased.jpg)
 
 The purchased screen, visible above, allows you to select which game the device will analyze. Note at the top of the screen the typo, which shows that the interface was rushed out. 
 
 Originally based on my investigation, I thought these devices were mostly used in Asia, which could explain the poor translation. However, following the Defcon talk, anonymous sources told me that these devices are indeed actively used in the US, including Vegas, to rip people off.
 
-![Cheating screen](https://www.elie.net/image/public/1476984888/game-capture.jpg)
+![Cheating screen](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/game-capture.jpg)
 
 Upon clicking on a game, you end up in the main cheating screen, showcased in the screenshot above. The top half of the screen displays a view of the deck as seen by the secret camera embedded in the device. The image is rotated by -90 degree with the top of the deck being on the left and the bottom on the right. This image is mainly used to adjust the device relative to the deck to ensure the cards are read accurately. With a little practice, it is actually fairly easy to position the device without the help of the camera view.
 
@@ -117,42 +117,42 @@ Before discussing how the device is able to read cards remotely, it is worth not
 
 ## How the device works
 
-![How poker cheating devices work](https://www.elie.net/image/public/1476982109/how-poker-cheating-devices-work.jpg)
+![How poker cheating devices work](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/how-poker-cheating-devices-work.jpg)
 
 As depicted in the diagram above, to read cards remotely, the device has a hidden camera embedded on one side. The infrared (IR) filter has been removed so it can perceive IR light. Next to it, there are three concealed IR LEDs that illuminate the deck to make the markings on the cards visible to the camera. 
 
-![Cheating device under normal light condition](https://www.elie.net/image/public/1476982443/ir-led-outside-light.jpg)
+![Cheating device under normal light condition](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/ir-led-outside-light.jpg)
 
 A neat trick is that the phone housing is made of IR passband plastic: while the side of the phone appears to be solid and opaque, in reality it allows IR light to pass through. 
 
-![Cheating device under low light conditions](https://www.elie.net/image/public/1476982536/ir-led-outside-dark.jpg)
+![Cheating device under low light conditions](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/ir-led-outside-dark.jpg)
 
 The best way to illustrate this behavior, as visible in the photo above, is to take a picture of the device while it is powered on in the dark with a camera with no IR filter. Doing so, as you can see, the three LEDs are clearly visible. The cool thing is that phone cameras are somewhat sensitive to IR light, so pointing your phone camera at a poker cheating device will show the huge blast of light.
 
 ## Card markings
-![How the cheating device see the cards](https://www.elie.net/image/public/1476982597/marked-vs-regular.jpg)
+![How the cheating device see the cards](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/marked-vs-regular.jpg)
 
 What makes the whole thing work is the use of a special deck in which the four edges of each card are marked with IR-absorbing ink. As a result, when this marked deck is illuminated by the IR LEDs, the spots of ink absorb the IR, creating a sequence of black spots, as visible in the photo above. This can be compared with a regular deck, which shows no markings when illuminated with IR, as visible in the photo as well. 
 
-![Cards marking](https://www.elie.net/image/public/1476982926/card_marking.png)
+![Cards marking](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/card_marking.png)
 
 The sequence of black spots created by the IR illumination, illustrated in the photo above, is read remotely by the cheating device to infer a card’s suit and value. You can think of those markings as invisible barcodes. 
 
-![Cards marking annotation](https://www.elie.net/image/public/1476983107/card-encoding-2.jpg)
+![Cards marking annotation](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/card-encoding-2.jpg)
 
 Each card has a unique code, as visible in the photo above, which shows the markings for the six of hearts, six of clubs, six of diamonds, five of diamonds and five of hearts. These markings are repeated on each side of a card. Originally, we thought there was some sort of order but it turns out that the marking only encodes a known value for each card. We suspect that the values were chosen to maximize the accuracy of the reader, potentially something like a [Gray code](https://en.wikipedia.org/wiki/Gray_code).
 
-![Marked cards](https://www.elie.net/image/public/1476983187/deck.jpg)
+![Marked cards](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/deck.jpg)
 
 An interesting question is how they get the markings onto the cards. At first, I would have ventured that they would create a deck from the ground up, but after closely inspecting a few decks, it is clear that they use a real Bicycle deck (or any brand you want) and use a dedicated machine to mark them. 
 
 As observed by an anonymous source, this marking process leaves a very subtle yet visible sign: the corners of the cards are slightly cut. We believe it is to help with the marking process.
 
-![Marked decks are sealed](https://www.elie.net/image/public/1476983239/deck-box.jpg)
+![Marked decks are sealed](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/deck-box.jpg)
 
 When you order a pack of marked cards, it is shipped with its seal and plastic wrap “intact,” as visible in the photo above. This makes the victims of the scam less suspicious, as the pack can be opened in front of their eyes. 
 
-![Marked deck box bottom](https://www.elie.net/image/public/1476983631/marked-deck-box-cutted-open.jpg)
+![Marked deck box bottom](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/marked-deck-box-cutted-open.jpg)
 
 However, the way the seal is preserved is less than ideal: instead of tampering with the seal and replacing it (an easy feat!) they opted to cut the bottom of the box as highlighted in the photo above. This can be easily spotted by looking at the card box, whereas tampering with the seal would have been invisible.
 
@@ -176,7 +176,7 @@ Here is an exposed view demo of the poker reader in action, which shows what the
 
 Now that we know how the device works, let’s see how it is implemented in hardware by tearing the device down.
 
-![Device teardown](https://www.elie.net/image/public/1476984049/device-inside.jpg)
+![Device teardown](/static/images/images/fuller-house-exposing-high-end-poker-cheating-devices/device-inside.jpg)
 
 Removing the enclosure reveals, as visible in the photo above, that the secret camera is connected to a dedicated chip. Removing the black tape on the top left corner reveals the IR LEDs, as visible in the screenshot below.
 
