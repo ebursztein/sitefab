@@ -13,11 +13,32 @@ from SiteFab.SiteFab import SiteFab
 from SiteFab import files
 import time
 
+def get_extension_alternative_naming(extension):
+    "Return extensions naming for PIL and Mime/type"
+    web_extension = None
+    pil_extension_codename  = None
+
+    if extension.lower() == ".jpg" or extension.lower() == ".jpeg":
+        pil_extension_codename = "JPEG"
+        web_extension = "image/jpeg"
+    
+    elif extension.lower() == ".png":
+        pil_extension_codename = "PNG"
+        web_extension = "image/png"
+    
+    elif extension.lower() == ".gif":
+        pil_extension_codename = "GIF"
+        web_extension = "image/gif"
+
+    elif extension.lower() == ".webp":
+        pil_extension_codename = "WEBP"
+        web_extension = "image/webp"
+    return [pil_extension_codename, web_extension]
 
 def generate_thumbnails((image_full_path, params)):
     "generate thumbnails for a given image"
     total_time = time.time()
-    resize_list = [] # record all the generated images
+    resize_list = {} # record all the generated images
     num_errors = 0
     MIN_CACHED_SIZE = params['min_image_width']  #minimal width where it make sense to cache.
     
@@ -45,7 +66,9 @@ def generate_thumbnails((image_full_path, params)):
 
     # add default images
     s = "%s %sw" % (web_path, width)
-    resize_list.append(s)
+    pil_extension_codename, web_extension = get_extension_alternative_naming(img_extension)
+    resize_list[web_extension] = []
+    resize_list[web_extension].append(s)
    
 
     cached_value = {}
@@ -86,20 +109,15 @@ def generate_thumbnails((image_full_path, params)):
         requested_height = int(height * ratio)  # preserve the ratio
     
         for extension in requested_extensions:
-            pil_extension_codename = None
-            if extension.lower() == ".jpg" or extension.lower() == ".jpeg":
-                pil_extension_codename = "JPEG"
-            elif extension.lower() == ".png":
-                pil_extension_codename = "PNG"
-            elif extension.lower() == ".gif":
-                pil_extension_codename = "GIF"
-            elif extension.lower() == ".webp":
-                pil_extension_codename = "WEBP"
-            else:
+            pil_extension_codename, web_extension = get_extension_alternative_naming(extension)
+            if not pil_extension_codename:
                 # unknown extension marking the image as errors and skipping
-                    log += "[ERROR] %s > unknown extension %s. Can't generate image<br>" % (image_full_path, extension)
-                    num_errors += 1
-                    continue
+                log += "[ERROR] %s > unknown extension %s. Can't generate image<br>" % (image_full_path, extension)
+                num_errors += 1
+                continue
+            
+            if web_extension not in resize_list:
+                resize_list[web_extension] = []
         
             # filename for the resized image
             output_filename = "%s.%s%s" % (img_name, requested_width, extension)
@@ -131,7 +149,7 @@ def generate_thumbnails((image_full_path, params)):
             log += " write time:%s<br>" % (round(time.time() - start, 3))
 
             s = "%s %sw" % (output_web_path, requested_width)
-            resize_list.append(s)
+            resize_list[web_extension].append(s)
             
     if width > MIN_CACHED_SIZE:
         start = time.time()
@@ -212,7 +230,7 @@ class ResponsiveImages(SitePreparsing):
         #chunksize = (len(images) / (self.config.threads * 2)) < don't seems to make a huge difference
         for result in tpool.imap_unordered(generate_thumbnails, bundles, chunksize=1):           
         #for bundle in bundles:
-         #   result = generate_thumbnails(bundle)
+            #result = generate_thumbnails(bundle)
             progress_bar.update(num_resize)
             web_path = result[0]
             resize_list = result[1]
@@ -223,7 +241,11 @@ class ResponsiveImages(SitePreparsing):
                 errors = True
 
             #store all the resized images info
-            resize_images[web_path] = {"srcset":", ".join(resize_list),
+            srcsets = {}
+            for webformat, srcset in resize_list.iteritems():
+                srcsets[webformat] = ", ".join(srcset)
+
+            resize_images[web_path] = {"srcsets": srcsets,
                                        "media": '(max_width: %spx)' % width,
                                        "sizes": '(max_width: %spx)' % width
             }
