@@ -34,13 +34,13 @@ class Sitemap(SiteRendering):
                 post.meta.frequency = "daily"
             post_list.append(post)
 
-        for collection in site.collections.values():
+        for collection in site.collections.get_as_list():
             # add priority and frequency
             collection.meta.priority = 0.7
             collection.meta.frequency = "daily"
 
         try:
-            rv = template.render(posts=post_list, collections=site.collections.values())
+            rv = template.render(posts=post_list, collections=site.collections.get_as_list()):
         except Exception as e:
             return (SiteFab.ERROR, "sitemap", e)
 

@@ -15,6 +15,7 @@ import json
 from parser.parser import Parser, parse_post
 from Logger import Logger
 from Plugins import Plugins
+from PostCollections import PostCollections
 
 import utils
 from utils import warning, error
@@ -100,8 +101,14 @@ class SiteFab(object):
         self.timings.parse_start = time.time()
         filenames = self.filenames.posts
         self.posts = []
-        self.collections = defaultdict(list)
-        self.posts_by_templates = defaultdict(list)
+
+        #collections creation
+        tlp = self.jinja2.get_template(self.config.collections.template)
+        path = os.path.join(self.get_output_dir(), self.config.collections.output_dir)
+        min_posts = self.config.collections.min_posts
+        self.collections = PostCollections(template=tlp, path=path, min_posts=min_posts)
+    
+        self.posts_by_templates = PostCollections()
 
         # Display injected template so the user understand who is responsible for what
         self.list_injected_html_templates()
@@ -116,13 +123,13 @@ class SiteFab(object):
         for res in tpool.imap_unordered(parse_post, zip(filenames, repeat(parser_config)), chunksize=1):
             res = json.loads(res)
             post = utils.dict_to_objdict(res)
-            # insert in post list
-            self.posts.append(post)
-            # insert in template
-            if post.meta.template not in self.posts_by_templates:
-                self.posts_by_templates[post.meta.template] = self.create_collection(post.meta.template)
-            self.posts_by_templates[post.meta.template].posts.append(post)
             
+            ## inset in all post list
+            self.posts.append(post)
+            
+            # insert in template list
+            self.posts_by_templates.add(post.meta.template, post)
+
             ## insert in collections
             cols = []
             if post.meta.category:
@@ -130,10 +137,11 @@ class SiteFab(object):
             if post.meta.tags:
                 for tag in post.meta.tags:
                     cols.append(tag)
-            for col in cols:
-                if col not in self.collections:
-                    self.collections[col] = self.create_collection(col)
-                self.collections[col].posts.append(post)
+
+            for collection_name in cols:
+                self.collections.add(collection_name, post)
+
+            
             progress_bar.update()
         
         tpool.close()
@@ -150,7 +158,7 @@ class SiteFab(object):
         
         # collection processing
         print "\nCollections plugins"
-        self.execute_plugins(self.collections.values(), "CollectionProcessor", " collections")
+        self.execute_plugins(self.collections.get_as_list(), "CollectionProcessor", " collections")
 
         # site wide processing
         print "\nSite wide plugins"
@@ -165,7 +173,7 @@ class SiteFab(object):
         self.render_posts()
         
         print "\nRendering collections"
-        self.render_collections()
+        self.collections.render()
         
         print "\nAdditional Rendering"
         self.execute_plugins([1], "SiteRendering", " pages")
@@ -197,7 +205,7 @@ class SiteFab(object):
 
         cprint("\nContent", 'magenta')
         cprint("|-Num Posts: %s" % len(self.posts), "cyan")
-        cprint("|-Num Collections: %s" % len(self.collections), "cyan")
+        cprint("|-Num Collections: %s" % self.collections.get_num_collections(), "cyan")
 
 
         cprint("\nPlugins", 'magenta')
@@ -259,7 +267,7 @@ class SiteFab(object):
             template_name = "%s.html" % post.meta.template
             template = self.jinja2.get_template(template_name)
             html = post.html.decode("utf-8", 'ignore')
-            rv = template.render(content=html, meta=post.meta, collections=self.collections, posts_by_templates=self.posts_by_templates)
+            rv = template.render(content=html, meta=post.meta, collections=self.collections.get_as_dict(), posts_by_templates=self.posts_by_templates.get_as_dict())
             path = "%s%s/" % (self.get_output_dir(), post.meta.permanent_url)
             path = path.replace('//', '/')
             files.write_file(path, 'index.html', rv)
@@ -288,46 +296,7 @@ class SiteFab(object):
         
         posts.sort(key=k, reverse=reverse)
         return posts
-
-    ### Collection functions ###
-
-    def create_collection(self, name):
-        "Create a post structure"
-        
-        collection = utils.dict_to_objdict()
-        collection.posts = []
-
-        collection.meta = utils.dict_to_objdict()
-        collection.meta.name = name
-        collection.meta.num_posts = 0
-        
-        return collection
-        
-    def render_collections(self):
-        "Render collections pages."
-        
-        # Getting the data ready
-        cols = self.collections.iterkeys()
-        template = self.jinja2.get_template(self.config.collections.template) # load it once.
-        path = "%s/%s" % (self.get_output_dir(), self.config.collections.output_dir)
-        path = path.replace('//', '/')
-        #print path
-        #print cols
-        min_posts = self.config.collections.min_posts
-        rendered = 0
-
-        for col in tqdm(cols, unit=' collections', miniters=1, desc="Collections"):
-            if len(self.collections[col].posts) >= min_posts:
-                collection = self.collections[col]
-                meta = {
-                    "collection_name": col,
-                    "num_posts": len(collection)
-                }
-                filename = "%s.html" % (col)
-                rv = template.render(collection=collection, meta=meta)
-                files.write_file(path, filename, rv)
-
-
+   
     ### Templates functions ###
 
     def get_num_templates(self):

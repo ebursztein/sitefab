@@ -2,7 +2,7 @@ import os
 import json
 from PIL import Image
 from tqdm import tqdm
-from multiprocessing import Pool as ThreadPool 
+from multiprocessing import Pool as ThreadPool
 from itertools import repeat
 from diskcache import Cache as dc
 import hashlib

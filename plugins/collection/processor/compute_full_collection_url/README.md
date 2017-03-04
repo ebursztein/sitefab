@@ -13,7 +13,7 @@ Add the following snippet to your template to get the full url.
 ```
 
 ## Changelog
-
+- 03/02/17 ensured the collections are in lower case.
 - 12/27/16 initial version
 
 ## Credits

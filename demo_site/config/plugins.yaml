@@ -49,7 +49,7 @@ SitePreparsing:
     - .webp
     cache_min_image_width: 750
     cache_name: responsive_images
-    enable: true
+    enable: false
     input_dir: generated/static/images/
     output_dir: generated/static/images/resized/
     template_file: config/generator_templates/responsive_images/img.html

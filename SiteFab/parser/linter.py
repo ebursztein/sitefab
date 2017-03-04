@@ -8,7 +8,7 @@ from SiteFab import files
 
 VALID_URL_CHARS = '[^a-z0-9_\-:/\.]'
 VALID_PERMA_CHARS = '[^a-z0-9-\/\.]'
-VALID_TEXT_CHARS = '[^a-zA-Z0-9,;\. ]'
+VALID_TEXT_CHARS = '[^a-zA-Z0-9_-:,;\. ]'
 
 def _url_exist(url):
 
