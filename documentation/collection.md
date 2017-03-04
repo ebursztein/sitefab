@@ -7,7 +7,7 @@ some meta data.
 
 The following type of collections are available:
 **collections**: regroup post by tags and category as specified in post frontmatter
-**posts_by_template_name**: regoupr posts that share the same rendering template (e.g blog_post)
+**posts_by_templates**: regroup posts that share the same rendering template (e.g blog_post)
 **posts_by_microdata**: regroup posts that share the same microformat (e.g BlogPosting)
 
 ## collection structure

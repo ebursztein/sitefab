@@ -109,6 +109,7 @@ class SiteFab(object):
         self.collections = PostCollections(template=tlp, path=path, min_posts=min_posts)
     
         self.posts_by_templates = PostCollections()
+        self.post_by_microdata = PostCollections()
 
         # Display injected template so the user understand who is responsible for what
         self.list_injected_html_templates()
@@ -129,6 +130,10 @@ class SiteFab(object):
             
             # insert in template list
             self.posts_by_templates.add(post.meta.template, post)
+
+            # insert in microformat list
+            if post.meta.microdata_type:
+                self.post_by_microdata.add(post.meta.microdata_type, post)
 
             ## insert in collections
             cols = []
@@ -267,7 +272,7 @@ class SiteFab(object):
             template_name = "%s.html" % post.meta.template
             template = self.jinja2.get_template(template_name)
             html = post.html.decode("utf-8", 'ignore')
-            rv = template.render(content=html, meta=post.meta, collections=self.collections.get_as_dict(), posts_by_templates=self.posts_by_templates.get_as_dict())
+            rv = template.render(content=html, meta=post.meta, collections=self.collections.get_as_dict(), posts_by_templates=self.posts_by_templates.get_as_dict(), post_by_microdata=self.post_by_microdata.get_as_dict())
             path = "%s%s/" % (self.get_output_dir(), post.meta.permanent_url)
             path = path.replace('//', '/')
             files.write_file(path, 'index.html', rv)
