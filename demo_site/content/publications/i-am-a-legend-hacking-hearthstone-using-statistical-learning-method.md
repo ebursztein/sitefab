@@ -23,11 +23,14 @@ seo_keywords:
 
 authors:
   - Elie, Bursztein
+  - Elie, Bursztein
+  - Elie, Bursztein
 
 conference_name: Computational Intelligence and Games conference
 conference_short_name: CIG
 conference_location: Santorini, Greece
 conference_publisher: IEEE
+conference_date: 18 oct 2016 13:30
 
 files:
     paper: https://cdn.elie.net/publications/i-am-a-legend-hacking-hearthstone-using-statistical-learning-methods.pdf

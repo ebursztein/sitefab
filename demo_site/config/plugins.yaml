@@ -19,6 +19,8 @@ PostProcessor:
   backup_media:
     backup_dir: backup/
     enable: false
+  bibtex:
+    enable: true
   compute_full_post_url:
     enable: true
   jsonld:

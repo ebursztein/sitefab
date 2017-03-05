@@ -40,7 +40,7 @@ class Sitemap(SiteRendering):
             collection.meta.frequency = "daily"
 
         try:
-            rv = template.render(posts=post_list, collections=site.collections.get_as_list()):
+            rv = template.render(posts=post_list, collections=site.collections.get_as_list())
         except Exception as e:
             return (SiteFab.ERROR, "sitemap", e)
 

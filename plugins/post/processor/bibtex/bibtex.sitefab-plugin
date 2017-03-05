@@ -1,0 +1,9 @@
+[Core]
+Name = Bibtex
+Module = bibtex
+
+[Documentation]
+Filename = README.md
+Description = Compute Bibtex info for each publication based on meta
+Version = 1
+
