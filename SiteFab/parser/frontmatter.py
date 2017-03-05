@@ -68,7 +68,7 @@ def parse(post):
                     metas[field_name] = field_value
 
                     # adding timestamp
-                    if field_name == "creation_date" or field_name == "update_date":
+                    if field_name == "creation_date" or field_name == "update_date" or field_name == "conference_date":
                         ts = parse_date_to_ts(field_value)
                         if ts:
                             fts = field_name + "_ts"
