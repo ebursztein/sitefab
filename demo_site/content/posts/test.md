@@ -1,20 +1,20 @@
 
 ---
 template: blog_post
-title: "18.4% of us internet users got at least one of their account compromised"
-category: security
+title: "Test"
+category: hearthstone
 
 lang: en
 microdata_type: BlogPosting
 hidden: false
 
-permanent_url: blog/security/18-4-of-us-internet-users-got-at-least-one-of-their-account-compromised
+permanent_url: blog/hearthstone/test
 banner: /static/images/banner/18-4-of-us-internet-users-got-at-least-one-of-their-account-compromised.jpg
-creation_date: 14 Jan 2013 04:24
-update_date: 14 Jan 2013 04:24
+creation_date: 14 Jan 2020 04:24
+update_date: 14 Jan 2020 04:24
 
 tags: 
- - security
+ - hearthstone
 
 seo_keywords:
 
