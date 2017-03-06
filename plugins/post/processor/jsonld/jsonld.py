@@ -36,7 +36,7 @@ class Jsonld(PostProcessor):
 
             if post.meta.microdata_type == "ScholarlyArticle" or post.meta.microdata_type == "BlogPosting":
                 correct_category = post.meta.category.replace(" ", "_")
-                keywords = []
+                keywords = list()
                 keywords.append(post.meta.category)
                 jsonld_data['mainEntityOfPage'] = {
                     "@type": "WebPage",
@@ -102,8 +102,9 @@ class Jsonld(PostProcessor):
                     jsonld_data['about'].append(meta_tag)
                     keywords.append(tag)
 
-                for seo_keyword in post.meta.seo_keywords:
-                    keywords.append(seo_keyword)
+                if post.meta.seo_keywords:
+                    for seo_keyword in post.meta.seo_keywords:
+                        keywords.append(seo_keyword)
                 # keywords
                 jsonld_data["keywords"] = keywords
 

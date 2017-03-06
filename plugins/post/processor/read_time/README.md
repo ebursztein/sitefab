@@ -6,7 +6,7 @@ Compute how long the article will take to read for an average speed.
 
 Add the following snippet to your template to display the time it takes to read the post.
 
-```python
+```html
 {% if post.meta.read_time %}
 {{ post.meta.read_time}} min read
 {% endif %}

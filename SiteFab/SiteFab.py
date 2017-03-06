@@ -124,29 +124,32 @@ class SiteFab(object):
         for res in tpool.imap_unordered(parse_post, zip(filenames, repeat(parser_config)), chunksize=1):
             res = json.loads(res)
             post = utils.dict_to_objdict(res)
-            
+
             ## inset in all post list
-            self.posts.append(post)
+            if post.meta.hidden:
+                # do nothing
+                print "Post Hidden"
+            else:
+                self.posts.append(post)
             
-            # insert in template list
-            self.posts_by_templates.add(post.meta.template, post)
+                # insert in template list
+                self.posts_by_templates.add(post.meta.template, post)
 
-            # insert in microformat list
-            if post.meta.microdata_type:
-                self.post_by_microdata.add(post.meta.microdata_type, post)
+                # insert in microformat list
+                if post.meta.microdata_type:
+                    self.post_by_microdata.add(post.meta.microdata_type, post)
 
-            ## insert in collections
-            cols = []
-            if post.meta.category:
-                cols.append(post.meta.category)
-            if post.meta.tags:
-                for tag in post.meta.tags:
-                    cols.append(tag)
+                ## insert in collections
+                cols = []
+                if post.meta.category:
+                    cols.append(post.meta.category)
+                if post.meta.tags:
+                    for tag in post.meta.tags:
+                        cols.append(tag)
 
-            for collection_name in cols:
-                self.collections.add(collection_name, post)
+                for collection_name in cols:
+                    self.collections.add(collection_name, post)
 
-            
             progress_bar.update()
         
         tpool.close()

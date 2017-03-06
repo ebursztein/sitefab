@@ -1,4 +1,4 @@
-# Reading Time Plugin
+# Backup Media Plugin
 
 Backup the files listed in frontmatter and the images from the md files.
 

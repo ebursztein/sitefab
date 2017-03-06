@@ -64,6 +64,7 @@ class PostCollections():
         Return:
             dict: collections as dict
         """
+
         return self.collections
 
     def get_num_collections(self):

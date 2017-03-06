@@ -7,6 +7,7 @@ microdata_type: ScholarlyArticle
 creation_date: 18 oct 2016 13:29
 category: video game
 lang: en
+hidden: false
 
 tags: 
  - hearthstone
