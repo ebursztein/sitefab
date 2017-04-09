@@ -1,4 +1,3 @@
-
 ---
 template: blog_post
 title: "18.4% of us internet users got at least one of their account compromised"

@@ -103,13 +103,18 @@ class SiteFab(object):
         self.posts = []
 
         #collections creation
-        tlp = self.jinja2.get_template(self.config.collections.template)
-        path = os.path.join(self.get_output_dir(), self.config.collections.output_dir)
         min_posts = self.config.collections.min_posts
-        self.collections = PostCollections(template=tlp, path=path, min_posts=min_posts)
-    
-        self.posts_by_templates = PostCollections()
-        self.post_by_microdata = PostCollections()
+        
+        tlp = self.jinja2.get_template(self.config.collections.category_template)
+        path = os.path.join(self.get_output_dir(), self.config.collections.category_output_dir)
+        self.posts_by_category = PostCollections(template=tlp, path=path, min_posts=min_posts)
+
+        tlp = self.jinja2.get_template(self.config.collections.tag_template)
+        path = os.path.join(self.get_output_dir(), self.config.collections.tag_output_dir)
+        self.posts_by_tag = PostCollections(template=tlp, path=path, min_posts=min_posts)
+
+        self.posts_by_template = PostCollections()
+        self.posts_by_microdata = PostCollections()
 
         # Display injected template so the user understand who is responsible for what
         self.list_injected_html_templates()
@@ -130,27 +135,27 @@ class SiteFab(object):
                 continue
             if post.meta.creation_date_ts > int(time.time()):
                 # Do not post in the future
+                s = "Post in the future - skipping %s" % (post.meta.title)
+                utils.warning(s)
                 continue
 
             self.posts.append(post)
 
             # insert in template list
-            self.posts_by_templates.add(post.meta.template, post)
+            self.posts_by_template.add(post.meta.template, post)
 
             # insert in microformat list
             if post.meta.microdata_type:
-                self.post_by_microdata.add(post.meta.microdata_type, post)
+                self.posts_by_microdata.add(post.meta.microdata_type, post)
 
-            ## insert in collections
-            cols = []
+            ## insert in category
             if post.meta.category:
-                cols.append(post.meta.category)
+                self.posts_by_category.add(post.meta.category, post)
+
+            ## insert in tags
             if post.meta.tags:
                 for tag in post.meta.tags:
-                    cols.append(tag)
-
-            for collection_name in cols:
-                self.collections.add(collection_name, post)
+                    self.posts_by_tag.add(tag, post)
 
             progress_bar.update()
         
@@ -168,8 +173,11 @@ class SiteFab(object):
         
         # collection processing
         print "\nCollections plugins"
-        self.execute_plugins(self.collections.get_as_list(), "CollectionProcessor", " collections")
-
+        self.execute_plugins(self.posts_by_category.get_as_list(), "CollectionProcessor", " categories")
+        self.execute_plugins(self.posts_by_tag.get_as_list(), "CollectionProcessor", " tags")
+        self.execute_plugins(self.posts_by_template.get_as_list(), "CollectionProcessor", " templates")
+        self.execute_plugins(self.posts_by_microdata.get_as_list(), "CollectionProcessor", " microdata")
+        
         # site wide processing
         print "\nSite wide plugins"
         self.execute_plugins([1], "SiteProcessor", " site")
@@ -177,13 +185,15 @@ class SiteFab(object):
 
     def render(self):
         "Rendering stage"
-        
+    
+        clt = self.posts_by_template.get_as_dict()['blog_post']
+    
         self.timings.render_start = time.time()
         print "\nRendering posts"
         self.render_posts()
         
         print "\nRendering collections"
-        self.collections.render()
+        self.posts_by_category.render()
         
         print "\nAdditional Rendering"
         self.execute_plugins([1], "SiteRendering", " pages")
@@ -214,8 +224,10 @@ class SiteFab(object):
         cprint("|--Rendering time: %s sec" % (rendering_ts), "blue")
 
         cprint("\nContent", 'magenta')
-        cprint("|-Num Posts: %s" % len(self.posts), "cyan")
-        cprint("|-Num Collections: %s" % self.collections.get_num_collections(), "cyan")
+        cprint("|-Num posts: %s" % len(self.posts), "cyan")
+        cprint("|-Num categories: %s" % self.posts_by_category.get_num_collections(), "cyan")
+        cprint("|-Num tags: %s" % self.posts_by_tag.get_num_collections(), "cyan")
+        cprint("|-Num templates: %s" % self.posts_by_template.get_num_collections(), "cyan")
 
 
         cprint("\nPlugins", 'magenta')
@@ -225,50 +237,8 @@ class SiteFab(object):
 
         if self.plugins_results[self.SKIPPED]:
             cprint("|-Num Skipped:%s " % self.plugins_results[self.SKIPPED], 'yellow' )
-
+        
     ### Post functions ###
-
-    def get_posts(self, collection=None, template=None, order=1):
-        """Return a list of ordered posts
-
-        :param str collection: restrict to posts that belong to a given collection
-        :param str template: restict to posts that belongs to a given template type
-        :param int order: How to order the returned posts. Default: Inverted sorting date
-        
-        :rtype: list(post)
-        :return: list of post
-        """
-
-        if collection:
-            if collection in self.collections:
-                posts = self.collections[collection]
-            else:
-                warning("can't find posts for collection:%s", collection)
-                return []
-        else:
-            posts = self.posts
-        
-        selected_posts = []
-        if template:
-            for post in posts:
-                if template in post.meta and post.meta.template == template:
-                    selected_posts.append(post)
-        else:
-            selected_posts = posts
-
-        selected_posts = self.sort_post(selected_posts, order)
-        return selected_posts
-
-    def get_num_posts(self, collection=None, template=None):
-        """Return the numbers of posts available
-        
-        Args:
-            collection: restrict count to a given collection
-            template: restict to a given template type #FIXME:
-
-        """
-        posts = self.get_posts(collection=collection, template=template)
-        return len(posts)
 
     def render_posts(self):
         """Render posts using jinja2 templates."""
@@ -277,35 +247,10 @@ class SiteFab(object):
             template_name = "%s.html" % post.meta.template
             template = self.jinja2.get_template(template_name)
             html = post.html.decode("utf-8", 'ignore')
-            rv = template.render(content=html, meta=post.meta, collections=self.collections.get_as_dict(), posts_by_templates=self.posts_by_templates.get_as_dict(), post_by_microdata=self.post_by_microdata.get_as_dict())
+            rv = template.render(content=html, meta=post.meta, categories=self.posts_by_category.get_as_dict(), tags=self.posts_by_tag.get_as_dict(),            templates=self.posts_by_template.get_as_dict(), microdata=self.posts_by_microdata.get_as_dict())
             path = "%s%s/" % (self.get_output_dir(), post.meta.permanent_url)
             path = path.replace('//', '/')
             files.write_file(path, 'index.html', rv)
-
-    def sort_posts(self, posts, sorting_criteria):
-        """ Sort a list of posts by a given field
-        
-        Args:
-            posts (list): collection of post to sort.
-            sorting_criteria (int): which field to sort by. See SORT_* macro
-
-        Returns:
-            list: ordered list of posts
-        """
-        if sorting_criteria == self.SORT_BY_CREATION_DATE or sorting_criteria == self.SORT_BY_CREATION_DATE_DESC:
-            k = lambda x: x.meta.creation_date_ts
-        elif sorting_criteria == self.SORT_BY_UPDATE_DATE or sorting_criteria == self.SORT_BY_UPDATE_DATE_DESC:
-            k = lambda x: x.meta.update_date_ts
-        else:
-            raise "invalid sorting_criteria", sorting_criteria
-            return posts
-
-        reverse = False
-        if sorting_criteria in [self.SORT_BY_CREATION_DATE_DESC, self.SORT_BY_UPDATE_DATE_DESC]:
-            reverse = True
-        
-        posts.sort(key=k, reverse=reverse)
-        return posts
    
     ### Templates functions ###
 
@@ -354,6 +299,16 @@ class SiteFab(object):
 
     ### Plugins ###
     def execute_plugins(self, items, plugin_class, unit):
+        """ Execute a given group of plugins
+        
+        Args:
+            items (str): list of object to apply the plugins to (either collection, posts or even None) 
+            plugin_class (str):  which type of plugins to execute
+            unit (str): which unit to report in the progress bar
+        
+        Return:
+            None
+        """
         results = self.plugins.run_plugins(items, plugin_class, unit, self)
         self.plugins.display_execution_results(results, self)
         

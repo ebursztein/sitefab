@@ -10,6 +10,7 @@ CollectionProcessor:
     enable: true
   sort_collection:
     enable: true
+    sort_by: update_date
 
 ##########################
 # PostProcessor

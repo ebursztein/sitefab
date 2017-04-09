@@ -14,8 +14,8 @@ Here is how a content file is structured
 
 The front matter is used to store the page configuration and meta data. It is written in the YAML format.
 
-The meta data stored in the front matter are made available to template file during the generation process under the meta object. for example 
-the title specified in the meta data can be accessed in the template page as follow:
+The meta data stored in the front matter are made available to template file during the generation process under the meta object. for example the title specified in the 
+meta data can be accessed in the template page as follow:
 
 ```Python
 {% meta.title %}
@@ -84,8 +84,10 @@ abstract: this paper demonstrate how to apply machine learning to Hearthstone to
 ```
 
 #### Custom fields
+
 On top of the specific field, any additional field can be added to the frontmatter and will be accessible by the template as part of the meta object.
 For example the easiest way to have a banner image for each post is too add a meta banner:
+
 ```
 banner: /static/images/iot-device-banner.jpg
 ```

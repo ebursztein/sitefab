@@ -31,13 +31,14 @@ The easiest way to get started is to use the demo site which is located in the t
 
 1. Copy it to the directory of you choice:  `cp -r demo_site my_site`
 
-2. Change directory to the newly created one: `cd my_site`
+2.Change directory to the newly created one: `cd my_site`
 
-3. Generate the site: `python ../sitefab.py -c config/sitefab.yaml generate`
+3.Generate the site: `python ../sitefab.py -c config/sitefab.yaml generate`
 
-4. The rendered site is in the **generated/** directory. You can visualize the rendered files either by opening the index file in your browser or via a local server. 
-	
-	See our [nginx installation guide](/documentation/nginx_install.md) to learn how to install nginx and get the pretty print URLs working.
+4.The rendered site is in the **generated/** directory. You can visualize the rendered files either by opening the index file in your browser or via a local server.
+
+
+See our [nginx installation guide](/documentation/nginx_install.md) to learn how to install nginx and get the pretty print URLs working.
 
 
 ## Configuring your site
@@ -45,7 +46,7 @@ The easiest way to get started is to use the demo site which is located in the t
 copy the default configuration to a personalize one:
 
 ```bash
-cp config/demo_site.yaml config/mysite.yaml 
+cp config/demo_site.yaml config/mysite.yaml
 ```
 
 Configuration files are written in [YAML](http://docs.ansible.com/ansible/YAMLSyntax.html).

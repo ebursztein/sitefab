@@ -331,7 +331,8 @@ class Plugins():
         #print plugins_to_process
         #print module_name_to_plugin
 
-        desc = colored("|-Execution", "magenta")
+        s = "|-%s plugins" % (unit.strip().capitalize())
+        desc = colored(s, "magenta")
         results = []
         for module_name in tqdm(plugins_to_process, unit=' plugin', desc=desc, leave=True):
             if module_name in module_name_to_plugin:

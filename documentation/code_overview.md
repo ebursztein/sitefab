@@ -1,0 +1,86 @@
+# SiteFab code overview
+
+## Data structure
+
+SiteFab have three main data structures:
+
+1. Site: Object representation of the entire Site
+2. Post Site basic unit. Mostly created from the .md files and potentially by plugin. Each .md has its own post Object
+3. Collection: A collection of posts that share the same topic, template or microformat type.
+
+
+### Post Object
+
+The post object is the basic element of the site. It is the parsed version of a file and contains the following elements:
+
+- *post.md*: the md version of the post
+- *post.html*: the html version of the post
+- *post.meta*: the meta information related to the post. Meta come from the frontmatter data and the various plugins
+- *post.elements*: List of elements contained in the post. For example the list of images. This is generated during the parsing.
+
+#### post.meta details
+
+FIXME
+
+#### post.toc details
+Here is an example of the toc array:
+
+ ```python
+[
+     ('Edwin VanCleef is a steal', 2, 0),
+     ('Twilight drake', 2, 1),
+     ('Twilight drake before the nerf', 2, 2)
+]
+
+```
+
+The post.info.toc is a **list** that represents the post table of content. The field of each list element are:
+
+- Field [0] The name of the section
+- Field [1] The level of section. Basically 1 == H1, 2 == H2, ...
+- Field [2] The auto-increment id associated with the section. Mainly useful to generate unique anchor in the template.
+
+
+#### post.elements details
+
+Here is an example of what is contained in post.elements:
+
+```python
+
+{'images': ['https://www.elie.net/image/..',
+            '..'
+            ],
+ 'links': ['https://www.elie.net/blog/hearth...',
+           '...'
+           ],
+ 'videos': []}
+
+```
+
+### Collection Object
+
+A collection is an object that as its name imply a list of posts that are regrouped by logical entity (e.g category, tag, template) along side with some meta data.
+
+#### type of collections
+
+The following type of collections are available:
+
+* **posts_by_category**: regroup post by categories as specified in post frontmatter. Reflected in template as *categories*
+* **posts_by_tag**: regroup post by tags as specified in post frontmatter. Reflected in templates as *tags*.
+* **posts_by_template**: regroup posts that share the same rendering template (e.g blog_post). Reflected in templates as *templates*.
+* **posts_by_microdata**: regroup posts that share the same microformat (e.g BlogPosting). Reflected in templates as *microdata*.
+
+#### collection structure
+
+Here is how a collection object is structured
+
+```python
+
+collection:
+    posts (list) # list of posts. Usually sorted from most recent to oldest.
+    meta (object):
+        name # name of the collection. E.g Web Security
+        slug(str)   #slug used for the url. E.g for Web Security the slug is web-security
+        num_posts(int)  #number of posts in the collection
+
+```

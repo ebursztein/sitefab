@@ -4,17 +4,28 @@
 
 {% block body %}
     {{ meta.jsonld }}
+    <h2>Latest posts</h2>
         <ul>
-            {% for post in posts_by_templates.blog_post.posts[:10] %}
+            {% for post in templates.blog_post.posts[:10] %}
                 <li><a href="{{ post.meta.permanent_url }}">{{ post.meta.title }}</a></li>
             {% endfor %}
         </ul>
 
-    Security:
-    <ul>
-        {% for post in collections.security.posts %}
-            <li><a href="{{ post.meta.permanent_url }}">{{ post.meta.title }}</a></li>
-        {% endfor %}
-    </ul>
+    <h2>posts per categories</h2>
+    
+    {% for category, data in categories.iteritems() %}
+        <h3>{{ category }} </h3>
+        <ul>
+            {% for post in data.posts %}
+                {# the if is used to filter out pages which are not blog articles #}
+                {% if post.meta.template == "blog_post" %}
+                    <li><a href="{{ post.meta.permanent_url }}">{{ post.meta.title }}</a></li>
+                {% endif %}           
+            {% endfor %}
+        </ul>
+    {% endfor %}
+
+
+
 
 {% endblock %}

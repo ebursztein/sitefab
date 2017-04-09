@@ -1,4 +1,6 @@
-# Upgrading SiteFab
+# Managing your SiteFab installation
+
+## Upgrading SiteFab
 
 Here is how to upgrade SiteFab:
 

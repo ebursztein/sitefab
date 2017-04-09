@@ -34,7 +34,7 @@ class Sitemap(SiteRendering):
                 post.meta.frequency = "daily"
             post_list.append(post)
 
-        for collection in site.collections.get_as_list():
+        for collection in site.posts_by_category.get_as_list():
             # add priority and frequency
             collection.meta.priority = 0.7
             collection.meta.frequency = "daily"

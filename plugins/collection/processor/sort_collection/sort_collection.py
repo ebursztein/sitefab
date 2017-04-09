@@ -5,6 +5,15 @@ class SortCollection(CollectionProcessor):
     """
     Sort Collection
     """
+
     def process(self, collection, site, config):
-        collection.posts = site.sort_posts(collection.posts, SiteFab.SORT_BY_CREATION_DATE_DESC)
+        
+        if config.criteria == "udpate_date":
+            k = lambda x: x.meta.update_date_ts
+        else:
+            k = lambda x: x.meta.creation_date_ts
+        
+        # note: recall sort do sorting in place!
+        collection.posts.sort(key=k, reverse=True)
+        
         return (SiteFab.OK, collection.meta.name, "")

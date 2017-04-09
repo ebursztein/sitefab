@@ -5,7 +5,7 @@ category: security
 
 microdata_type: BlogPosting
 lang: en
-hidden: true
+hidden: false
 
 tags: 
   - machine learning

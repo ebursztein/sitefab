@@ -6,3 +6,6 @@ Module = sort_collection
 Filename = README.md
 Version = 1
 Description = Sort collections by publication time to allow easy chronological display from templates.
+
+[Configuration]
+Filename = "config.yaml"
