@@ -55,7 +55,7 @@ To list the five most recent post that use the blog_post template:
 
 ```jinja2
 <ul>
-{% for post in posts_by_templates.blog_post.posts[:10] %}
+{% for post in templates.blog_post.posts[:10] %}
     <li><a href="{{ post.meta.permanent_url }}">{{ post.meta.title }}</a></li>
 {% endfor %}
 </ul>
