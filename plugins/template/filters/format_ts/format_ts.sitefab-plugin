@@ -1,0 +1,8 @@
+[Core]
+Name = Format timestamp
+Module = format_ts
+
+[Documentation]
+Filename = README.md
+Description = Add custom filter called `format_ts` that allows to format timestamp using standard strttime() syntax.
+Version = 1

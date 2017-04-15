@@ -2,9 +2,9 @@
 
 Here is how to get up and running with Site Fab. Creating a website is done in three easy steps:
 
- 1. install Site Fab and a web server
- 2. Initialize your site and add content
- 3. Generate  your pages
+1. install Site Fab and a web server
+2. Initialize your site and add content
+3. Generate  your pages
 
 ## Installing SiteFab
 

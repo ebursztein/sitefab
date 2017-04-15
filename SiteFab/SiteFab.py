@@ -42,11 +42,9 @@ class SiteFab(object):
         self.timings  = utils.create_objdict()
         self.timings.start = time.time()
         self.timings.init_start = time.time()
-
-        ### Configuring ###
         self.current_dir = os.getcwd()
 
-        # configuration
+        ### configuration ###
         if os.path.isfile(config_filename): #absolute path 
             self.config  = files.load_config(config_filename)
         else:
@@ -55,25 +53,29 @@ class SiteFab(object):
                 self.config = files.load_config(cfg)
             else:
                 raise "can't find configuration: %s" % config_filename
-
-        # template rendering engine init
-        self.jinja2 = Environment(loader=FileSystemLoader(self.get_template_dir()))
         
-        # parser
+        ### parser ###
         self.config.parser.templates_path =  os.path.join(files.get_site_path(),  self.config.parser.template_dir)
         self.config.parser.injected_html_templates = {} # Used to allows plugins to dynamically inject html templates.
         self.config.parser.injected_html_templates_owner = {} # store who was responsible for the injection
         self.config.parser.plugin_data = {} # store plugin data that need to be passed to the parser. E.g resized images
 
-        # plugins
+        ### plugins ###
         plugins_config_filename = os.path.join(files.get_site_path(), self.config.plugins_configuration_file)
         plugins_config = files.load_config(plugins_config_filename)
 
         debug_log_fname = os.path.join(self.get_logs_dir(), "debug.log") # where to redirect the standard python log
         self.plugins = Plugins(self.get_plugins_dir(), debug_log_fname, plugins_config)
         self.plugins_results = defaultdict(int)
-        
-        # logger
+
+        ### template rendering engine init ###
+        self.jinja2 = Environment(loader=FileSystemLoader(self.get_template_dir()))
+        custom_filters = self.plugins.get_template_filters()
+        print custom_filters
+        for flt_name, flt_fct in custom_filters.iteritems():
+            self.jinja2.filters[flt_name] = flt_fct
+
+        ### logger ###
         cfg = utils.create_objdict()
         cfg.output_dir = self.get_logs_dir()
         cfg.template_dir = os.path.join(files.get_site_path(),  self.config.logger.template_dir) #log template not the one from the users.
@@ -185,9 +187,7 @@ class SiteFab(object):
 
     def render(self):
         "Rendering stage"
-    
-        clt = self.posts_by_template.get_as_dict()['blog_post']
-    
+
         self.timings.render_start = time.time()
         print "\nRendering posts"
         self.render_posts()

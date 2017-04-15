@@ -59,6 +59,21 @@ class SiteRendering():
             :param dict config: plugin configuration 
         """
 
+class TemplateFilter():
+    "Plugins that define jinja2 filters to be used in templates"
+
+    @staticmethod
+    def myfilter(filter_input, filter_arg):
+        """Act as a jinja2 template
+        
+        Args:
+            filter_input (str): the input passed to the filter
+            filter_arg(str): optional arg to the filter
+        Return:
+            str: modified input
+        """
+
+
 ### Plugin management ###
 class Plugins():
     """ 
@@ -74,6 +89,8 @@ class Plugins():
         ["PostProcessor", PostProcessor,"Plugins that process each post after they are parsed"],
 
         ["CollectionProcessor", CollectionProcessor, "Plugins that process each collection after posts are parsed"],
+
+        ["TemplateFilter", TemplateFilter, "Plugins that define jinja2 filters to be used in templates"],
 
     ]
 
@@ -264,12 +281,11 @@ class Plugins():
         cprint("|-Execution result", "magenta")
         count = 0
         for result in results:
-            plugin_name, stats = result  
+            plugin_name, stats = result
+            c = "cyan"
             if count % 2:
                 c = "blue"
-            else:
-                c = "cyan"
-
+            
             name = colored("  |-%15s" % plugin_name, c)
             ok = colored("ok:%s"% stats[site.OK], "green")
             skip = colored("skip:%s" % stats[site.SKIPPED], "yellow")
@@ -365,3 +381,20 @@ class Plugins():
             results.append([plugin.name, plugin_results])
             site.logger.write_log(log_id)
         return results
+
+
+    def get_template_filters(self):
+        """Load template filters and return a dictionary list 
+        
+        Return:
+            dict: jinja filter functions
+        """
+        template_filters = {}
+
+        filters = self.plugins.getPluginsOfCategory("TemplateFilter")
+        
+        for flt in filters:
+            filter_name = self.get_plugin_module_name(flt)
+            template_filters[filter_name] = flt.plugin_object.myfilter
+        
+        return template_filters
