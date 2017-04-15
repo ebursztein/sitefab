@@ -2,9 +2,9 @@
 
 Here is how to get up and running with Site Fab. Creating a website is done in three easy steps:
 
-1. install Site Fab and a web server
-2. Initialize your site and add content
-3. Generate  your pages
+ 1. install Site Fab and a web server
+ 2. Initialize your site and add content
+ 3. Generate  your pages
 
 ## Installing SiteFab
 
@@ -30,16 +30,9 @@ pip install -r requirements.txt
 The easiest way to get started is to use the demo site which is located in the the **demo_site/** directory
 
 1. Copy it to the directory of you choice:  `cp -r demo_site my_site`
-
-2.Change directory to the newly created one: `cd my_site`
-
-3.Generate the site: `python ../sitefab.py -c config/sitefab.yaml generate`
-
-4.The rendered site is in the **generated/** directory. You can visualize the rendered files either by opening the index file in your browser or via a local server.
-
-
-See our [nginx installation guide](/documentation/nginx_install.md) to learn how to install nginx and get the pretty print URLs working.
-
+2. Change directory to the newly created one: `cd my_site`
+3. Generate the site: `python ../sitefab.py -c config/sitefab.yaml generate`
+4. The rendered site is in the **generated/** directory. You can visualize the rendered files either by opening the index file in your browser or via a local server.
 
 ## Configuring your site
 
@@ -61,3 +54,12 @@ All is left is to write your pages:
 - **Page template** are written in Jinja2 and have access to environement variables that give you access to the page content as HTML, the post information and many more useful data. See the [template documentation](/documentation/template.md) for more information on how to write templates.
 
 - **Collections** are special page generated for each categories / tags that your page have. See the [template documentation](/documentation/template.md) for more information.
+
+## Serving your site
+
+### For viewing a specifc file
+FIXME: use python simple server
+
+### For production
+See our [nginx installation guide](/documentation/nginx_install.md) to learn how to install nginx and get the pretty print URLs working.
+
