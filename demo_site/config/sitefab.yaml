@@ -1,4 +1,4 @@
-name: "Elie's website"
+name: "SiteFab Demo site"
 logo_url: "static/images/favicon/apple-touch-icon.png"
 #specify how various directory are named. Path are relative to the root of the site
 url: "http://localhost:8080/" #site url

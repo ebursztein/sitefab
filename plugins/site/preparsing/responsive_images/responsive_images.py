@@ -64,6 +64,7 @@ def generate_thumbnails((image_full_path, params)):
     log += "size: %sx%s<br>"  % (width, height)
     log += "</br>"
 
+
     # add default images
     s = "%s %sw" % (web_path, width)
     pil_extension_codename, web_extension = get_extension_alternative_naming(img_extension)
@@ -72,26 +73,27 @@ def generate_thumbnails((image_full_path, params)):
    
 
     cached_value = {}
+    cache_timing = {}
     if width > MIN_CACHED_SIZE:
         start = time.time()
         cache = dc(params['cache_file'])
-        cache_open_time = time.time() - start
-        log += "Cache: opening time: %s<br>" % (round(cache_open_time, 3))
+        cache_timing['opening'] = time.time() - start
         start = time.time()
         cache_key = "%s" % (img_hash)
         try:
             cached_value = cache.get(cache_key)
         except:
             cached_value = {}
-            log += "Cache: Cache opening error - loading time:%s<br>" % (round(time.time() - start, 3))
+            cache_timing['loading'] = time.time() - start
+            log += "<b>ERROR</b>: can't open cache<br>"
         if not cached_value:
-            log += "Cache: not found. test time: %s<br>" % (round(time.time() - start, 3))
+            cache_timing['loading'] = time.time() - start 
             cached_value = {}
         else:
-            log += "Cache: loading time: %s<br>" % (round(time.time() - start, 3))
-        log += "<br><br>"
+            cache_timing['loading'] = time.time() - start
     else:
-        log += "Image too small - not using cache<br><br>"
+        log += "INFO: Image too small, not using cache<br>"
+    log += "<br>"
 
     
     requested_extensions = []
@@ -100,19 +102,20 @@ def generate_thumbnails((image_full_path, params)):
     requested_extensions.append(img_extension)
     #print "\n\n%s\n%s\n\n" % ( params['requested_format_list'], requested_extensions)
 
+    log += "<table><tr><th>Status</th><th>size</th><th>extension</th><th>gen time</th><th>write time</th><th>msg</th></tr>"
     for requested_width in params['requested_width_list']:
         if requested_width >= width:
-            log += "[SKIPPED] %spx thumbnail -- image too small<br>" % (requested_width)
+            log += '<tr><td class="error">Skipped</td><td>%spx</td><td>all</td><td>N/A</td><td>N/A</td><td>Image too small (%spx) to generate %spx thumbnail</td></tr>' % (requested_width, width, requested_width)
             continue
 
         ratio = float(requested_width) / width
         requested_height = int(height * ratio)  # preserve the ratio
-    
+        
         for extension in requested_extensions:
             pil_extension_codename, web_extension = get_extension_alternative_naming(extension)
             if not pil_extension_codename:
                 # unknown extension marking the image as errors and skipping
-                log += "[ERROR] %s > unknown extension %s. Can't generate image<br>" % (image_full_path, extension)
+                log += '<tr><td class="error">ERROR</td><td>%spx</td><td>%s</td><td>N/A</td><td>N/A</td><td>Unkown extension: %s</td></tr>' % (requested_width, extension, extension)
                 num_errors += 1
                 continue
             
@@ -122,14 +125,15 @@ def generate_thumbnails((image_full_path, params)):
             # filename for the resized image
             output_filename = "%s.%s%s" % (img_name, requested_width, extension)
             output_full_path = os.path.join(img_output_path, output_filename)
-            output_web_path = output_full_path.replace(params['site_output_dir'], "/")
+            output_web_path = output_full_path.replace("\\", "/").replace(params['site_output_dir'], "/")
             
             cache_secondary_key = "%s-%s" % (pil_extension_codename, requested_width)
             if cache_secondary_key in cached_value:   
                 start = time.time()
                 stringio_file = cached_value[cache_secondary_key]
                 resize_time = time.time() - start
-                log += "[Cached] %spx thumbnail - generation time: %s" % (requested_width, round(resize_time, 2))
+                log += '<tr><td class="cached">cached</td>'
+                #log += "[Cached] %spx thumbnail - generation time: %s" % (requested_width, round(resize_time, 2))
             else:
                 # do the real work
                 start = time.time()
@@ -139,23 +143,37 @@ def generate_thumbnails((image_full_path, params)):
                     resized_img = resized_img.convert('RGBA')
                 resized_img.save(stringio_file, pil_extension_codename)
                 resize_time = time.time() - start
-                log += "[GENERATED] %spx thumbnail - generation time: %s" % (requested_width, round(resize_time, 2))
+                log += '<tr><td class="generated">generated</td>'
+                #log += "[GENERATED] %spx thumbnail - generation time: %s" % (requested_width, round(resize_time, 2))
                 cached_value[cache_secondary_key] = stringio_file
             
             start = time.time() 
             f = open(output_full_path, "wb+")
             f.write(stringio_file.getvalue())
             f.close()
-            log += " write time:%s<br>" % (round(time.time() - start, 3))
+            write_time = time.time() - start
+            log += '<td>%spx</td><td>%s</td><td>%ss</td><td>%ss</td><td></td></tr>' % (requested_width, extension, round(resize_time, 3), round(write_time, 3))
 
             s = "%s %sw" % (output_web_path, requested_width)
             resize_list[web_extension].append(s)
-            
+
+    log += "</table>" 
+
+    #        log += "Cache: opening time: %s<br>" % (round(cache_open_time, 3))
+      
     if width > MIN_CACHED_SIZE:
         start = time.time()
         cache.set(cache_key, cached_value)
         cache.close()
-        log += "Cache: write and close - time: %s<br>" % (round(time.time() - start,3))
+        cache_timing["writing"] = time.time() - start
+    else:
+        cache_timing["writing"] = -1
+    
+    print cache_timing
+    if 'opening' in cache_timing:
+        log += "<h3>Cache stats</h3>"
+        log += '<table><tr><th>Action</th><th>Timing</th></tr><tr><td>Open</td><td>%s</td></tr><tr><td>Load</td><td>%s</td></tr><tr><td>Write</td><td>%s</td></tr></table>' % (cache_timing['opening'], cache_timing['loading'], cache_timing['writing'])
+   
     
     log += "Total time:%s<br>" % (round(time.time() - total_time, 3))
     

@@ -50,21 +50,17 @@ SitePreparsing:
   responsive_images:
     additional_formats:
     - .webp
-    cache_min_image_width: 750
+    cache_min_image_width: 400
     cache_name: responsive_images
-    enable: false
+    enable: true
     input_dir: generated/static/images/
     output_dir: generated/static/images/resized/
     template_file: config/generator_templates/responsive_images/img.html
     thumbnail_size:
     - 300
-    - 400
-    - 500
     - 600
-    - 700
-    - 800
     - 900
-    - 1000
+    - 1200
 
 ##########################
 # SiteProcessor

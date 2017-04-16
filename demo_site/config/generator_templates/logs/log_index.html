@@ -1,46 +1,48 @@
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css">
-    <style>
-        h1 {
-            font-size: 2.5rem;
-            color: #2980b9;            
-        }
-        h2 {
-            font-size: 2rem;
-            color: #3498db;
-        }   
-    </style>
-</head>
-<body>
-    <div class="row medium-8 large-7 columns">
-        <div>
-                <h1>Available logs</h1>
-        </div>
-        {% for cat, lgs in logs.iteritems() %}
-        <div>
-            <br><br>
-            <h2>{{cat}}</h2>
-            <table>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css">
+        <style>
+            h1 {
+                font-size: 2.5rem;
+                color: #2980b9;            
+            }
+            h2 {
+                font-size: 2rem;
+                color: #3498db;
+            }   
+        </style>
+    </head>
+    <body>
+        <div class="row medium-8 large-7 columns">
+            <div>
+                    <h1>Available logs</h1>
+            </div>
+            {% for cat, lgs in logs.iteritems() %}
+            <div>
+                <br><br>
+                <h2>{{cat}}</h2>
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Exec time</th>
+                        <th>Num events</th>
+                        <th>OK</th>
+                        <th>Skipped</th>
+                        <th>Errors</th>
+                    </th>
+                {% for log in lgs %}
                 <tr>
-                    <th>Name</th>
-                    <th>Exec time</th>
-                    <th>Num events</th>
-                    <th>OK</th>
-                    <th>Skipped</th>
-                    <th>Errors</th>
-                </th>
-            {% for log in lgs %}
-            <tr>
-                <td><a href="{{log.meta.filename}}">{{log.meta.name}}</td>
-                <td>{{log.meta.exec_time}} sec</td>
-                <td>{{log.meta.num_events}}</td>
-                <td>{{log.meta.ok}}</td>
-                <td>{{log.meta.skipped}}</td>
-                <td>{{log.meta.errors}}</td>
-            </tr>
-            {% endfor %}
-            </table>
+                    <td><a href="{{log.meta.filename}}">{{log.meta.name}}</td>
+                    <td>{{log.meta.exec_time}} sec</td>
+                    <td>{{log.meta.num_events}}</td>
+                    <td>{{log.meta.ok}}</td>
+                    <td>{{log.meta.skipped}}</td>
+                    <td>{{log.meta.errors}}</td>
+                </tr>
+                {% endfor %}
+                </table>
+            <div>
+        {% endfor %}
         <div>
-    {% endfor %}
-    <div>
-</body>
+    </body>
+<html>
