@@ -72,30 +72,9 @@ def generate_thumbnails((image_full_path, params)):
     resize_list[web_extension].append(s)
    
 
+    cache = None
     cached_value = {}
-    cache_timing = {}
-    if width > MIN_CACHED_SIZE:
-        start = time.time()
-        cache = dc(params['cache_file'])
-        cache_timing['opening'] = time.time() - start
-        start = time.time()
-        cache_key = "%s" % (img_hash)
-        try:
-            cached_value = cache.get(cache_key)
-        except:
-            cached_value = {}
-            cache_timing['loading'] = time.time() - start
-            log += "<b>ERROR</b>: can't open cache<br>"
-        if not cached_value:
-            cache_timing['loading'] = time.time() - start 
-            cached_value = {}
-        else:
-            cache_timing['loading'] = time.time() - start
-    else:
-        log += "INFO: Image too small, not using cache<br>"
-    log += "<br>"
-
-    
+    cache_timing = {}    
     requested_extensions = []
     for f in params['requested_format_list']:
         requested_extensions.append(f)
@@ -127,6 +106,29 @@ def generate_thumbnails((image_full_path, params)):
             output_full_path = os.path.join(img_output_path, output_filename)
             output_web_path = output_full_path.replace("\\", "/").replace(params['site_output_dir'], "/")
             
+            # loading cache only when needed.
+            if not cache and requested_width > MIN_CACHED_SIZE:
+                start = time.time()
+                cache = dc(params['cache_file'])
+                cache_timing['opening'] = time.time() - start
+                start = time.time()
+                cache_key = "%s" % (img_hash)
+                try:
+                    cached_value = cache.get(cache_key)
+                except:
+                    cached_value = {}
+                    cache_timing['loading'] = time.time() - start
+                    log += "<b>ERROR</b>: can't open cache<br>"
+                if not cached_value:
+                    cache_timing['loading'] = time.time() - start 
+                    cached_value = {}
+                else:
+                    cache_timing['loading'] = time.time() - start
+            else:
+                log += "INFO: Image too small, not using cache<br>"
+  
+
+
             cache_secondary_key = "%s-%s" % (pil_extension_codename, requested_width)
             if cache_secondary_key in cached_value:   
                 start = time.time()
@@ -161,7 +163,7 @@ def generate_thumbnails((image_full_path, params)):
 
     #        log += "Cache: opening time: %s<br>" % (round(cache_open_time, 3))
       
-    if width > MIN_CACHED_SIZE:
+    if cache and width > MIN_CACHED_SIZE:
         start = time.time()
         cache.set(cache_key, cached_value)
         cache.close()
@@ -169,7 +171,6 @@ def generate_thumbnails((image_full_path, params)):
     else:
         cache_timing["writing"] = -1
     
-    print cache_timing
     if 'opening' in cache_timing:
         log += "<h3>Cache stats</h3>"
         log += '<table><tr><th>Action</th><th>Timing</th></tr><tr><td>Open</td><td>%s</td></tr><tr><td>Load</td><td>%s</td></tr><tr><td>Write</td><td>%s</td></tr></table>' % (cache_timing['opening'], cache_timing['loading'], cache_timing['writing'])
@@ -248,7 +249,7 @@ class ResponsiveImages(SitePreparsing):
         #chunksize = (len(images) / (self.config.threads * 2)) < don't seems to make a huge difference
         for result in tpool.imap_unordered(generate_thumbnails, bundles, chunksize=1):           
         #for bundle in bundles:
-            #result = generate_thumbnails(bundle)
+        #    result = generate_thumbnails(bundle)
             progress_bar.update(num_resize)
             web_path = result[0]
             resize_list = result[1]
