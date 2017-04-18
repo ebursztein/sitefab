@@ -57,8 +57,8 @@ def generate_thumbnails((image_full_path, params)):
     img_hash = hashlib.sha256(img.tobytes()).hexdigest()  # we use the hash of the content to make sure we regnerate if the image is different 
 
     width, height = img.size
-    web_path = image_full_path.replace(params['site_output_dir'], "/") #replace the root for output by / as it is what the webserver sees.
-    
+    web_path = image_full_path.replace('\\', '/' ).replace(params['site_output_dir'], "/") #replace the root for output by / as it is what the webserver sees.
+
     log += "opening time:%s<br>" % (round(opening_time, 3))
     log += "hash: %s<br>" % (img_hash)
     log += "size: %sx%s<br>"  % (width, height)
@@ -251,7 +251,7 @@ class ResponsiveImages(SitePreparsing):
         #for bundle in bundles:
         #    result = generate_thumbnails(bundle)
             progress_bar.update(num_resize)
-            web_path = result[0]
+            web_path = result[0].replace("\\", "/") #be extra sure that windows path don't messup the thing
             resize_list = result[1]
             width = result[2]
             log += result[3]
