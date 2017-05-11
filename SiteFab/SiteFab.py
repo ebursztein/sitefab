@@ -143,7 +143,8 @@ class SiteFab(object):
             self.posts.append(post)
 
             # insert in template list
-            self.posts_by_template.add(post.meta.template, post)
+            if post.meta.template:
+                self.posts_by_template.add(post.meta.template, post)
 
             # insert in microformat list
             if post.meta.microdata_type:
@@ -243,6 +244,8 @@ class SiteFab(object):
         """Render posts using jinja2 templates."""
         
         for post in tqdm(self.posts, unit=' pages', miniters=1, desc="Posts"):
+            if not post.meta.template:
+                continue
             template_name = "%s.html" % post.meta.template
             template = self.jinja2.get_template(template_name)
             html = post.html.decode("utf-8", 'ignore')

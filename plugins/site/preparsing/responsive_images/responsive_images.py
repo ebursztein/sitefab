@@ -263,7 +263,6 @@ class ResponsiveImages(SitePreparsing):
             srcsets = {}
             for webformat, srcset in resize_list.iteritems():
                 srcsets[webformat] = ", ".join(srcset)
-
             resize_images[web_path] = {"srcsets": srcsets,
                                        "media": '(max_width: %spx)' % width,
                                        "sizes": '(max_width: %spx)' % width
@@ -276,7 +275,7 @@ class ResponsiveImages(SitePreparsing):
         # configuring the parser to make use of the resize images
         site.config.parser.plugin_data['responsive_images'] = resize_images # pass the list of images to the parser
         site.inject_parser_html_template("reponsive_images", "img", html_template) # modify the template used to render images
-
+        
         if errors:
             return (SiteFab.ERROR, "ResponsiveImages", log)
         else:
