@@ -273,7 +273,7 @@ class ResponsiveImages(SitePreparsing):
         tpool.close()
         tpool.join()
         # configuring the parser to make use of the resize images
-        site.config.parser.plugin_data['responsive_images'] = resize_images # pass the list of images to the parser
+        site.plugin_data['responsive_images'] = resize_images # expose the list of resized images
         site.inject_parser_html_template("reponsive_images", "img", html_template) # modify the template used to render images
         
         if errors:
