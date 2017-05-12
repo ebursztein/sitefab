@@ -127,6 +127,22 @@ Notes:
 - All plugins are disable by default to not suprise the user.
 - The plugin.yaml default file is constructed from the plugin default configurations using the command `SiteFab -c config/sitefab.yam sitefab_build`.
 
+### Exposing plugin data to the templates and parser
+
+To expose some data to the templates and potentially the parser (if the plugin is ran before) add your data to the `site.plugin_data` dict as follow:
+
+```python
+# dictionary of values
+site.plugin_data[plugin_name] = {}
+site.plugin_data[plugin_name]['key1'] = 'val1'
+
+# Array
+site.plugin_data[plugin_name] = [1,2,3,4]
+
+# or any other structure you need
+site.plugin_data[plugin_name] = "https://example.com"
+```
+
 ### Documentation
 
 Plugin documentation are written in standard markdown format. They are collected to create an index of available plugin when the code is released.
