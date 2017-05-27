@@ -1,18 +1,26 @@
-# Install Nginx
-## OSX
+# Using SiteFab with Nginx
+
+## Nginx installation
+
+### OSX
+
 1. update brew:
+
 ``` 
 brew update
 ```
 
-2. install Nginx
+2. installing Nginx
+
 ```
 brew install nginx
 ```
 
-#  Configure Nginx
+##  Configuring Nginx
 
-## Dev version
+This guide only covers the part of the configuration you need to run your site with pretty print URLs. There are a lot of other configuration
+variables you should take care of that are outside of this guide as there are plenty of ressources for it (e.g HTTPS, HTTP2, Compression and Caching).
+
 ### Edit configuration.
 OSX location: **/usr/local/etc/nginx/nginx.conf**
 Replace the server block by the following configuration and make sure that **root** is pointing to where the site is (release directory)
@@ -30,6 +38,14 @@ Replace the server block by the following configuration and make sure that **roo
     }
 ```
 
+#### making pretty print urls working
+To make pretty URL works the server configuation need to be changed to add in the server or location block:
+```
+        rewrite ^(/.*)\.html(\?.*)?$ $1$2 permanent; 
+	    rewrite ^/(.*)/$ /$1 permanent;
+      	try_files $uri/index.html $uri.html $uri/ $uri =404; 
+```
+
 ### Launching Nginx
 Simple Launch
 ```
@@ -40,7 +56,7 @@ Launching at startup
 brew services start nginx
 ```
 
-# Prod install
+## Firewall
 Firewall allow:
 ```
 ufw allow 'Nginx Full'
@@ -52,7 +68,7 @@ systemctl status nginx
 ```
 
 
-# Useful commands
+## Nginx useful commands
 
 Reloading nginx:
 ```
@@ -62,12 +78,4 @@ nginx -s reload
 Stop:
 ```
 nginx -s quit
-```
-
-# Configuration detail
-To make pretty URL works the server configuation need to be changed to add in the server or location block:
-```
-        rewrite ^(/.*)\.html(\?.*)?$ $1$2 permanent; 
-	    rewrite ^/(.*)/$ /$1 permanent;
-      	try_files $uri/index.html $uri.html $uri/ $uri =404; 
 ```

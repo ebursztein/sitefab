@@ -1,3 +1,0 @@
-# PostLinter Plugin
-
-

@@ -1,4 +1,5 @@
 import os
+import sys
 import operator
 import time
 from tqdm import tqdm
@@ -16,6 +17,7 @@ from parser.parser import Parser, parse_post
 from Logger import Logger
 from Plugins import Plugins
 from PostCollections import PostCollections
+from linter.linter import Linter
 
 import utils
 from utils import warning, error
@@ -86,6 +88,13 @@ class SiteFab(object):
         cfg.log_index_template = "log_index.html"
         self.logger = Logger(cfg, self)
 
+        ### linter ###
+        linter_config_filename = os.path.join(files.get_site_path(), self.config.linter.configuration_file)
+        linter_config = files.load_config(linter_config_filename)
+        linter_config.report_template_file = os.path.join(files.get_site_path(), self.config.linter.report_template_file)
+        linter_config.output_dir = self.get_logs_dir()
+        self.linter = Linter(linter_config)
+
         # finding content and assets
         self.filenames = utils.create_objdict()
         self.filenames.posts = files.get_files_list(self.get_content_dir(), "*.md")
@@ -136,11 +145,12 @@ class SiteFab(object):
             res = json.loads(res)
             post = utils.dict_to_objdict(res)
 
+            # do not add hidden post
             if post.meta.hidden:
-                # do not add hidden post
                 continue
+            
+            # Ignore posts set for future date
             if post.meta.creation_date_ts > int(time.time()):
-                # Do not post in the future
                 s = "Post in the future - skipping %s" % (post.meta.title)
                 utils.warning(s)
                 continue
@@ -148,8 +158,9 @@ class SiteFab(object):
             self.posts.append(post)
 
             # insert in template list
-            if post.meta.template:
-                self.posts_by_template.add(post.meta.template, post)
+            if not post.meta.template:
+                utils.error("%s has no template defined. Can't render it" % post.filename)
+            self.posts_by_template.add(post.meta.template, post)
 
             # insert in microformat list
             if post.meta.microdata_type:
@@ -243,19 +254,35 @@ class SiteFab(object):
         if self.plugin_results[self.SKIPPED]:
             cprint("|-Num Skipped:%s " % self.plugin_results[self.SKIPPED], 'yellow' )
         
+        cprint("\nLinter", 'magenta')
+        if self.linter.num_post_with_errors():            
+            cprint("|-Num post with errors:%s (check the logs!)" % self.linter.num_post_with_errors(), 'red')
+
+        if self.linter.num_post_with_warnings():            
+            cprint("|-Num post with warning:%s" % self.linter.num_post_with_warnings(), 'yellow')
+        
+        
     ### Post functions ###
 
     def render_posts(self):
         """Render posts using jinja2 templates."""
-        
-        for post in tqdm(self.posts, unit=' pages', miniters=1, desc="Posts"):
-            if not post.meta.template:
-                continue
+
+        for post in tqdm(self.posts, unit=' pages', miniters=1, desc="Posts"):            
             template_name = "%s.html" % post.meta.template
             template = self.jinja2.get_template(template_name)
             html = post.html.decode("utf-8", 'ignore')
             rv = template.render(content=html, meta=post.meta, plugin_data=self.plugin_data,
             categories=self.posts_by_category.get_as_dict(), tags=self.posts_by_tag.get_as_dict(), templates=self.posts_by_template.get_as_dict(), microdata=self.posts_by_microdata.get_as_dict())
+            
+            # Liniting            
+            linter_results = self.linter.lint(post, rv)
+            # Are we stopping on linting errors?
+            if linter_results.has_errors and self.config.linter.stop_on_error:
+                print post
+                for error in linter_results.info:
+                    print "\t-%s:%s" % (error[0], error[1])
+                sys.exit(-1)
+            
             path = "%s%s/" % (self.get_output_dir(), post.meta.permanent_url)
             path = path.replace('//', '/')
             files.write_file(path, 'index.html', rv)

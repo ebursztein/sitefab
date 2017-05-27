@@ -42,7 +42,10 @@ copy the default configuration to a personalize one:
 cp config/demo_site.yaml config/mysite.yaml
 ```
 
-Configuration files are written in [YAML](http://docs.ansible.com/ansible/YAMLSyntax.html).
+Configuration files are written in [YAML](http://docs.ansible.com/ansible/YAMLSyntax.html). 
+Don't forget to use your new configuration while generating :)
+
+`python ../sitefab.py -c config/mysite.yaml generate`
 
 
 ## Writing pages

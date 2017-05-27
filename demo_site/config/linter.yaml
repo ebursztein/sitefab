@@ -1,0 +1,2 @@
+### Frontmatter tests ###
+frontmatter_mandatory_fields:  ["title", "banner", "creation_date", "abstract"]

@@ -22,6 +22,7 @@ def parse_post((filename, parser_config)):
     cfg = utils.dict_to_objdict(parser_config)
     parser = Parser(cfg)
     post = parser.parse(file_content)
+    post.filename = filename
     d = utils.objdict_to_dict(post)
     return json.dumps(d)
 
