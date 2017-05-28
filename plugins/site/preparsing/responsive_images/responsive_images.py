@@ -154,7 +154,7 @@ def generate_thumbnails((image_full_path, params)):
             f.write(stringio_file.getvalue())
             f.close()
             write_time = time.time() - start
-            log += '<td>%spx</td><td>%s</td><td>%ss</td><td>%ss</td><td></td></tr>' % (requested_width, extension, round(resize_time, 3), round(write_time, 3))
+            log += '<td>%spx</td><td>%s</td><td>%ss</td><td>%ss</td><td></td></tr>' % (requested_width, extension, round(resize_time, 3), round(write_time, 4))
 
             s = "%s %sw" % (output_web_path, requested_width)
             resize_list[web_extension].append(s)
