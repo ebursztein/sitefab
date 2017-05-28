@@ -113,12 +113,9 @@ def generate_thumbnails((image_full_path, params)):
                 cache_timing['opening'] = time.time() - start
                 start = time.time()
                 cache_key = "%s" % (img_hash)
-                try:
-                    cached_value = cache.get(cache_key)
-                except:
-                    cached_value = {}
-                    cache_timing['loading'] = time.time() - start
-                    log += "<b>ERROR</b>: can't open cache<br>"
+
+                cached_value = cache.get(cache_key)
+
                 if not cached_value:
                     cache_timing['loading'] = time.time() - start 
                     cached_value = {}
@@ -128,9 +125,8 @@ def generate_thumbnails((image_full_path, params)):
                 log += "INFO: Image too small, not using cache<br>"
   
 
-
             cache_secondary_key = "%s-%s" % (pil_extension_codename, requested_width)
-            if cache_secondary_key in cached_value:   
+            if cache_secondary_key in cached_value:
                 start = time.time()
                 stringio_file = cached_value[cache_secondary_key]
                 resize_time = time.time() - start
@@ -162,8 +158,8 @@ def generate_thumbnails((image_full_path, params)):
     log += "</table>" 
 
     #        log += "Cache: opening time: %s<br>" % (round(cache_open_time, 3))
-      
-    if cache and width > MIN_CACHED_SIZE:
+
+    if cache is not None:
         start = time.time()
         cache.set(cache_key, cached_value)
         cache.close()
@@ -228,7 +224,7 @@ class ResponsiveImages(SitePreparsing):
             "cache_file": cache_file,  # According to the doc, cache need to be open in different thread
             "min_image_width": config.cache_min_image_width
         }
- 
+
         # creating needed directories
         for image_full_path in images:
             img_path, img_filename = os.path.split(image_full_path)
@@ -247,9 +243,9 @@ class ResponsiveImages(SitePreparsing):
         bundles = zip(images, repeat(params)) 
         tpool = ThreadPool(processes=site.config.threads)        
         #chunksize = (len(images) / (self.config.threads * 2)) < don't seems to make a huge difference
-        for result in tpool.imap_unordered(generate_thumbnails, bundles, chunksize=1):           
-        #for bundle in bundles:
-        #    result = generate_thumbnails(bundle)
+        for result in tpool.imap_unordered(generate_thumbnails, bundles, chunksize=1):
+        # for bundle in bundles:
+        #     result = generate_thumbnails(bundle)
             progress_bar.update(num_resize)
             web_path = result[0].replace("\\", "/") #be extra sure that windows path don't messup the thing
             resize_list = result[1]

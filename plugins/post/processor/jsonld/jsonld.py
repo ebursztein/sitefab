@@ -83,15 +83,21 @@ class Jsonld(PostProcessor):
 
                 if post.meta.banner:
                     filename = "generated/%s" % post.meta.banner
-                    with Image.open(filename) as im:
-                        width, height = im.size
 
-                    jsonld_data["image"] = {
-                        "@type": "ImageObject",
-                        "url": "%s%s" % (site.config.url, post.meta.banner),
-                        "height": height,
-                        "width": width
-                    }
+                    width, height = 0, 0
+                    try:
+                        with Image.open(filename) as im:
+                            width, height = im.size
+                    except IOError as e:
+                        print "banner not found"
+
+                    if width != 0 and height != 0:
+                        jsonld_data["image"] = {
+                            "@type": "ImageObject",
+                            "url": "%s%s" % (site.config.url, post.meta.banner),
+                            "height": height,
+                            "width": width
+                        }
 
                 jsonld_data["about"] = [{"name": post.meta.category, "url": "%s%s%s" % (
                 site.config.url, site.config.collections.output_dir, correct_category)}]
