@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>{{ meta.title|safe }}</title>
     {# CSS #}
-    <link rel="stylesheet" type="text/css" href="/static/css/foundation.min.css">
+    <link rel="stylesheet" type="text/css" href="static/css/foundation.min.css">
     {# favicons #}
     {% include 'includes/favicon.html' %}
     {# JS #}
-    <script src="/static/js/search.js"></script>
-    <script>
+    <script src="static/js/search.js"></script>
+    <script src="static/js/autocomplete.js"></script>
+    <!--script>
         // Picture element HTML5 shiv
         document.createElement( "picture" );
     </script>
-    <script src="/static/js/picturefill.min.js"></script>
+    <script src="/static/js/picturefill.min.js"></script-->
 </head>
 <body>
 
@@ -52,6 +53,13 @@
 </div>
 <script>
 
+    //autocomplete
+    //init objectr
+    var autocomplete = new Autocomplete();
+    //this can be optimized by doing it server side.
+    autocomplete.load_data(trie_data);
+
+    //search
     var search_results = document.getElementById('search_results')
 
     function search_callback(docs, query) {
@@ -72,6 +80,7 @@
         return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
     }
 
+    //This can be optimized by doing it server side
     search_init("searchtop", search_callback);
 
     //do the search based of url parameters if needed

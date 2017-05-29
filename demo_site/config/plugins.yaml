@@ -26,11 +26,6 @@ PostProcessor:
     enable: true
   jsonld:
     enable: true
-  post_linter:
-    check_content: false
-    config_file: config/linter_config.yaml
-    enable: false
-    online_checks: false
   read_time:
     enable: true
     wpm: 260
@@ -76,6 +71,13 @@ SiteProcessor:
 # Plugins that render additional pages after the rendering.
 ##########################\###
 SiteRendering:
+  autocomplete:
+    enable: true
+    max_words: 3
+    min_word_letter: 4
+    min_words: 1
+    num_suggestions: 1000
+    output_path: static/js/
   rss:
     accent_color: 03A9F4
     analytics_code: UA-112090-10
@@ -95,3 +97,11 @@ SiteRendering:
   sitemap:
     enable: true
     template: sitemap.xml
+
+##########################
+# TemplateFilter
+# Plugins that define jinja2 filters to be used in templates
+##########################\###
+TemplateFilter:
+  format_ts:
+    enable: false
