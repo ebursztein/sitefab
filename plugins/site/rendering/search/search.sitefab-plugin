@@ -1,7 +1,7 @@
 [Core]
 Name = Search page
 Module = search
-Version = 1
+Version = 1.2
 
 [Documentation]
 Filename = README.md

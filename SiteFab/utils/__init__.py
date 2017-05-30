@@ -28,10 +28,6 @@ def print_color_list(lst, prefix='|-'):
         cprint(st, color)
         count += 1
 
-def remove_duplicate_space(txt):
-    "Remoce duplicate space"
-    return re.sub(' +', ' ', txt)
-
 ### Object dict ###
 def create_objdict():
     "Create a an empty objdict object"

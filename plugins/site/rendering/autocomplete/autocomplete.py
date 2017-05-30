@@ -3,50 +3,13 @@ import os
 import math
 import json
 import re
-from stop_words import get_stop_words
 
 from SiteFab.Plugins import SiteRendering
 from SiteFab.SiteFab import SiteFab
 from SiteFab import files
 from SiteFab import utils
-
+from SiteFab import nlp
 class Autocomplete(SiteRendering):
-
-    def build_stop_words(self, lang='en'):
-        stop_words = get_stop_words(lang)
-        ### adding additional stop words
-        stop_words += ['can', 'will', 'use', 'one', 'using', 'used', 'also', 'see', 'first', 'like']
-        stop_words += ['page', 'get', 'new', 'two', 'site', 'blog', 'many', "don't", 'dont', 'way']
-        stop_words += ['last', 'best', 'able', 'even', 'next', 'last', 'let', "none", 'every', 'three']
-        stop_words += ['lot', 'well', 'chart', 'much', 'based', 'important', 'posts', 'reads', 'least']
-        stop_words += ['still', 'follow']
-        return stop_words
-
-    def remove_by_word_length(self, words, min_letters, max_letters=16):
-        cleaned = []
-        for w in words:
-            l = len(w)
-            if l < min_letters:
-                continue
-            if l > max_letters:
-                continue
-
-            cleaned.append(w)
-        return cleaned
-
-    def remove_stop_words(self, words, stop_words):
-        """Sanitize using intersection and list.remove()
-        Pro:
-            Fastest method
-        Downsides:
-            - Looping over list while removing from it?http://stackoverflow.com/questions/1207406/remove-items-from-a-list-while-iterating-in-python
-        """
-
-        stop_words = set(stop_words)
-        for sw in stop_words.intersection(words):
-            while sw in words:
-                words.remove(sw)
-        return words
 
     #@profile
     def process(self, unused, site, config):
@@ -65,7 +28,7 @@ class Autocomplete(SiteRendering):
         
         log_info = "base javascript: %s<br>ouput:%s%s" % (js_filename, output_path, js_filename)
 
-        stop_words = self.build_stop_words(lang='en')
+        stop_words = nlp.build_stop_words(lang='en')
 
         #Reading the base JS
         plugin_dir = os.path.dirname(__file__)
@@ -86,12 +49,11 @@ class Autocomplete(SiteRendering):
             info.append(post.meta.title)
             #print info
             txt = " ".join(info)
-            txt = txt.lower().replace("\n", " ").replace("\r", " ")
-            txt = re.sub('[^a-z \']', '', txt)
+            txt = nlp.clean_text(txt)
             words = txt.split()
             #remove stop words
-            words = self.remove_stop_words(words, stop_words)
-            words = self.remove_by_word_length(words, min_word_letters)
+            words = nlp.remove_stop_words(words, stop_words)
+            words = nlp.remove_words_by_length(words, min_word_letters)
             
             #extracting ngrams
             #max_words += 1  # range requires +1
@@ -112,32 +74,32 @@ class Autocomplete(SiteRendering):
             if "authors" in post.meta:
                 for author in post.meta.authors:
                     author = author.strip().lower().replace(",", '')
-                    author = utils.remove_duplicate_space(author)
+                    author = nlp.remove_duplicate_space(author)
                     ngrams_frequencies[author] += AUTHOR_COEFF
                     post_frequencies[author] += 1
             
             if post.meta.conference_name:
                 conf = post.meta.conference_name.lower().strip()
-                conf = utils.remove_duplicate_space(conf)
+                conf = nlp.remove_duplicate_space(conf)
                 ngrams_frequencies[conf] += CONFERENCE_COEFF
                 post_frequencies[conf] += 1
            
             if post.meta.conference_short_name:
                 short = post.meta.conference_short_name.lower().strip()
-                short = utils.remove_duplicate_space(short)
+                short = nlp.remove_duplicate_space(short)
                 ngrams_frequencies[short] += CONFERENCE_COEFF
                 post_frequencies[short] += 1
             
             if post.meta.category:
                 category = post.meta.category.lower().strip()
-                category = utils.remove_duplicate_space(category)
+                category = nlp.remove_duplicate_space(category)
                 ngrams_frequencies[category] += CATEGORY_COEFF
                 post_frequencies[category] += 1
 
             if post.meta.tags:
                 for tag in post.meta.tags:
                     tag = tag.lower().strip()
-                    tag = utils.remove_duplicate_space(tag)
+                    tag = nlp.remove_duplicate_space(tag)
                     ngrams_frequencies[tag] += TAG_COEFF
                     post_frequencies[tag] += 1
 

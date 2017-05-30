@@ -6,7 +6,7 @@ import re
 from SiteFab.Plugins import SiteRendering
 from SiteFab.SiteFab import SiteFab
 from SiteFab import files
-from SiteFab import utils
+from SiteFab import nlp
 
 class Search(SiteRendering):
     def process(self, unused, site, config):
@@ -14,6 +14,8 @@ class Search(SiteRendering):
         js_filename = "search.js" 
         output_path = config.output_path
         num_tfidf_keywords = config.num_tfidf_keywords
+        
+        stop_words = nlp.build_stop_words('en')
 
 
         log_info = "base javascript: %s<br>ouput:%s%s<br>" % (js_filename, output_path, js_filename)
@@ -33,14 +35,18 @@ class Search(SiteRendering):
         tf = defaultdict(lambda : defaultdict(float))
         num_doc = len(site.posts)
         for post in site.posts:
-            txt = post.md.lower().replace("\n", " ").replace("-", " ").replace("\r", " ")
-            txt = re.sub('[^a-z ]', '', txt)
-            for tok in set(txt.split(" ")): #using set to get a count of document a token appears
-                if len(tok) > 2:
-                    df[tok] += 1
-            for tok in txt.split(" "): #term frequency per document
-                if len(tok) > 2:
-                    tf[post.meta.permanent_url][tok] += 1
+            txt = nlp.clean_text(post.md)
+            words = txt.split(" ")
+            words = nlp.remove_stop_words(words, stop_words)
+            words = nlp.remove_words_by_length(words, 3)
+            
+            # term frequency
+            for word in words: 
+                tf[post.meta.permanent_url][word] += 1
+            
+            # document frequency
+            for word in set(words): 
+                df[word] += 1
 
         # compute df - idf
         for slug, tokens in tf.iteritems():
@@ -55,18 +61,25 @@ class Search(SiteRendering):
             tokens = tf[post.meta.permanent_url]
             tfidf_keywords = " ".join(sorted(tokens, key=tokens.get, reverse=True)[:num_tfidf_keywords])
 
-            authors = " ".join(post.meta.authors).replace(",", " ")
-            authors = utils.remove_duplicate_space(authors)
+            authors = nlp.clean_text(" ".join(post.meta.authors))
+            authors = nlp.remove_duplicate_space(authors)
 
             conference = ""
             if post.meta.conference_name:
                 conference = "%s %s" % (post.meta.conference_name, post.meta.conference_short_name)
-            
+                conference = nlp.clean_text(conference)
+
             keywords = ""
             if post.meta.category:
-                keywords += "%s " % post.meta.category.lower()
+                keywords += "%s " % post.meta.category
             if post.meta.tags:
-                keywords += " ".join(post.meta.tags).lower()
+                keywords += " ".join(post.meta.tags)
+            keywords = nlp.clean_text(keywords)
+
+            abstract = nlp.clean_text(post.meta.abstract)
+            abstract = nlp.remove_stop_words(abstract, stop_words)
+            title = nlp.clean_text(post.meta.title)
+            title = nlp.remove_stop_words(title, stop_words)
 
             # add additional informations based of plugins
             plugins = ""
@@ -90,7 +103,7 @@ class Search(SiteRendering):
                     "image_url": "%s",
                     %s
                 },
-            """ % (count, count, post.meta.title, post.meta.abstract, keywords, tfidf_keywords, authors, conference, post.meta.permanent_url, post.meta.banner, plugins)
+            """ % (count, count, title, abstract, keywords, tfidf_keywords, authors, conference, post.meta.permanent_url, post.meta.banner, plugins)
             count += 1
         docs_string += "}"
 
