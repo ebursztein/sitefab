@@ -3,6 +3,30 @@
 Create a trie base autocomplete that allows to offer autocompletion
 
 ## Usage
+Once the autocomplete is initialized to get an autocomplete for a given string simply call:
+
+```javascript
+autocomplete.get("poker")
+```
+
+This will return you an array of objects:
+
+```javascript
+[
+    {"w": "elie",
+     "s": 42,
+     "d": 3
+    },
+    {"w": "elie bursztein",
+     "s": 34,
+     "d": 2
+    },
+    ...
+]
+```
+where `w` is the completed word, `s` is the relevance score (higher == more relevant), `d` is the number of documents the word was found.
+
+### Page example
 
 Here is a simple search page that show the autocompletion via an inputbox:
 
@@ -42,6 +66,19 @@ Here is a simple search page that show the autocompletion via an inputbox:
 </html>
 
 ```
+
+## Scoring
+
+Score are computed server side. Basically the fomula is 
+
+```math
+frequency * num_document * document_coeff
+```
+
+Where document coeff is 10 by default. Frontmatter fields get their frequency multiplied by 10 to ensure they are the most represented.
+
+
+
 
 Note you most likely want to use glup to preload the trie data.
 FIXME glup example.
