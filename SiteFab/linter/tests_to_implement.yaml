@@ -1,0 +1,127 @@
+####
+
+E1022: 
+    description: "meta field %s has no value"
+    fix: "add a value"
+E104: 
+    description: "meta field %s value %s is very short"
+    fix: "typo?"
+E105:
+    description: "%s value %s is not a valid date"
+    fix: "date format: day month_abbrv year. example: 01 Jul 2016"
+E106: 
+    description: "meta field %s not recognized"
+    fix: "typo?"
+E107:
+    description: "tags must be an array. current value: %s, (type:%s)"
+    fix: "use Yaml array"
+E108:
+    description: "seo_keywords must be an array. current value: %s, (type:%s)"
+    fix: "use Yaml array"
+E109:
+    description: "tags must be in lowercase. The following tag is not lowercase: %s"
+    fix: ""
+E110:
+    description: "frontmatter data not found."
+    fix: "add frontmatter data"
+E111:
+    description: "seo_keywords must be in lowercase. The following tag is not lowercase: %s"
+    fix: ""
+E112:
+    description: "Banner is not from: https://www.elie.net/image/public/. url is:%s"
+    fix: "make sure the banner url is correct"
+E114:
+    description: "Banner contains parameters. url is:%s"
+    fix: "make sure the banner url does not contains parameters"
+E115:
+    description: "Banner contains a weird character. url is:%s"
+    fix: "make sure the banner url does not contain a typo"
+E116:
+    description: "permanent_url contains invalid character. url is:%s"
+    fix: "make sure the permanent_url is only lower + - and number"
+E117:
+    description: "permanent_url must contains the blog category. url is:%s"
+    fix: "expected format category/your-title-in-lowercase"
+E118:
+    description: "Invalid author name:%s"
+    fix: "author format is Firstname, Lastname"
+E119:
+    description: "Invalid author capitalization:%s"
+    fix: "Make sure you capitalize the author name. Expected format: Firstname, Lastname"
+E120:
+    description: "Invalid format for files, expectected dict got:%s"
+    fix: "Make sure files is a hashtable"
+E121:
+    description: "File url contains params or invalid char:%s"
+    fix: "typo?"
+E122:
+    description: "Abstract contains HTML:%s"
+    fix: "cleanup the abstract"
+E123:
+    description: "Title contains HTML:%s"
+    fix: "cleanup the title"
+
+E201:
+    description: "H1 tag found: %s"
+    fix: "No H1 needed. the frontmatter title is used"
+E202:
+    description: "Deprecated"
+    fix: ""
+E203:
+    description: "Deprecated"
+    fix: ""
+E204:
+    description: "No H2 found"
+    fix: "Add h2 for each post section"
+E205:
+    description: "Duplicate H%s found: %s"
+    fix: "Remove duplicate header"
+E206:
+    description: "Image is not from: https://www.elie.net/image/public/. url is:%s"
+    fix: "make sure the image url is correct"
+E207:
+    description: "Image contains parameters. url is:%s"
+    fix: "make sure the image url does not contains parameters"
+E208:
+    description: "Image contains a weird character. url is:%s"
+    fix: "make sure the image url does not contain a typo"
+
+### Content ###
+E301:
+    description: "%s link returns 404"
+    fix: "Fix URL"
+E302:
+    description: "%s image returns 404"
+    fix: "Fix URL"
+E303:
+    description: "%s video returns 404"
+    fix: "Fix URL"
+W304:
+    description: "duplicate links: %s"
+    fix: "Are you sure?"
+W305:
+    description: "duplicate images: %s"
+    fix: "Are you sure?"
+W306:
+    description: "duplicate videos: %s"
+    fix: "Are you sure?"
+E307:
+    description: "File %s return 404"
+    fix: "Fix url in your frontmatter"
+E308:
+    description: "Banner image %s return 404"
+    fix: "Fix url in your frontmatter"
+
+### SEO ###
+E401:
+    description: "banner url:%s and permanent_url:%s mistmatch"
+    fix: "Both should match for SEO purpose"
+W402:
+    description: "Title len:%s too short: %s"
+    fix: "Title should be at least 40 chars"
+W403:
+    description: "Title len:%s too long: %s"
+    fix: "Title should be at at most 70 char"
+W404:
+    description: "abstract len:%s too long: %s"
+    fix: "Title should be at at most 156 char"
