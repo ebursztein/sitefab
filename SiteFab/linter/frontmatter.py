@@ -17,7 +17,7 @@ def e101_mandatory_fields(post, test_info, config):
     results = []
     for field in config.frontmatter_mandatory_fields:
         if field not in post.meta:
-            results.append(['E101', test_info['E101']  % field])
+            results.append(['E101', test_info['E101'] % field])
     return results
 
 def e102_mandatory_fields_for_specific_templates(post, test_info, config):
@@ -25,23 +25,23 @@ def e102_mandatory_fields_for_specific_templates(post, test_info, config):
     
     results = []
 
-    if  "template" not in post.meta:
+    if "template" not in post.meta:
         return results
-    print config.frontmatter_mandatory_fields_by_templates
+
     if post.meta.template in config.frontmatter_mandatory_fields_by_templates:
         for field in config.frontmatter_mandatory_fields_by_templates[post.meta.template]:
             if field not in post.meta:
-                info = test_info['E102']  % (field, post.meta.template)
+                info = test_info['E102'] % (field, post.meta.template)
                 results.append(['E102', info])
     return results
 
 def e103_field_value(post, test_info, config):
     "Check if the value for specific fields match the list"
     
-    results  = []
+    results = []
     for field in config.frontmatter_fields_value:
         if field in post.meta:
             if post.meta[field] not in config.frontmatter_fields_value[field]:
-                info = test_info['E103']  % (field, post.meta[field], config.frontmatter_fields_value[field])
+                info = test_info['E103'] % (field, post.meta[field], config.frontmatter_fields_value[field])
                 results.append(['E103', info])
     return results
