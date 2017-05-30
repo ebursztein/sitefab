@@ -95,7 +95,7 @@ Autocomplete.prototype = {
     // Fixme: cleanup malicious input
     var candidates = this.oct.get(str);
     return candidates.sort(function(a,b){
-        return (a.d < b.d) ? 1: -1;
+        return (a.s < b.s) ? 1: -1;
      }
     );
   }

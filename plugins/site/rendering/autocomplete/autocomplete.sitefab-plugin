@@ -5,7 +5,7 @@ Module = autocomplete
 [Documentation]
 Filename = README.md
 Description = Generate a trie that is used to add autocomplete in search box
-Version = 1.2
+Version = 1.3
 
 [Configuration]
 Filename = config.yaml
