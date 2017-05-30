@@ -5,6 +5,7 @@ Module = copy_dir
 [Documentation]
 Description = Copy directories
 Filename = README.md
+Version = 1.0
 
 [Configuration]
 Filename = "config.yaml"

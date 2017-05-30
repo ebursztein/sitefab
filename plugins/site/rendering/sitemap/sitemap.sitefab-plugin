@@ -1,12 +1,12 @@
 [Core]
 Name = Sitemap
 Module = sitemap
-Version = 1
 Dependencies =  compute_full_post_url, compute_full_collection_url
 
 [Documentation]
 Filename = README.md
 Description = Generate Sitemap
+Version = 1
 
 [Configuration]
 Filename = config.yaml

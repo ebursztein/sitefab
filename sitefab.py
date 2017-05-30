@@ -4,6 +4,7 @@ SiteFab take content in, output static site
 """
 import sys
 import getopt
+from collections import defaultdict
 
 from SiteFab.SiteFab import SiteFab
 from termcolor import colored, cprint
@@ -16,20 +17,49 @@ sys.setdefaultencoding('utf-8')
 
 def print_plugins_list(site, only_enable=True):
     "Output the list of plugins"
-    lst = []
-    for pl in site.plugins.get_plugins_info():
-        if only_enable:
-            if pl[3]:
-                lst.append("%s/%s: %s"% (pl[0], pl[1], pl[2]))
-        else:
-            if pl[3]:
-                status = colored("enable", 'green')
-            else:
-                status = colored("disable", 'red')
+    info = defaultdict(lambda : defaultdict(list))
+    categories = ['Collection', 'Post', 'Site']
+    phases = ['Preparsing', 'Parsing', 'Processor', 'Rendering']
 
-            lst.append("[%s] %s/%s: %s"% (status, pl[0], pl[1], pl[2]))
-    lst.sort()
-    print_color_list(lst)
+    for pl in site.plugins.get_plugins_info():
+        cat = pl[0]
+        name = pl[1]
+        status = pl[3]
+        desc = pl[2]
+        version = pl[5]
+
+        if only_enable:
+            if not status:
+                continue
+            status = ""
+        else:
+            if status:
+                status = colored("[enable] ", 'green')
+            else:
+                status = colored("[disable]", 'red')
+
+        s = "%-20s (%s):\t %s" % (name, version, desc)
+
+        for category in categories:
+            if category in cat:
+                phase = cat.replace(category, "")
+                info[category][phase].append([status, s])
+    
+    for category, data in info.iteritems():
+        print colored("[%s]" % category, 'yellow')
+        for phase in phases:
+            if len(data[phase]):
+                print colored("  %s" % phase, 'magenta')
+                count = 0
+                for plugin in data[phase]:
+                    if count % 2:
+                        plugin[1] = colored(plugin[1], 'blue')
+                    else:
+                        plugin[1] = colored(plugin[1], 'cyan')
+                    print "    |-%s%s" %  (plugin[0], plugin[1])
+                    count += 1
+        print "\n"
+
 
 def generate(config):
     "generate command main function"

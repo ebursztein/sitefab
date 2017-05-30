@@ -100,6 +100,7 @@ class Plugins():
     PLUGIN_DESC = 2
     PLUGIN_ENABLE = 3
     PLUGIN_MODULE_NAME = 4
+    PLUGIN_VERSION = 5
 
 
     def __init__(self, plugin_directory, debug_log_fname, plugins_config):
@@ -271,7 +272,12 @@ class Plugins():
             for plugin in self.plugins.getPluginsOfCategory(cat):
                 enabled = self.is_plugin_enabled(plugin)
                 module_name = self.get_plugin_module_name(plugin)
-                s = [cat, plugin.name, plugin.description, enabled, module_name]
+                try:
+                    version = plugin.version
+                except:
+                    version = "NA"
+
+                s = [cat, plugin.name, plugin.description, enabled, module_name, version]
                 pl.append(s)
         return pl
 

@@ -46,7 +46,6 @@ def remove_stop_words(slug, stop_words):
     """
 
     return_str = False
-    print type(slug)
     if isinstance(slug, str) or isinstance(slug, unicode):
         words = slug.split(" ")
         return_str = True
