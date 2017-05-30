@@ -56,7 +56,10 @@ Note you most likely  want to load the search.js after the page is loaded as it 
 FIXME add a more complex example here with aync load.
 
 ## Changelog
-
+- 05/29/17
+ - Fixed speed issue
+ - Added better scoring to ensure autocompletion include all the needed term
+ - Properly handle authors, conferences and tags
 - 05/28/17
   - Intial version
 
