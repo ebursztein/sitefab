@@ -1,4 +1,3 @@
-import inspect
 from collections import defaultdict
 import os
 import math
@@ -7,21 +6,24 @@ import re
 from SiteFab.Plugins import SiteRendering
 from SiteFab.SiteFab import SiteFab
 from SiteFab import files
+from SiteFab import utils
 
 class Search(SiteRendering):
     def process(self, unused, site, config):
         plugin_name = "search"
+        js_filename = "search.js" 
         output_path = config.output_path
         num_tfidf_keywords = config.num_tfidf_keywords
-        base_js_filename = "search.js" 
-        
-        #get the search basic javascript
-        script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-        js_file = os.path.join(script_dir, base_js_filename)
-        
+
+
+        log_info = "base javascript: %s<br>ouput:%s%s<br>" % (js_filename, output_path, js_filename)
+
+        #Reading the base JS
+        plugin_dir = os.path.dirname(__file__)
+        js_file = os.path.join(plugin_dir, js_filename)
         js = files.read_file(js_file) 
         if not js or len(js) < 10:
-            return (SiteFab.ERROR, plugin_name, "base javascript not found or too small. Check:%s" % js_file)
+            return (SiteFab.ERROR, plugin_name, "Base Javascript:%s not found or too small." % js_file)
         
 
         ## TF-IDF to select the most important words in the text of the page
@@ -53,17 +55,27 @@ class Search(SiteRendering):
             tokens = tf[post.meta.permanent_url]
             tfidf_keywords = " ".join(sorted(tokens, key=tokens.get, reverse=True)[:num_tfidf_keywords])
 
-            authors = " ".join(post.meta.authors).replace(",", "")
-            
+            authors = " ".join(post.meta.authors).replace(",", " ")
+            authors = utils.remove_duplicate_space(authors)
+
             conference = ""
             if post.meta.conference_name:
                 conference = "%s %s" % (post.meta.conference_name, post.meta.conference_short_name)
             
             keywords = ""
             if post.meta.category:
-                keywords += "%s " % post.meta.category
+                keywords += "%s " % post.meta.category.lower()
             if post.meta.tags:
-                keywords += " ".join(post.meta.tags)
+                keywords += " ".join(post.meta.tags).lower()
+
+            # add additional informations based of plugins
+            plugins = ""
+            if 'responsive_images' in site.plugin_data:
+                if post.meta.banner in site.plugin_data['responsive_images']:
+                    log_info += "found srcset for %s<br>" % post.meta.banner
+                    plugins += '"srcsets":%s,' % site.plugin_data['responsive_images'][post.meta.banner]['srcsets']
+                else:
+                    log_info += "no_srcset for %s<br>" % post.meta.banner
 
             docs_string += """
                 "%s": {
@@ -75,9 +87,10 @@ class Search(SiteRendering):
                     "authors": "%s",
                     "conference": "%s",
                     "permanent_url": "%s",
-                    "image_url": "%s"
+                    "image_url": "%s",
+                    %s
                 },
-            """ % (count, count, post.meta.title, post.meta.abstract, keywords, tfidf_keywords, authors, conference, post.meta.permanent_url, post.meta.banner)
+            """ % (count, count, post.meta.title, post.meta.abstract, keywords, tfidf_keywords, authors, conference, post.meta.permanent_url, post.meta.banner, plugins)
             count += 1
         docs_string += "}"
 
@@ -85,6 +98,5 @@ class Search(SiteRendering):
 
         # output
         path = os.path.join(site.get_output_dir(), output_path)
-        files.write_file(path, 'search.js', js)
-        log_info = "base javascript: %s<br>ouput:%ssearch.js" % (js_file, path)
+        files.write_file(path, js_filename, js)
         return (SiteFab.OK, plugin_name, log_info)
