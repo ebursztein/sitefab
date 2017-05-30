@@ -1,2 +1,4 @@
 ### Frontmatter tests ###
-frontmatter_mandatory_fields:  ["title", "banner", "creation_date", "abstract"]
+frontmatter_mandatory_fields:  ["title", "banner", "creation_date", "abstract", "template"]
+frontmatter_mandatory_fields_by_templates:
+ - publication: ["conference_name"]

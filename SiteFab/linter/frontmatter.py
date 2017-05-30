@@ -8,6 +8,7 @@ def lint(post, test_info, config):
         return results
     # Run metas tests
     results += e101_mandatory_fields(post, test_info, config)
+    results += e102_mandatory_fields_for_specific_templates(post, test_info, config)
 
     return results
 
@@ -17,5 +18,18 @@ def e101_mandatory_fields(post, test_info, config):
     for field in config.frontmatter_mandatory_fields:
         if field not in post.meta:
             results.append(['E101', test_info['E101']  % field])
+    return results
 
+def e102_mandatory_fields_for_specific_templates(post, test_info, config):
+    "Check for the presense of mandatory field for specific template"
+    
+    results = []
+
+    if  "template" not in post.meta:
+        return results
+    
+    if post.meta.template in config.frontmatter_mandatory_fields_by_templates:
+        for field in config.frontmatter_mandatory_fields_by_templates[post.meta.template]:
+            if field not in post.meta:
+                results.append(['E102', test_info['E102']  % (field, post.meta.template)])
     return results

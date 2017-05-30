@@ -255,6 +255,7 @@ class SiteFab(object):
             cprint("|-Num Skipped:%s " % self.plugin_results[self.SKIPPED], 'yellow' )
         
         cprint("\nLinter", 'magenta')
+        self.linter.render_report()
         if self.linter.num_post_with_errors():            
             cprint("|-Num post with errors:%s (check the logs!)" % self.linter.num_post_with_errors(), 'red')
 
