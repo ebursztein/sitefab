@@ -2,4 +2,4 @@ output_path: "static/js/" # where to output the search.js. relative to the outpu
 num_suggestions: 1000 # number of suggestions to store in the javascript trie
 min_words: 1 #minimal number of word to suggest
 max_words: 3 #maximal number of word to suggest
-min_word_letter: 4  #how many letter a word should be to be considered (usually 3 or 4)
+min_word_letters: 3  #how many letter a word should be to be considered (usually 3 or 4)

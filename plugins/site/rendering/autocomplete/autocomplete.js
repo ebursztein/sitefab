@@ -84,7 +84,8 @@ Autocomplete.prototype = {
     for (var i = 0; data[i]; i++) {
       info = {
         'w': data[i][0],
-        'd': data[i][1]
+        'd': data[i][1],
+        's': data[i][2]
       }
       this.oct.add(data[i][0], info)
     }

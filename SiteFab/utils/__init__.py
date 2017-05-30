@@ -28,6 +28,9 @@ def print_color_list(lst, prefix='|-'):
         cprint(st, color)
         count += 1
 
+def remove_duplicate_space(txt):
+    "Remoce duplicate space"
+    return re.sub(' +', ' ', txt)
 
 ### Object dict ###
 def create_objdict():
@@ -69,43 +72,6 @@ def objdict_to_dict(objdict):
             else:
                 d[k] = v
     return d
-
-def cleaned_txt(txt):
-    "Cleanup text so it can be used for NLP"
-    txt = txt.lower().replace("\n", " ").replace("\r", " ")
-    txt = re.sub('[^a-z \']', '', txt)
-    return txt
-
-
-def remove_stop_words(txt, lang='en'):
-    """Remove the stop words from a given text.
-    Args:
-        txt (str): text to cleanup
-        lang: language of the stopwords
-
-    Returns: 
-        str: txt with the stopword removed    
-    """
-    stop_words = get_stop_words(lang)
-    words = txt.lower().split(' ')
-    cleaned_txt = []
-    for word in words:
-        if word not in stop_words:
-            cleaned_txt.append(word)
-    return " ".join(cleaned_txt)
-
-def find_ngrams(input_list, n):
-    """ Compute the ngrams for a given list of tokens
-
-    Args:
-        input_list (list): the list of tokens (e.g words)
-        n: the length of the n-grams e.g 2 for bigram, 3 for trigram...
-
-    Returns: 
-        list: list of ngrams
-    """
-    return zip(*[input_list[i:] for i in range(n)])
-
 
 def print_header():
         cprint('''

@@ -74,7 +74,7 @@ SiteRendering:
   autocomplete:
     enable: true
     max_words: 3
-    min_word_letter: 4
+    min_word_letters: 3
     min_words: 1
     num_suggestions: 1000
     output_path: static/js/
