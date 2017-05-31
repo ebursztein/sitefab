@@ -1,0 +1,11 @@
+[Core]
+Name = NLP analyzer
+Module = nlp
+
+[Documentation]
+Filename = README.md
+Description = Perform basic NLP task on each post to generate the data needed by other plugins (e.g search)
+Version = 1.0
+
+[Configuration]
+Filename = config.yaml

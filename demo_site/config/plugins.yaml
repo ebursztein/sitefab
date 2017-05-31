@@ -78,6 +78,11 @@ SiteRendering:
     min_words: 1
     num_suggestions: 1000
     output_path: static/js/
+  nlp:
+    enable: true
+    max_word_letters: 16
+    min_word_letters: 3
+    num_tfidf_keywords_per_post: 20
   rss:
     accent_color: 03A9F4
     analytics_code: UA-112090-10

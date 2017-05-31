@@ -1,10 +1,10 @@
 [Core]
-Name = Search page
+Name = Search
 Module = search
-
+Dependencies =  nlp
 [Documentation]
 Filename = README.md
-Description = Generate a search page that run locally
+Description = Generate the javascript needed to perform search locally
 Version = 1.2
 
 [Configuration]
