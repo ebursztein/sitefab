@@ -58,9 +58,10 @@ class Search(SiteRendering):
                     "conference": "%s",
                     "permanent_url": "%s",
                     "image_url": "%s",
+                    "type": "%s",
                     %s
                 },
-            """ % (idx, idx, nlp.title, nlp.abstract, keywords, tfidf_keywords, authors, conference, post.meta.permanent_url, post.meta.banner, plugins)
+            """ % (idx, idx, nlp.title, nlp.abstract, keywords, tfidf_keywords, authors, conference, post.meta.permanent_url, post.meta.banner, post.meta.template, plugins)
             idx += 1
             log_info += "<tr><td>%s</td>%s<td>%s</td><td>%s</td></tr>" % (nlp.title, nlp.keywords, tfidf_keywords, nlp.abstract)
         docs_string += "}"
