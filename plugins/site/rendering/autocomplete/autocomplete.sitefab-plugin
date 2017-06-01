@@ -1,7 +1,7 @@
 [Core]
 Name = Autocomplete
 Module = autocomplete
-
+dependencies = nlp
 [Documentation]
 Filename = README.md
 Description = Generate a trie that is used to add autocomplete in search box

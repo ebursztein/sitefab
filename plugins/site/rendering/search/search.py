@@ -34,9 +34,10 @@ class Search(SiteRendering):
         log_info += "<table><tr><th>Title</th><th>Keywords</th><th>Keywords TF-IDF</th><th>Abstract</th></tr>"
         for post in site.posts:
 
-            nlp = site.plugin_data['nlp'][post.meta.permanent_url]
+            nlp = site.plugin_data['nlp'][post.filename]
+            
             keywords = "%s %s" % (nlp.category, " ".join(nlp.tags))
-            tfidf_keywords = " ".join(nlp.txt_tfidf[:num_tfidf_keywords])
+            tfidf_keywords = " ".join(sorted(nlp.grams[1], key=nlp.grams[1].get, reverse=True)[:num_tfidf_keywords])
             authors = " ".join(nlp.authors)
             conference = "%s %s" % (nlp.conference_short_name, nlp.conference_name)
 

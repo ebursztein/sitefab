@@ -88,4 +88,5 @@ def build_stop_words(lang='en'):
     stop_words += ['last', 'best', 'able', 'even', 'next', 'last', 'let', "none", 'every', 'three']
     stop_words += ['lot', 'well', 'chart', 'much', 'based', 'important', 'posts', 'reads', 'least']
     stop_words += ['still', 'follow']
+    # set lookup complexity is O(1)
     return set(stop_words)

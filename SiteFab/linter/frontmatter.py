@@ -45,3 +45,10 @@ def e103_field_value(post, test_info, config):
                 info = test_info['E103'] % (field, post.meta[field], config.frontmatter_fields_value[field])
                 results.append(['E103', info])
     return results
+
+
+#duplicate tags detection
+# capitalization
+# duplicate space
+# duplicate tag and authors (duplicate in list test)
+# category in tag error

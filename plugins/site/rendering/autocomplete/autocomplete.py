@@ -15,20 +15,13 @@ class Autocomplete(SiteRendering):
     def process(self, unused, site, config):
         plugin_name = "autocomplete"
         js_filename = "autocomplete.js"
-        AUTHOR_COEFF = 100
-        CATEGORY_COEFF = 100
-        TAG_COEFF = 50
-        CONFERENCE_COEFF = 100
+
         # configuration
         output_path = config.output_path
         num_suggestions = config.num_suggestions
-        min_words = config.min_words
-        max_words = config.max_words
-        min_word_letters = config.min_word_letters
+        terms_to_exclude = config.excluded_terms
         
         log_info = "base javascript: %s<br>ouput:%s%s" % (js_filename, output_path, js_filename)
-
-        stop_words = nlp.build_stop_words(lang='en')
 
         #Reading the base JS
         plugin_dir = os.path.dirname(__file__)
@@ -36,91 +29,68 @@ class Autocomplete(SiteRendering):
         js = files.read_file(js_file) 
         if not js or len(js) < 10:
             return (SiteFab.ERROR, plugin_name, "Base Javascript:%s not found or too small." % js_file)
-                
-        # Extracting ngram frequencies
+        
         ngrams_frequencies = Counter()
         post_frequencies = Counter()
-        post_taboo = {} #ensure it is only ocnunted once.
-        num_doc = len(site.posts)
-        
+        total_score = 0
+        total_doc = 0.0
+        other_fields = Counter()
         for post in site.posts:
-            info = []
-            info.append(post.md)
-            info.append(post.meta.title)
-            #print info
-            txt = " ".join(info)
-            txt = nlp.clean_text(txt)
-            words = txt.split()
-            #remove stop words
-            words = nlp.remove_stop_words(words, stop_words)
-            words = nlp.remove_words_by_length(words, min_word_letters)
-            
-            #extracting ngrams
-            #max_words += 1  # range requires +1
-            title = post.meta.title # prevent slow lookup
-            num_words = len(words)
-            for i in xrange(num_words):
-                start = i + min_words
-                stop = min(num_words, i +  max_words) + 1
-                for j in xrange(start, stop):
-                    n = " ".join(words[i:j]).strip()
-                    ngrams_frequencies[n] += 1
-                    idx = "%s-%s" % (title, n)
-                    if idx not in post_taboo:
-                        post_frequencies[n] += 1
-                        post_taboo[idx] = 1
+            post_filename = post.filename
+            nlp = site.plugin_data['nlp'][post.filename]
+            for gram_len, grams in nlp.grams.iteritems():
+                for gram, score in grams.iteritems():
+                    if gram in terms_to_exclude:
+                        continue
+                    ngrams_frequencies[gram] += score
+                    total_score += score
+                    post_frequencies[gram] += 1
+                    total_doc += 1
         
+        avg_score =  total_score / total_doc
+        boost_score = avg_score * 1.3
+        #print "%s %s %s" % (total_doc, total_score, avg_score)
+        for post in site.posts:
+            post_filename = post.filename
+            nlp = site.plugin_data['nlp'][post.filename]  
             #other field
-            if "authors" in post.meta:
-                for author in post.meta.authors:
-                    author = author.strip().lower().replace(",", '')
-                    author = nlp.remove_duplicate_space(author)
-                    ngrams_frequencies[author] += AUTHOR_COEFF
-                    post_frequencies[author] += 1
+            for author in nlp.authors:
+                other_fields[author] += boost_score
+                post_frequencies[author] += 1
+
+            other_fields[nlp.conference_name] += boost_score
+            post_frequencies[nlp.conference_name] += 1
+
+            other_fields[nlp.conference_short_name] += boost_score
+            post_frequencies[nlp.conference_short_name] += 1
+
+            other_fields[nlp.category] += boost_score
+            post_frequencies[nlp.category] += 1
             
-            if post.meta.conference_name:
-                conf = post.meta.conference_name.lower().strip()
-                conf = nlp.remove_duplicate_space(conf)
-                ngrams_frequencies[conf] += CONFERENCE_COEFF
-                post_frequencies[conf] += 1
-           
-            if post.meta.conference_short_name:
-                short = post.meta.conference_short_name.lower().strip()
-                short = nlp.remove_duplicate_space(short)
-                ngrams_frequencies[short] += CONFERENCE_COEFF
-                post_frequencies[short] += 1
-            
-            if post.meta.category:
-                category = post.meta.category.lower().strip()
-                category = nlp.remove_duplicate_space(category)
-                ngrams_frequencies[category] += CATEGORY_COEFF
-                post_frequencies[category] += 1
+            for tag in nlp.tags:
+                other_fields[tag] += boost_score
+                post_frequencies[tag] += 1
 
-            if post.meta.tags:
-                for tag in post.meta.tags:
-                    tag = tag.lower().strip()
-                    tag = nlp.remove_duplicate_space(tag)
-                    ngrams_frequencies[tag] += TAG_COEFF
-                    post_frequencies[tag] += 1
-
-        # weigth by frequency and blog post
-        max_grams = num_suggestions * 10
-        scored_ngrams = Counter()
-        for ngram in ngrams_frequencies.most_common(max_grams):
-            word = ngram[0]
-            ngram_freq = int(ngram[1]) + 1 # avoid the case of the word being there only once
-            post_freq = post_frequencies[word]
-            score = ngram_freq* post_freq * 5
-            #score = pow(ngram_freq, post_freq),
-            scored_ngrams[word] = min(score, 100000)
-
+        del post_frequencies[""]
+        del other_fields[""]
         
+        # combining all the fields into a global list
+        suggestions = Counter()
+        ngram_num = num_suggestions - len(other_fields)
+        for ngram in ngrams_frequencies.most_common(ngram_num):
+            #score = ngram_freq* post_freq * 5
+            #score = pow(ngram_freq, post_freq),
+            suggestions[ngram[0]] = int(ngram[1])
+
+        for val, score in other_fields.iteritems():
+            suggestions[val] = score
+
         output = []
         log_info += "num of ngram considered: %s<br>" % len(ngrams_frequencies)
-        log_info += "<table><tr><th>ngram</th><th>score</th><th>post frequency</th><th>total frequency</th></tr>"
-        for info in scored_ngrams.most_common(num_suggestions):
+        log_info += "<table><tr><th>ngram</th><th>score</th><th>post frequency</th><th>tf-idf score</th></tr>"
+        for info in suggestions.most_common(num_suggestions):
             word = info[0]
-            score = info[1]
+            score = int(info[1])
             post_freq = post_frequencies[word]
             ngram_freq = ngrams_frequencies[word]
             log_info += "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (word, score, post_freq, ngram_freq)
