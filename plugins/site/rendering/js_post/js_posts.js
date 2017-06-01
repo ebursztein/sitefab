@@ -1,0 +1,1 @@
+window.posts = JSON.parse("JS_POSTS_PLUGIN_REPLACE");

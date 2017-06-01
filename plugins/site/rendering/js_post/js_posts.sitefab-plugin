@@ -1,0 +1,10 @@
+[Core]
+Name = JS Posts
+Module = js_posts
+[Documentation]
+Filename = README.md
+Description = Generate a javascript representation of the posts available in javascript via window.posts
+Version = 1.0
+
+[Configuration]
+Filename = config.yaml
