@@ -142,10 +142,12 @@ class SiteFab(object):
         progress_bar = tqdm(total=len(filenames), unit=' files', desc="Files", leave=True)
         # chunksize = (len(filenames) / (self.config.threads * 2)) < using a different chunksize don't seems to make a huge difference
         errors = []
+        post_idx = 1
         for res in tpool.imap_unordered(parse_post, zip(filenames, repeat(parser_config)), chunksize=1):
             res = json.loads(res)
             post = utils.dict_to_objdict(res)
-
+            post.id = post_idx
+            post_idx += 1
             # do not add hidden post
             if post.meta.hidden:
                 continue

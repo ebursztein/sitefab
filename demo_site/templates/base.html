@@ -1,95 +1,92 @@
 <!doctype html>
 <html lang="{{ meta.language }}">
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>{{ meta.title|safe }}</title>
-    {# CSS #}
-    <link rel="stylesheet" type="text/css" href="static/css/foundation.min.css">
-    {# favicons #}
-    {% include 'includes/favicon.html' %}
-    {# JS #}
-    <script src="static/js/search.js"></script>
-    <script src="static/js/autocomplete.js"></script>
-    <!--script>
-        // Picture element HTML5 shiv
-        document.createElement( "picture" );
-    </script>
-    <script src="/static/js/picturefill.min.js"></script-->
-</head>
-<body>
-
-
-<ul>
-    <li><a href="/">Home</a></li>
-    <li><a href="/blog">Blog</a></li>
-    <li><input id="searchtop" type="text"/></li>
-</ul>
-
-<div id="search_results"></div>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>{{ meta.title|safe }}</title>
+        {# CSS #}
+        <link rel="stylesheet" type="text/css" href="static/css/foundation.min.css">
+        {# favicons #}
+        {% include 'includes/favicon.html' %}
+        {# JS #}
+        <script src="static/js/js_posts.js"></script>
+        <script src="static/js/search.js"></script>
+        <script src="static/js/autocomplete.js"></script>
+        <!--script>
+            // Picture element HTML5 shiv
+            document.createElement( "picture" );
+        </script>
+        <script src="/static/js/picturefill.min.js"></script-->
+    </head>
+    <body>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><input id="searchtop" type="text"/></li>
+        </ul>
+        <div id="search_results"></div>
 
 {% block body %}
 {% endblock %}
 
+        <div class="footer">
+            Footer
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/blog">Blog</a></li>
+            </ul>
+            Social profile
+            <ul>
+                <li><a href="/">Twitter</a></li>
+                <li><a href="/">Facebook</a></li>
+                <li><a href="/">Google+</a></li>
+                <li><a href="/">LinkedIn</a></li>
+                <li><a href="/">Instagram</a></li>
+                <li><a href="/">YouTube</a></li>
+            </ul>
+
+            Copyright - 2017
+        </div>
+        <script>
+
+            //autocomplete
+            //init objectr
+            var autocomplete = new Autocomplete();
+            //this can be optimized by doing it server side.
+            autocomplete.load_data(trie_data);
 
 
-<div class="footer">
-    Footer
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/blog">Blog</a></li>
-    </ul>
-    Social profile
-    <ul>
-        <li><a href="/">Twitter</a></li>
-        <li><a href="/">Facebook</a></li>
-        <li><a href="/">Google+</a></li>
-        <li><a href="/">LinkedIn</a></li>
-        <li><a href="/">Instagram</a></li>
-        <li><a href="/">YouTube</a></li>
-    </ul>
+            var search_results = document.getElementById('search_results');
 
-    Copyright - 2017
-</div>
-<script>
+            function search_callback(docs, query) {
+                /* Function called with search results
+                @param docs: the list of doc that matches the query
+                @param query: the query string
+                */
+                var html = "<ul>"
+                for (var i = 0; docs[i]; i++) {
+                    var doc = docs[i];
+                    var info = window.posts[doc.id];
+                    html += '<li><a href="' + info.permanent_url + '"> [' + doc.score + "]" + info.title + "</a></li>";
+                }
+                html += "</ul>";
+                search_results.innerHTML = html;
+            }
 
-    //autocomplete
-    //init objectr
-    var autocomplete = new Autocomplete();
-    //this can be optimized by doing it server side.
-    autocomplete.load_data(trie_data);
+            function getURLParameter(name) {
+                return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+            }
 
-    //search
-    var search_results = document.getElementById('search_results')
+            //This can be optimized by doing it server side
+            search_init("searchtop", search_callback);
 
-    function search_callback(docs, query) {
-        /* Function called with search results
-         @param docs: the list of doc that matches the query
-         @param query: the query string
-         */
-        html = "<ul>"
-        for (var i = 0; docs[i]; i++) {
-            doc = docs[i];
-            html += '<li><a href="' + doc.permanent_url + '"> [' + doc.score + "]" + doc.title + "</a></li>";
-        }
-        html += "</ul>"
-        search_results.innerHTML = html;
-    }
-
-    function getURLParameter(name) {
-        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
-    }
-
-    //This can be optimized by doing it server side
-    search_init("searchtop", search_callback);
-
-    //do the search based of url parameters if needed
-    query = getURLParameter('q');
-    if (query) {
-        console.log(query);
-        results = search(query)
-        search_callback(results, query);
-    }
-</script>
-</body>
+            //do the search based of url parameters if needed
+            var query = getURLParameter('q');
+            if (query) {
+                console.log(query);
+                var results = search(query);
+                search_callback(results, query);
+            }
+        </script>
+    </body>
 </html>

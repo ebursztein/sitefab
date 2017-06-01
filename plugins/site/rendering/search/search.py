@@ -1,12 +1,9 @@
-from collections import defaultdict
 import os
-import math
-import re
+import json
 
 from SiteFab.Plugins import SiteRendering
 from SiteFab.SiteFab import SiteFab
 from SiteFab import files
-from SiteFab import nlp
 
 class Search(SiteRendering):
 
@@ -29,47 +26,34 @@ class Search(SiteRendering):
 
         ## TF-IDF to select the most important words in the text of the page
         
-        idx = 1
         docs_string = "{"
+        js_posts = {}
         log_info += "<table><tr><th>Title</th><th>Keywords</th><th>Keywords TF-IDF</th><th>Abstract</th></tr>"
         for post in site.posts:
-
             nlp = site.plugin_data['nlp'][post.filename]
-            
-            keywords = "%s %s" % (nlp.category, " ".join(nlp.tags))
-            tfidf_keywords = " ".join(sorted(nlp.grams[1], key=nlp.grams[1].get, reverse=True)[:num_tfidf_keywords])
-            authors = " ".join(nlp.authors)
-            conference = "%s %s" % (nlp.conference_short_name, nlp.conference_name)
+            terms = []
+            terms.append(nlp.category)
+            terms.extend(nlp.tags)
+            terms.extend(sorted(nlp.grams[1], key=nlp.grams[1].get, reverse=True)[:num_tfidf_keywords])
+            terms = " ".join(set(terms))
+            terms = terms.replace('"', '')
 
+            js_post = {
+                "id": post.id,
+                "title": nlp.title,
+                "authors": " ".join(nlp.authors),
+                "conference": "%s %s" % (nlp.conference_short_name, nlp.conference_name),
+                "terms": terms
+            }
+            js_posts[post.id] = js_post
+            log_info += "<tr><td>%s</td><td>%s</td></tr>" % (nlp.title, terms)
 
-            plugins = ""
-            if 'responsive_images' in site.plugin_data:
-                if post.meta.banner in site.plugin_data['responsive_images']:
-                    plugins += '"srcsets":%s,' % site.plugin_data['responsive_images'][post.meta.banner]['srcsets']
-
-
-            docs_string += """
-                "%s": {
-                    "id": "%s",
-                    "title": "%s",
-                    "abstract": "%s",
-                    "keywords": "%s",
-                    "tfidf": "%s",
-                    "authors": "%s",
-                    "conference": "%s",
-                    "permanent_url": "%s",
-                    "image_url": "%s",
-                    "type": "%s",
-                    %s
-                },
-            """ % (idx, idx, nlp.title, nlp.abstract, keywords, tfidf_keywords, authors, conference, post.meta.permanent_url, post.meta.banner, post.meta.template, plugins)
-            idx += 1
-            log_info += "<tr><td>%s</td>%s<td>%s</td><td>%s</td></tr>" % (nlp.title, nlp.keywords, tfidf_keywords, nlp.abstract)
-        docs_string += "}"
         log_info += "</table>"
 
         ##output
-        js = js.replace("SEARCH_DOC_PLUGIN_REPLACE", docs_string)
+        output_string = json.dumps(js_posts)
+        output_string = output_string.replace('"', '\\"').replace('\\\\"', '\\"')
+        js = js.replace("SEARCH_DOC_PLUGIN_REPLACE", output_string)
         path = os.path.join(site.get_output_dir(), output_path)
         files.write_file(path, js_filename, js)
         return (SiteFab.OK, plugin_name, log_info)

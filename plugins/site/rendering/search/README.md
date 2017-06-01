@@ -1,6 +1,6 @@
 # Search Plugin
 
-Create a search page that allows to search through the post locally in pure javascript
+Plugin that generate the data and javascript needed to search the post locally in pure javascript
 
 ## Usage
 
@@ -10,6 +10,7 @@ Here is a simple search page that allows to search  via an inputbox and via the 
 
 <html>
     <head>
+        <script src="static/js/js_posts.js"></script>
         <script src="/static/js/search.js"></script>
     </head>
     <body>
@@ -19,33 +20,38 @@ Here is a simple search page that allows to search  via an inputbox and via the 
 
         <script>
 
-            var search_results = document.getElementById('search_results') 
+            var search_results = document.getElementById('search_results');
 
             function search_callback(docs, query) {
                 /* Function called with search results
                 @param docs: the list of doc that matches the query
                 @param query: the query string
                 */
-                html = "<ul>"
+                var html = "<ul>"
                 for (var i = 0; docs[i]; i++) {
-                    doc = docs[i];
-                    html += '<li><a href="'+ doc.permanent_url + '"> [' + doc.score + "]" + doc.title + "</a></li>";
+                    var doc = docs[i];
+                    var info = window.posts[doc.id];
+                    html += '<li><a href="' + info.permanent_url + '"> [' + doc.score + "]" + info.title + "</a></li>";
                 }
-                html += "</ul>" 
+                html += "</ul>";
                 search_results.innerHTML = html;
             }
 
-            // to perform the search when the user an input box
-            search_init("searchbox", search_callback);
+            function getURLParameter(name) {
+                return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+            }
 
-            //to perform the search based of url parameters if needed
-            query = getURLParameter('q');
+            //This can be optimized by doing it server side
+            search_init("searchtop", search_callback);
+
+            //do the search based of url parameters if needed
+            var query = getURLParameter('q');
             if (query) {
-                results = search(query)
+                console.log(query);
+                var results = search(query);
                 search_callback(results, query);
             }
         </script>
-
     </body>
 </html>
 
@@ -55,7 +61,19 @@ Note you most likely  want to load the search.js after the page is loaded as it 
 
 FIXME add a more complex example here with aync load.
 
+## Dependencies
+This plugin requires the following plugins:
+
+- nlp: core nlp part of sitefab that do all the terms extraction
+- js_posts: Provide a javascript representation of the posts used for display
+
+## See also
+if you wish to add aucomplete to your search then look at the `autocomplete` plugin.
+
 ## Changelog
+- 06/01/17
+    - Refactored to use the nlp and js_posts plugins making the search more modular, lighter and faster.
+    - Reworked the doc and examples to simplify it.
 
 - 12/29/16
     - Added search via parameter
@@ -69,4 +87,4 @@ FIXME add a more complex example here with aync load.
 
 **Author**: Elie Bursztein
 
-List library here
+Leverage ElasticLunr: https://github.com/weixsong/elasticlunr.js

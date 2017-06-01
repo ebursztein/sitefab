@@ -78,6 +78,16 @@ SiteRendering:
     - top
     num_suggestions: 1000
     output_path: static/js/
+  js_posts:
+    enable: true
+    meta_fields_to_output:
+    - title
+    - category
+    - authors
+    - permanent_url
+    output_path: static/js/
+    plugin_data_to_output:
+    - responsive_banner
   nlp:
     enable: true
     max_word_letters: 16

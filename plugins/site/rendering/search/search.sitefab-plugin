@@ -1,11 +1,11 @@
 [Core]
 Name = Search
 Module = search
-Dependencies =  nlp
+Dependencies =  nlp, js_posts
 [Documentation]
 Filename = README.md
-Description = Generate the javascript needed to perform search locally
-Version = 1.2
+Description = Generate the javascript needed to implement a local search
+Version = 1.3
 
 [Configuration]
 Filename = config.yaml

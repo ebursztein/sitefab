@@ -1,5 +1,5 @@
 //Search core code
-var search_docs = SEARCH_DOC_PLUGIN_REPLACE;
+window.search_docs = JSON.parse("SEARCH_DOC_PLUGIN_REPLACE");
     
 var search_index  = null
 function search_init(search_box_id, callback) {
@@ -18,15 +18,13 @@ function search_init(search_box_id, callback) {
     //init the index
     search_index = elasticlunr(function () {
         this.addField('title');
-        this.addField('abstract');
         this.addField('authors');
         this.addField('conference');
-        this.addField('keywords');
-        this.addField('tfidf')
+        this.addField('terms');
         this.setRef('id');
     });
-    for (var idx in search_docs) {
-        search_index.addDoc(search_docs[idx]);
+    for (var idx in window.search_docs) {
+        search_index.addDoc(window.search_docs[idx]);
     }
     
 }
@@ -45,15 +43,10 @@ function search(query, bool_operator="AND", partial=true) {
         bool: bool_operator,
         expand: partial,
         fields: {
-          title: {boost: 4},
-          
-          abstract: {boost: 3},
+          title: {boost: 3},
           authors: {boost: 3},
-          conference: {boost: 3},
-          
-          keywords: {boost: 2},
-          
-          tfidf: {boost: 1}
+          conference: {boost: 2},
+          terms: {boost: 1},
         }
     })
 
@@ -71,13 +64,12 @@ function search(query, bool_operator="AND", partial=true) {
 }
 
 
-/* Lunr code */
 /**
  * elasticlunr - http://weixsong.github.io
  * Lightweight full-text search engine in Javascript for browser search and offline search. - 0.9.5
  *
- * Copyright (C) 2016 Oliver Nightingale
- * Copyright (C) 2016 Wei Song
+ * Copyright (C) 2017 Oliver Nightingale
+ * Copyright (C) 2017 Wei Song
  * MIT Licensed
  * @license
  */
@@ -86,8 +78,8 @@ function search(query, bool_operator="AND", partial=true) {
 
 /*!
  * elasticlunr.js
- * Copyright (C) 2016 Oliver Nightingale
- * Copyright (C) 2016 Wei Song
+ * Copyright (C) 2017 Oliver Nightingale
+ * Copyright (C) 2017 Wei Song
  */
 
 /**
@@ -165,8 +157,8 @@ lunr = elasticlunr;
 
 /*!
  * elasticlunr.utils
- * Copyright (C) 2016 Oliver Nightingale
- * Copyright (C) 2016 Wei Song
+ * Copyright (C) 2017 Oliver Nightingale
+ * Copyright (C) 2017 Wei Song
  */
 
 /**
@@ -208,8 +200,8 @@ elasticlunr.utils.toString = function (obj) {
 };
 /*!
  * elasticlunr.EventEmitter
- * Copyright (C) 2016 Oliver Nightingale
- * Copyright (C) 2016 Wei Song
+ * Copyright (C) 2017 Oliver Nightingale
+ * Copyright (C) 2017 Wei Song
  */
 
 /**
@@ -296,8 +288,8 @@ elasticlunr.EventEmitter.prototype.hasHandler = function (name) {
 };
 /*!
  * elasticlunr.tokenizer
- * Copyright (C) 2016 Oliver Nightingale
- * Copyright (C) 2016 Wei Song
+ * Copyright (C) 2017 Oliver Nightingale
+ * Copyright (C) 2017 Wei Song
  */
 
 /**
@@ -382,8 +374,8 @@ elasticlunr.tokenizer.getSeperator = function() {
 }
 /*!
  * elasticlunr.Pipeline
- * Copyright (C) 2016 Oliver Nightingale
- * Copyright (C) 2016 Wei Song
+ * Copyright (C) 2017 Oliver Nightingale
+ * Copyright (C) 2017 Wei Song
  */
 
 /**
@@ -637,8 +629,8 @@ elasticlunr.Pipeline.prototype.toJSON = function () {
 };
 /*!
  * elasticlunr.Index
- * Copyright (C) 2016 Oliver Nightingale
- * Copyright (C) 2016 Wei Song
+ * Copyright (C) 2017 Oliver Nightingale
+ * Copyright (C) 2017 Wei Song
  */
 
 /**
@@ -959,6 +951,11 @@ elasticlunr.Index.prototype.getFields = function () {
  */
 elasticlunr.Index.prototype.search = function (query, userConfig) {
   if (!query) return [];
+  if (typeof query === 'string') {
+    query = {any: query};
+  } else {
+    query = JSON.parse(JSON.stringify(query));
+  }
 
   var configStr = null;
   if (userConfig != null) {
@@ -967,12 +964,24 @@ elasticlunr.Index.prototype.search = function (query, userConfig) {
 
   var config = new elasticlunr.Configuration(configStr, this.getFields()).get();
 
-  var queryTokens = this.pipeline.run(elasticlunr.tokenizer(query));
+  var queryTokens = {};
+  var queryFields = Object.keys(query);
+
+  for (var i = 0; i < queryFields.length; i++) {
+    var key = queryFields[i];
+
+    queryTokens[key] = this.pipeline.run(elasticlunr.tokenizer(query[key]));
+  }
 
   var queryResults = {};
 
   for (var field in config) {
-    var fieldSearchResults = this.fieldSearch(queryTokens, field, config);
+    var tokens = queryTokens[field] || queryTokens.any;
+    if (!tokens) {
+      continue;
+    }
+
+    var fieldSearchResults = this.fieldSearch(tokens, field, config);
     var fieldBoost = config[field].boost;
 
     for (var docRef in fieldSearchResults) {
@@ -989,8 +998,13 @@ elasticlunr.Index.prototype.search = function (query, userConfig) {
   }
 
   var results = [];
+  var result;
   for (var docRef in queryResults) {
-    results.push({ref: docRef, score: queryResults[docRef]});
+    result = {ref: docRef, score: queryResults[docRef]};
+    if (this.documentStore.hasDoc(docRef)) {
+      result.doc = this.documentStore.getDoc(docRef);
+    }
+    results.push(result);
   }
 
   results.sort(function (a, b) { return b.score - a.score; });
@@ -1023,28 +1037,28 @@ elasticlunr.Index.prototype.fieldSearch = function (queryTokens, fieldName, conf
       tokens = this.index[fieldName].expandToken(token);
     }
     // Consider every query token in turn. If expanded, each query token
-    // corresponds to a set of tokens, which is all tokens in the 
+    // corresponds to a set of tokens, which is all tokens in the
     // index matching the pattern queryToken* .
     // For the set of tokens corresponding to a query token, find and score
-    // all matching documents. Store those scores in queryTokenScores, 
+    // all matching documents. Store those scores in queryTokenScores,
     // keyed by docRef.
     // Then, depending on the value of booleanType, combine the scores
     // for this query token with previous scores.  If booleanType is OR,
     // then merge the scores by summing into the accumulated total, adding
-    // new document scores are required (effectively a union operator). 
-    // If booleanType is AND, accumulate scores only if the document 
+    // new document scores are required (effectively a union operator).
+    // If booleanType is AND, accumulate scores only if the document
     // has previously been scored by another query token (an intersection
-    // operation0. 
-    // Furthermore, since when booleanType is AND, additional 
+    // operation0.
+    // Furthermore, since when booleanType is AND, additional
     // query tokens can't add new documents to the result set, use the
-    // current document set to limit the processing of each new query 
+    // current document set to limit the processing of each new query
     // token for efficiency (i.e., incremental intersection).
-    
+
     var queryTokenScores = {};
     tokens.forEach(function (key) {
       var docs = this.index[fieldName].getDocs(key);
       var idf = this.idf(key, fieldName);
-      
+
       if (scores && booleanType == 'AND') {
           // special case, we can rule out documents that have been
           // already been filtered out because they weren't scored
@@ -1091,7 +1105,7 @@ elasticlunr.Index.prototype.fieldSearch = function (queryTokens, fieldName, conf
         }
       }
     }, this);
-    
+
     scores = this.mergeScores(scores, queryTokenScores, booleanType);
   }, this);
 
@@ -1113,7 +1127,7 @@ elasticlunr.Index.prototype.fieldSearch = function (queryTokens, fieldName, conf
 
 elasticlunr.Index.prototype.mergeScores = function (accumScores, scores, op) {
     if (!accumScores) {
-        return scores; 
+        return scores;
     }
     if (op == 'AND') {
         var intersection = {};
@@ -1232,7 +1246,7 @@ elasticlunr.Index.prototype.use = function (plugin) {
 };
 /*!
  * elasticlunr.DocumentStore
- * Copyright (C) 2016 Wei Song
+ * Copyright (C) 2017 Wei Song
  */
 
 /**
@@ -1426,8 +1440,8 @@ function clone(obj) {
 }
 /*!
  * elasticlunr.stemmer
- * Copyright (C) 2016 Oliver Nightingale
- * Copyright (C) 2016 Wei Song
+ * Copyright (C) 2017 Oliver Nightingale
+ * Copyright (C) 2017 Wei Song
  * Includes code from - http://tartarus.org/~martin/PorterStemmer/js.txt
  */
 
@@ -1645,8 +1659,8 @@ elasticlunr.stemmer = (function(){
 elasticlunr.Pipeline.registerFunction(elasticlunr.stemmer, 'stemmer');
 /*!
  * elasticlunr.stopWordFilter
- * Copyright (C) 2016 Oliver Nightingale
- * Copyright (C) 2016 Wei Song
+ * Copyright (C) 2017 Oliver Nightingale
+ * Copyright (C) 2017 Wei Song
  */
 
 /**
@@ -1832,8 +1846,8 @@ elasticlunr.stopWordFilter.stopWords = elasticlunr.defaultStopWords;
 elasticlunr.Pipeline.registerFunction(elasticlunr.stopWordFilter, 'stopWordFilter');
 /*!
  * elasticlunr.trimmer
- * Copyright (C) 2016 Oliver Nightingale
- * Copyright (C) 2016 Wei Song
+ * Copyright (C) 2017 Oliver Nightingale
+ * Copyright (C) 2017 Wei Song
  */
 
 /**
@@ -1863,7 +1877,7 @@ elasticlunr.trimmer = function (token) {
 elasticlunr.Pipeline.registerFunction(elasticlunr.trimmer, 'trimmer');
 /*!
  * elasticlunr.InvertedIndex
- * Copyright (C) 2016 Wei Song
+ * Copyright (C) 2017 Wei Song
  * Includes code from - http://tartarus.org/~martin/PorterStemmer/js.txt
  */
 
@@ -2098,7 +2112,7 @@ elasticlunr.InvertedIndex.prototype.toJSON = function () {
 
 /*!
  * elasticlunr.Configuration
- * Copyright (C) 2016 Wei Song
+ * Copyright (C) 2017 Wei Song
  */
  
  /** 
@@ -2289,7 +2303,7 @@ elasticlunr.Configuration.prototype.reset = function () {
 
 /*!
  * lunr.SortedSet
- * Copyright (C) 2016 Oliver Nightingale
+ * Copyright (C) 2017 Oliver Nightingale
  */
 
 /**
