@@ -141,6 +141,7 @@ class SiteFab(object):
         parser_config['plugin_data'] = self.plugin_data # make plugins data available to the parser. e.g responsive images.
         progress_bar = tqdm(total=len(filenames), unit=' files', desc="Files", leave=True)
         # chunksize = (len(filenames) / (self.config.threads * 2)) < using a different chunksize don't seems to make a huge difference
+        errors = []
         for res in tpool.imap_unordered(parse_post, zip(filenames, repeat(parser_config)), chunksize=1):
             res = json.loads(res)
             post = utils.dict_to_objdict(res)
@@ -159,7 +160,9 @@ class SiteFab(object):
 
             # insert in template list
             if not post.meta.template:
-                utils.error("%s has no template defined. Can't render it" % post.filename)
+                errors += "%s has no template defined. Can't render it" % post.filename
+                continue
+
             self.posts_by_template.add(post.meta.template, post)
 
             # insert in microformat list
@@ -175,10 +178,13 @@ class SiteFab(object):
                 for tag in post.meta.tags:
                     self.posts_by_tag.add(tag, post)
 
-            progress_bar.update()
+            progress_bar.update(1)
         
         tpool.close()
         tpool.join()
+        if len(errors):
+            utils.error("\n".join(errors))
+
         self.timings.parse_stop = time.time()
 
     def process(self):
