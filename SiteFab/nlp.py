@@ -1,7 +1,7 @@
 import re
 from stop_words import get_stop_words
 
-re_clean_text = re.compile('[^a-z -]')
+re_clean_text = re.compile('[^a-z -\']')
 re_duplicate_space = re.compile(' +')
 
 def get_normalized_list_of_words(txt, stop_words, word_min_letters=3, word_max_letters=16):
