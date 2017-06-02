@@ -41,7 +41,6 @@ class JSPosts(SiteRendering):
         
         # replacing placeholder with computation result
         output_string = json.dumps(js_posts)
-        output_string = output_string.replace('"', '\\"').replace('\\\\"', '\\"')
         log_info += "output string:<br>%s" % output_string
         js = js.replace("JS_POSTS_PLUGIN_REPLACE", output_string)
 

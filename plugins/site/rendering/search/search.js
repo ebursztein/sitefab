@@ -1,5 +1,5 @@
 //Search core code
-window.search_docs = JSON.parse("SEARCH_DOC_PLUGIN_REPLACE");
+window.search_docs = SEARCH_DOC_PLUGIN_REPLACE;
     
 var search_index  = null
 function search_init(search_box_id, callback) {
