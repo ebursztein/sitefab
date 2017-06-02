@@ -3,6 +3,8 @@ import json
 from PIL import Image
 from tqdm import tqdm
 import random
+import pprint
+
 from multiprocessing import Pool as ThreadPool
 from itertools import repeat
 from diskcache import Cache as dc
@@ -17,7 +19,6 @@ import time
 def generate_thumbnails((images, params)):
     "generate thumbnails for a given image"
     total_time = time.time()
-    resize_list = {} # record all the generated images
     num_errors = 0
     MIN_CACHED_SIZE = params['min_image_width']  #minimal width where it make sense to cache.
 
@@ -35,6 +36,7 @@ def generate_thumbnails((images, params)):
     
     results = [] # returned info
     for image_full_path in images:
+        resize_list = {}
         log = "<br><br><h2>%s</h2>" % (image_full_path)
         
         # File info extraction
@@ -166,7 +168,7 @@ def generate_thumbnails((images, params)):
             log += "<h3>Cache stats</h3>"
             log += '<table><tr><th>Action</th><th>Timing</th></tr><tr><td>Open</td><td>%s</td></tr><tr><td>Fetch</td><td>%s</td></tr><tr><td>Write</td><td>%s</td></tr></table>' % (cache_timing['opening'], cache_timing['fetching'], cache_timing['writing'])
    
-        results.append([web_path, resize_list, width, log, num_errors])
+        results.append([web_path, resize_list, width, log, num_errors, img_hash])
     
     log += "Total time:%s<br>" % (round(time.time() - total_time, 3))
     if cache:
@@ -182,35 +184,35 @@ class ResponsiveImages(SitePreparsing):
     def process(self, unused, site, config):
         log = ""
         errors = False
-
+        plugin_name  = "responsive_images"
         input_dir = config.input_dir
         output_dir = config.output_dir
         multithreading = config.multithreading
-        cache_file = os.path.join(site.config.dir.cache, config.cache_name)
+        cache_file = os.path.join(site.config.dir.cache, plugin_name)
 
         #loading HTML template
         fname = os.path.join(files.get_site_path(), config.template_file)
         html_template = files.read_file(fname)
 
         if len(html_template) == "":
-            return (SiteFab.ERROR, "ResponsiveImages", log)
+            return (SiteFab.ERROR, plugin_name, log)
 
         # creating output directory
         if not output_dir:
-            return (SiteFab.ERROR, "ResponsiveImages", "no output_dir specified")
+            return (SiteFab.ERROR, plugin_name, "no output_dir specified")
 
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
         # reading images list
         if not input_dir:
-            return (SiteFab.ERROR, "ResponsiveImages", "no input_dir specified")
+            return (SiteFab.ERROR, plugin_name, "no input_dir specified")
         
         
         images  =  files.get_files_list(input_dir, ["*.jpg","*.jpeg", "*.png", "*.gif"])
         
         if len(images) == 0:
-            return (SiteFab.ERROR, "ResponsiveImages", "no images found")
+            return (SiteFab.ERROR, plugin_name, "no images found")
         
         if config.additional_formats:
             requested_format_list = config.additional_formats
@@ -270,6 +272,7 @@ class ResponsiveImages(SitePreparsing):
             width = result[2]
             log += result[3]
             num_errors = result[4]
+            img_hash = result[5]
             if num_errors:
                 errors = True
 
@@ -279,14 +282,16 @@ class ResponsiveImages(SitePreparsing):
                 srcsets[webformat] = ", ".join(srcset)
             resize_images[web_path] = {"srcsets": srcsets,
                                     "media": '(max_width: %spx)' % width,
-                                    "sizes": '(max_width: %spx)' % width
+                                    "sizes": '(max_width: %spx)' % width,
+                                    "hash": img_hash
             }
-
+        
+        log += pprint.pformat(resize_images)
         # configuring the parser to make use of the resize images
         site.plugin_data['responsive_images'] = resize_images # expose the list of resized images
         site.inject_parser_html_template("reponsive_images", "img", html_template) # modify the template used to render images
         
         if errors:
-            return (SiteFab.ERROR, "ResponsiveImages", log)
+            return (SiteFab.ERROR, plugin_name, log)
         else:
-            return (SiteFab.OK, "ResponsiveImages", log)
+            return (SiteFab.OK, plugin_name, log)

@@ -13,7 +13,7 @@ You can use this custom filter in your templates to format the timestamp as foll
 
 ## Changelog
 
-- 04/14/16 initial version
+- 04/14/17 initial version
 
 ## Credits
 
