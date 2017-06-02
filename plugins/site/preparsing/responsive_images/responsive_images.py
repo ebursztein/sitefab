@@ -93,13 +93,19 @@ def generate_thumbnails((images, params)):
 
 
         # cache loading
-        cached_value = {}
+
         if width >= MIN_CACHED_SIZE:
             start = time.time()
             cached_value = cache.get(img_hash)
             cache_timing['fetching'] += time.time() - start
+            if not cached_value: # cache miss!
+                log += "Cache status: MISS<br>"
+                cached_value = {}
+            else:
+                log += "Cache status: HIT<br>"
         else:
-            log += "INFO: Image too small, not using cache<br>"
+            cached_value = {}
+            log += "Cache status: Image too small, not using cache<br>"
             
 
 
