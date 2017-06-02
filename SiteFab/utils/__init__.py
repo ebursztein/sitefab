@@ -1,10 +1,19 @@
 import sys
 import operator
 import re
+import hashlib
+import xxhash
 from stop_words import get_stop_words
 
 from objdict import objdict
 from termcolor import colored, cprint
+
+
+#hashing
+def hexdigest(w):
+    return xxhash.xxh64(w).hexdigest()
+    #return hashlib.md5(w).hexdigest() < too slow was like 14% of the time spent on some process
+
 
 ### colored output ###
 def warning(txt):

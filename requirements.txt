@@ -7,8 +7,9 @@ gensim
 3to2 
 toposort
 Pygments
-Pillow
+pillow-simd
 pytz
 diskcache
 stop-words
+xxhash
 
