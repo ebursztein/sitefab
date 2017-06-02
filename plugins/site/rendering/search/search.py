@@ -52,7 +52,6 @@ class Search(SiteRendering):
 
         ##output
         output_string = json.dumps(js_posts)
-        output_string = output_string.replace('"', '\\"').replace('\\\\"', '\\"')
         js = js.replace("SEARCH_DOC_PLUGIN_REPLACE", output_string)
         path = os.path.join(site.get_output_dir(), output_path)
         files.write_file(path, js_filename, js)
