@@ -49,6 +49,7 @@ SitePreparsing:
     cache_name: responsive_images
     enable: true
     input_dir: generated/static/images/
+    multithreading: false
     output_dir: generated/static/images/resized/
     template_file: config/generator_templates/responsive_images/img.html
     thumbnail_size:

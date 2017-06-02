@@ -77,12 +77,14 @@ def generate_thumbnails((images, params)):
     
         # loading image in memory
         start = time.time()
-        img = Image.open(image_full_path)
+        raw_image = open(image_full_path, 'rb').read() #we need the raw bytes to do the hashing. Asking PIL for is 10x slower.
+        img = Image.open(StringIO(raw_image))
         log += "Opening time:<i>%s</i><br>" % (round(time.time() - start, 3))
 
         # hashing
-        start = time.time()       
-        img_hash = utils.hexdigest(img.tobytes()) # we use the hash of the content to make sure we regnerate if the image is different 
+        start = time.time()
+        #content = img.tobytes()
+        img_hash = utils.hexdigest(raw_image) # we use the hash of the content to make sure we regnerate if the image is different 
         log += "Hashing time:<i>%s</i><br>" % (round(time.time() - start, 3))
         
         # width and height
@@ -203,9 +205,9 @@ class ResponsiveImages(SitePreparsing):
         log = ""
         errors = False
 
-
         input_dir = config.input_dir
         output_dir = config.output_dir
+        multithreading = config.multithreading
         cache_file = os.path.join(site.config.dir.cache, config.cache_name)
 
         #loading HTML template
@@ -264,35 +266,41 @@ class ResponsiveImages(SitePreparsing):
         #batch_size = num_images / (site.config.threads)
         batches =  [images[x: x + batch_size] for x in xrange(0, len(images), batch_size)]
 
-        bundles = zip(batches, repeat(params)) 
-        tpool = ThreadPool(processes=site.config.threads)        
-        #chunksize = (len(images) / (self.config.threads * 2)) < don't seems to make a huge difference
-        for results in tpool.imap_unordered(generate_thumbnails, bundles, chunksize=1):
-        #for bundle in bundles:
-        #    results = generate_thumbnails(bundle)
-            progress_bar.update(batch_size)
-            for result in results:
-                web_path = result[0].replace("\\", "/") #be extra sure that windows path don't messup the thing
-                resize_list = result[1]
-                width = result[2]
-                log += result[3]
-                num_errors = result[4]
-                if num_errors:
-                    errors = True
+        bundles = zip(batches, repeat(params))
+        results = []
 
-                #store all the resized images info
-                srcsets = {}
-                for webformat, srcset in resize_list.iteritems():
-                    srcsets[webformat] = ", ".join(srcset)
-                resize_images[web_path] = {"srcsets": srcsets,
-                                        "media": '(max_width: %spx)' % width,
-                                        "sizes": '(max_width: %spx)' % width
-                }
+        # allows non-multithread for windows.
+        if multithreading:
+            log += "Using multithreading: %s threads<br>" % (site.config.threads)
+            tpool = ThreadPool(processes=site.config.threads)
+            for data in tpool.imap_unordered(generate_thumbnails, bundles):
+                results.extend(data)
+                progress_bar.update(batch_size)
+            tpool.close()
+            tpool.join()
+        else:
+            for bundle in bundles:
+                results.extend(generate_thumbnails(bundle))
+                progress_bar.update(batch_size)
 
+        for result in results:
+            web_path = result[0].replace("\\", "/") #be extra sure that windows path don't messup the thing
+            resize_list = result[1]
+            width = result[2]
+            log += result[3]
+            num_errors = result[4]
+            if num_errors:
+                errors = True
 
-                
-        tpool.close()
-        tpool.join()
+            #store all the resized images info
+            srcsets = {}
+            for webformat, srcset in resize_list.iteritems():
+                srcsets[webformat] = ", ".join(srcset)
+            resize_images[web_path] = {"srcsets": srcsets,
+                                    "media": '(max_width: %spx)' % width,
+                                    "sizes": '(max_width: %spx)' % width
+            }
+
         # configuring the parser to make use of the resize images
         site.plugin_data['responsive_images'] = resize_images # expose the list of resized images
         site.inject_parser_html_template("reponsive_images", "img", html_template) # modify the template used to render images
