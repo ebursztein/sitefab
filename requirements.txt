@@ -7,9 +7,11 @@ gensim
 3to2 
 toposort
 Pygments
-pillow-simd
 pytz
 diskcache
 stop-words
 xxhash
 
+pillow-simd; sys_platform == 'darwin'
+pillow; sys_platform == 'linux'
+pillow; sys_platform == 'win32'
