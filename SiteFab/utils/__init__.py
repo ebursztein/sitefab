@@ -12,7 +12,31 @@ from termcolor import colored, cprint
 #hashing
 def hexdigest(w):
     return xxhash.xxh64(w).hexdigest()
-    #return hashlib.md5(w).hexdigest() < too slow was like 14% of the time spent on some process
+    #return hashlib.md5(w).hexdigest() < too slow was like 3x to 5x what xxhash is
+
+# image
+def get_img_extension_alternative_naming(extension):
+    "Return extensions naming for PIL and Mime/type"
+    web_extension = None
+    pil_extension_codename  = None
+
+    if extension.lower() == ".jpg" or extension.lower() == ".jpeg":
+        pil_extension_codename = "JPEG"
+        web_extension = "image/jpeg"
+    
+    elif extension.lower() == ".png":
+        pil_extension_codename = "PNG"
+        web_extension = "image/png"
+    
+    elif extension.lower() == ".gif":
+        pil_extension_codename = "GIF"
+        web_extension = "image/gif"
+
+    elif extension.lower() == ".webp":
+        pil_extension_codename = "WEBP"
+        web_extension = "image/webp"
+    
+    return [pil_extension_codename, web_extension]
 
 
 ### colored output ###

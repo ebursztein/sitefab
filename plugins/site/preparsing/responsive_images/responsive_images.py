@@ -14,28 +14,6 @@ from SiteFab import files
 from SiteFab import utils
 import time
 
-def get_extension_alternative_naming(extension):
-    "Return extensions naming for PIL and Mime/type"
-    web_extension = None
-    pil_extension_codename  = None
-
-    if extension.lower() == ".jpg" or extension.lower() == ".jpeg":
-        pil_extension_codename = "JPEG"
-        web_extension = "image/jpeg"
-    
-    elif extension.lower() == ".png":
-        pil_extension_codename = "PNG"
-        web_extension = "image/png"
-    
-    elif extension.lower() == ".gif":
-        pil_extension_codename = "GIF"
-        web_extension = "image/gif"
-
-    elif extension.lower() == ".webp":
-        pil_extension_codename = "WEBP"
-        web_extension = "image/webp"
-    return [pil_extension_codename, web_extension]
-
 def generate_thumbnails((images, params)):
     "generate thumbnails for a given image"
     total_time = time.time()
@@ -113,7 +91,7 @@ def generate_thumbnails((images, params)):
 
         # add default images
         s = "%s %sw" % (web_path, width)
-        pil_extension_codename, web_extension = get_extension_alternative_naming(img_extension)
+        pil_extension_codename, web_extension = utils.get_img_extension_alternative_naming(img_extension)
         resize_list[web_extension] = []
         resize_list[web_extension].append(s)
    
@@ -127,7 +105,7 @@ def generate_thumbnails((images, params)):
             requested_height = int(height * ratio)  # preserve the ratio
         
             for extension in requested_extensions:
-                pil_extension_codename, web_extension = get_extension_alternative_naming(extension)
+                pil_extension_codename, web_extension = utils.get_img_extension_alternative_naming(img_extension)
                 if not pil_extension_codename:
                     # unknown extension marking the image as errors and skipping
                     log += '<tr><td class="error">ERROR</td><td>%spx</td><td>%s</td><td>N/A</td><td>N/A</td><td>Unkown extension: %s</td></tr>' % (requested_width, extension, extension)
@@ -234,12 +212,17 @@ class ResponsiveImages(SitePreparsing):
         if len(images) == 0:
             return (SiteFab.ERROR, "ResponsiveImages", "no images found")
         
+        if config.additional_formats:
+            requested_format_list = config.additional_formats
+        else:
+            requested_format_list = []
+
         params = {
             "input_dir": input_dir,
             "output_dir": output_dir,
             "site_output_dir": site.config.dir.output,
             "requested_width_list": config.thumbnail_size,
-            "requested_format_list": config.additional_formats,
+            "requested_format_list": requested_format_list,
             "cache_file": cache_file,  # According to the doc, cache need to be open in different thread
             "min_image_width": config.cache_min_image_width
         }
@@ -254,8 +237,6 @@ class ResponsiveImages(SitePreparsing):
 
 
         resize_images = {} # store the results
-        num_resize = len(params['requested_width_list'])
-        num_format = 1 + len(params['requested_format_list'])
         num_images = len(images)
         progress_bar = tqdm(total=num_images, unit=' images', desc="Generating thumbnails", leave=False)
 
