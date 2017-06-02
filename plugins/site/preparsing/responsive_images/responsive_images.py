@@ -63,7 +63,6 @@ def generate_thumbnails((images, params)):
 
         # hashing
         start = time.time()
-        #content = img.tobytes()
         img_hash = utils.hexdigest(raw_image) # we use the hash of the content to make sure we regnerate if the image is different 
         log += "Hashing time:<i>%s</i><br>" % (round(time.time() - start, 3))
         

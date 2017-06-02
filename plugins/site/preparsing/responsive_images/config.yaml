@@ -1,5 +1,5 @@
 input_dir: "generated/static/images/"
-output_dir: "generated/static/images/resized/"
+output_dir: "generated/static/images_resized/" #don't output under input dir to avoid overloading other images plugins
 
 additional_formats: [".webp"]
 thumbnail_size: [300, 400, 500, 600, 700, 800, 900, 1000]

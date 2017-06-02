@@ -1,0 +1,2 @@
+input_dir: "generated/static/images/"
+output_dir: "generated/static/images_frozen/" #don't output under input dir to avoid overloading other images plugins

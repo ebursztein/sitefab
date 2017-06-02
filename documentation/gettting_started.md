@@ -17,6 +17,15 @@ Clone Site Fab into the directory of your choice
 git clone https://github.com/ebursztein/SiteFab.git sitefab
 ```
 
+### install the needed package
+
+Image processing (Pillow) requires a few packages.
+#### OSX
+
+```bash
+brew install libtiff libjpeg webp little-cms2
+```
+
 ### install the required python packages
 install the need python packages by using the requirements file
 
