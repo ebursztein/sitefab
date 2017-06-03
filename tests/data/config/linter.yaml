@@ -9,3 +9,5 @@ frontmatter_fields_value:
 ### Image tests ###
 allowed_image_sources: [mysite.com] # list the domains from which images are included. use null or [] to forbidd external images.
 min_banner_width: 1900 # minimal size for the banner. Use 0 to disable.
+min_image_width: 100 # minimal size for the banner. Use 0 to disable.
+banner_size_ratio: 1.8 # banner image ratio. Use 0 to disable. e.g 1.8 is for HD format 1900/1080

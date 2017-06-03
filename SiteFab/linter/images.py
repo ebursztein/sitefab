@@ -12,6 +12,9 @@ def lint(post, test_info, config, image_info):
     if image_info != None:
         results += e201_local_img_file_exist(images, test_info, image_info)
         results += e204_banner_width(post, test_info, image_info, config)
+        results += e205_image_width(images, test_info, image_info, config)
+        results += e206_banner_local_img_file_exist(post, test_info, image_info)
+        results += e207_banner_ratio(post, test_info, image_info, config)
     
     results += e202_img_origin(images, test_info, config)
     results += e203_duplicate_image(images, test_info)
@@ -67,6 +70,32 @@ def e204_banner_width(post, test_info, image_info, config):
 
     return results
 
-#image width
-#banner ratio
-# banner existance
+def e205_image_width(images, test_info, image_info, config):
+    "Test if the width of images is above a certain size"
+    results = []
+
+    for image in images:
+        if image in image_info and "width" in image_info[image]:
+            width = image_info[image]['width']
+            if width <  config.min_image_width:
+                results.append(['E205', test_info['E205'] % (image, width)])
+
+    return results
+
+def e206_banner_local_img_file_exist(post, test_info, image_info): # unit_tested: yes
+    "Check if banner local file exist"
+    results = []
+    if "banner" in post.meta and post.meta.banner[:4] != "http":
+            if not post.meta.banner in image_info:
+                results.append(['E206', test_info['E206'] % post.meta.banner])
+    return results
+
+def e207_banner_ratio(post, test_info, image_info, config): # unit_tested: yes
+    "Check banner ratio"
+    results = []
+    expected_ratio = config.banner_size_ratio
+    if "banner" in post.meta and post.meta.banner[:4] != "http" and post.meta.banner in image_info and expected_ratio > 0:
+            ratio = round(float(image_info[post.meta.banner]['width']) / image_info[post.meta.banner]['height'], 1)
+            if ratio != expected_ratio:
+                results.append(['E207', test_info['E207'] % (post.meta.banner, ratio)])
+    return results
