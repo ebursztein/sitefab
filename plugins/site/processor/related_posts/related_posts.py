@@ -21,7 +21,8 @@ class RelatedPosts(SiteProcessor):
             dictionary = corpora.Dictionary(docs)
             corpus = [dictionary.doc2bow(doc) for doc in docs]
             tfidf = models.tfidfmodel.TfidfModel(corpus=corpus)
-            num_topics = len(site.collections) + 1  # use collections as a proxy for the number of topics
+            # Fixme: get correct number of topics
+            num_topics = site.posts_by_category.get_num_collections() + site.posts_by_tag.get_num_collections() + 1  # use collections as a proxy for the number of topics
             topic_model = models.LsiModel(tfidf[corpus], id2word=dictionary, num_topics=num_topics)
             index = similarities.MatrixSimilarity(topic_model[tfidf[corpus]], num_best=num_related_posts + 1) #+1 because the best one is itself
             
