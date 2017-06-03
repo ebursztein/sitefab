@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css">
+        <style>
+            h1 {
+                font-size: 2.5rem;
+                color: #2980b9;            
+            }
+            h2 {
+                font-size: 2rem;
+                color: #3498db;
+            }   
+        </style>
+    </head>
+    <body>
+        <h1>{{meta.name}} Log</h1>
+        num events: {{meta.num_events}} - Errors: {{meta.errors}}
+
+        Fixme add headers and a little CSS
+
+
+        <h2>Events</h2>
+        {% for event in events %}
+            <div>
+                <strong>[{{event.severity}}] {{event.target}}</strong><br>
+                {{event.details}}
+            </div>
+        {% endfor %}
+    </body>
+</html>

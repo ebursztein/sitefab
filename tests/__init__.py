@@ -1,6 +1,8 @@
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-parentdir2 = os.path.dirname(parentdir)
+import os
+import sys
+TEST_ROOT_DIR = os.path.dirname(__file__)
+parentdir = os.path.dirname(TEST_ROOT_DIR)
+parentdir2 = os.path.dirname(TEST_ROOT_DIR)
 sys.path.insert(0,parentdir)
 sys.path.insert(0,parentdir2)
+os.chdir(TEST_ROOT_DIR)

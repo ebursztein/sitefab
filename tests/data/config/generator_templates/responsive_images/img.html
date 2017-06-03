@@ -1,0 +1,15 @@
+{% if src in plugin_data.responsive_images %}
+    <strong>FOUND IT</strong>
+    <picture>
+        {% for img_type, srcset in plugin_data.responsive_images[src].srcsets.iteritems() %}
+            <source srcset="{{ srcset }}" type="{{ img_type }}"> 
+        {% endfor %}
+        <img src="{{ src }}">
+    </picture>
+    <!--
+            media="{{plugin_data.responsive_images[src].media}}"
+    -->
+{% else %}
+    <strong> OH NO! Can't find it</strong>
+    <img src="{{ src }}" alt="{{ alt }}">
+{% endif %}

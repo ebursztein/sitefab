@@ -2,6 +2,7 @@
 import pytest
 from SiteFab import utils
 from SiteFab.utils.objdict import objdict 
+
 class TestUtils:
 
     def test_dict_to_objdict(self):

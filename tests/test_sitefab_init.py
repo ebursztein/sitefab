@@ -1,9 +1,11 @@
 import pytest
-
+import os
 from SiteFab.SiteFab import SiteFab
 
 class TestSiteFabInit:
 
+    TEST_ROOT_DIR = os.path.dirname(__file__)
+    
     def test_empty_config(self):
         # is SiteFab raise the correct exception
         with pytest.raises(Exception) as excinfo:
@@ -18,8 +20,9 @@ class TestSiteFabInit:
     
     def test_valid_config(self):
         # is SiteFab raise the correct exception
-        valid_file = "data/config/valid_config.yaml"
-        site = SiteFab(valid_file)
+        fname = os.path.join(TestSiteFabInit.TEST_ROOT_DIR, "data/config/valid_config.yaml")
+        print fname
+        site = SiteFab(fname)
         assert site.config != None
         #FIXME add more test for the correctness here.
 
