@@ -7,3 +7,5 @@ E103: "meta field <b>%s</b> have incorrect value: <b>%s</b>, use one of the foll
 # images
 E201: "Local image <b>%s</b>  doesn't exist. typo?"
 E202: "The image <b>%s</b> is not loaded from a whitelisted source. typo?"
+E203: "Image <b>%s</b> is used <b>%s</b> times. typo?"
+E204: "Banner image <b>%s</b> width to small: <b>%s</b>"

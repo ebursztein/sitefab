@@ -48,7 +48,7 @@ class SiteFab(object):
 
         ### configuration ###
         if not config_filename:
-            raise "Supply a configuration filename"
+            raise Exception("Supply a configuration filename")
 
         if os.path.isfile(config_filename): #absolute path 
             self.config  = files.load_config(config_filename)
@@ -57,7 +57,7 @@ class SiteFab(object):
             if os.path.isfile(cfg):
                 self.config = files.load_config(cfg)
             else:
-                raise "Configuration file not found: %s" % config_filename
+                raise Exception("Configuration file not found: %s" % config_filename)
         
         ### parser ###
         self.config.parser.templates_path =  os.path.join(files.get_site_path(),  self.config.parser.template_dir)

@@ -7,4 +7,5 @@ frontmatter_fields_value:
   category: ["cat1", "cat2"]
 
 ### Image tests ###
-allowed_image_sources: [] # list the domains from which images are included. use null to forbidd external images.
+allowed_image_sources: [mysite.com] # list the domains from which images are included. use null or [] to forbidd external images.
+min_banner_width: 1900 # minimal size for the banner. Use 0 to disable.

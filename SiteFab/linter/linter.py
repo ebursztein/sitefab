@@ -66,7 +66,7 @@ class Linter:
         results.info = frontmatter.lint(post, self.test_info, self.config)        
 
         # images
-        if site.plugin_data['image_info']:
+        if 'image_info' in site.plugin_data:
             image_info = site.plugin_data['image_info']
         else:
             image_info = None
