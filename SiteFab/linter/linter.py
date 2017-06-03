@@ -6,12 +6,11 @@ from SiteFab import files
 import sys
 
 import frontmatter
+import images
 
 VALID_URL_CHARS = '[^a-z0-9_\-:/\.]'
 VALID_PERMA_CHARS = '[^a-z0-9-\/\.]'
 VALID_TEXT_CHARS = '[^a-zA-Z0-9_-:,;\. ]'
-
-
 
 class Linter:
     
@@ -48,13 +47,13 @@ class Linter:
                 cnt += p.has_warnings
         return cnt
 
-    def lint(self, post, rendered_post):
+    def lint(self, post, rendered_post, site):
         """ Load yaml configuration 
     
         Args:
             post (Post): the post to analyze
             rendered_post (str): the html version of the post
-
+            site (Sitefab): the site object mainly used to get access to plugin data
         Return:
             dict: linting results
         """
@@ -62,8 +61,19 @@ class Linter:
         results = utils.create_objdict()
         results.has_errors = 0
         results.has_warnings = 0
-        results.info = frontmatter.lint(post, self.test_info, self.config)        
         
+        # frontmatter
+        results.info = frontmatter.lint(post, self.test_info, self.config)        
+
+        # images
+        if site.plugin_data['image_info']:
+            image_info = site.plugin_data['image_info']
+        else:
+            image_info = None
+
+        img_results = images.lint(post, self.test_info, self.config, image_info)
+        results.info.extend(img_results)
+
         for d in results.info: 
             if d[0][0] == "E":
                 results.has_errors += 1

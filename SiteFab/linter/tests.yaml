@@ -1,4 +1,9 @@
+# frontmatter
 E100: "Meta data not present - Add a frontmatter to your post"
 E101: "Missing mandatory meta data field <b>%s</b>, add field to frontmatter"
 E102: "Missing mandatory meta data field <b>%s</b> for template <b>%s</b>, add field to frontmatter"
 E103: "meta field <b>%s</b> have incorrect value: <b>%s</b>, use one of the following value:%s"
+
+# images
+E201: "Local image <b>%s</b>  doesn't exist. typo?"
+E202: "The image <b>%s</b> is not loaded from a whitelisted source. typo?"

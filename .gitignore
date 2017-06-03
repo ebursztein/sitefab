@@ -4,3 +4,4 @@ demo_site/logs
 demo_site/backup
 demo_site/cache
 .cache
+sitefab.py.lprof

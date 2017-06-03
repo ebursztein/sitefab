@@ -5,3 +5,6 @@ frontmatter_mandatory_fields_by_templates:
 
 frontmatter_fields_value:
   category: ["cat1", "cat2"]
+
+### Image tests ###
+allowed_image_sources: [] # list the domains from which images are included. use null to forbidd external images.

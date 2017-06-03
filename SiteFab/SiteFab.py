@@ -284,7 +284,7 @@ class SiteFab(object):
             categories=self.posts_by_category.get_as_dict(), tags=self.posts_by_tag.get_as_dict(), templates=self.posts_by_template.get_as_dict(), microdata=self.posts_by_microdata.get_as_dict())
             
             # Liniting            
-            linter_results = self.linter.lint(post, rv)
+            linter_results = self.linter.lint(post, rv, self)
             # Are we stopping on linting errors?
             if linter_results.has_errors and self.config.linter.stop_on_error:
                 print post
