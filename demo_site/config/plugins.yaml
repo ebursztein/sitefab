@@ -43,11 +43,12 @@ SitePreparsing:
     - assets/images > generated/static/images
     - assets/svg > generated/static/svg
   frozen_images:
-    additional_formats:
-    - .webp
     enable: true
     input_dir: generated/static/images/
     output_dir: generated/static/images_frozen/
+  image_info:
+    enable: true
+    input_dir: generated/static/images/
   responsive_images:
     additional_formats:
     - .webp

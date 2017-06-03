@@ -1,0 +1,12 @@
+[Core]
+Name = Image Info
+Module = image_info
+Dependencies =  copy_dir
+
+[Documentation]
+Description = Compute various images info
+Filename = README.md
+Version = 1.0
+
+[Configuration]
+Filename = "config.yaml"
