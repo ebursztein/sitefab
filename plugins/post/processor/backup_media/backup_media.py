@@ -15,12 +15,15 @@ def download(info):
     #s = requests.Session()
     #s.mount('https://', adapter)
     url = info[0].replace("https://www.elie.net/", "http://elie-www.appspot.com/").replace("https:", "http:")
-    path = info[1]
-    fname = info[2]
-    r = requests.get(url, verify=False)
-    if r.status_code == 200:
-        files.write_file(path,fname, r.content, binary=True)
-        return [True, url]
+    if 'https:' in url or 'http:' in url:
+        path = info[1]
+        fname = info[2]
+        r = requests.get(url, verify=False)
+        if r.status_code == 200:
+            files.write_file(path,fname, r.content, binary=True)
+            return [True, url]
+        else:
+            return [False, url]
     else:
         return [False, url]
 
@@ -54,8 +57,6 @@ class BackupMedia(PostProcessor):
                     fname = os.path.basename(a.path)
                     local_path = os.path.join(path, "files/", path_post)
                     to_dl.append((f, local_path, fname))
-
-
             progress_bar = tqdm(total=len(to_dl), unit=' files', desc="Files to dl", leave=False)
 
             log = ""
@@ -67,6 +68,9 @@ class BackupMedia(PostProcessor):
                     log += "Failed download - %s<br>" % (result[1]) 
                 else:
                     log += "Saved - %s<br>"  % (result[1])
+            p.close()
+            p.join()
+
             return (SiteFab.OK, post.meta.title, log)
         else:
             return (SiteFab.SKIPPED, post.meta.title, "")
