@@ -10,6 +10,7 @@ def lint(post, test_info, config):
     results += e101_mandatory_fields(post, test_info, config)
     results += e102_mandatory_fields_for_specific_templates(post, test_info, config)
     results += e103_field_value(post, test_info, config)
+    results += e104_duplicate_value(post, test_info, config)
     return results
 
 def e101_mandatory_fields(post, test_info, config):
@@ -47,8 +48,24 @@ def e103_field_value(post, test_info, config):
     return results
 
 
-#duplicate tags detection
+def e104_duplicate_value(post, test_info, config):
+    "Check if a value appears twice in a field list"
+    
+    results = []
+    for field, value in post.meta.iteritems():
+        if type(value) == list: 
+            if len(set(value)) != len(value):
+                seen = set()
+                duplicates = []
+                for x in value:
+                    if x not in seen:
+                        seen.add(x)
+                    else:
+                        duplicates.append(x)
+                info = test_info['E104'] % (field, " ,".join(duplicates))
+                results.append(['E104', info])
+    return results
+
 # capitalization
 # duplicate space
-# duplicate tag and authors (duplicate in list test)
 # category in tag error

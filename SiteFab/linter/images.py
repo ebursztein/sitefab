@@ -1,11 +1,14 @@
 from collections import Counter
 
 def lint(post, test_info, config, image_info):
-    "Check images for potential errors - Error E2xx"
+    """Check images for potential errors - Error E2xx
+    
+    Additional test ideas: image height (but already test ratio)
+    """
     results = []
 
     images = post.elements.images
-    if not len(images):
+    if not images or not len(images):
         return results
 
     # image_info plugin based test
