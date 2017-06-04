@@ -10,8 +10,9 @@ def lint(post, test_info, config):
     results += e101_mandatory_fields(post, test_info, config)
     results += e102_mandatory_fields_for_specific_templates(post, test_info, config)
     results += e103_field_value(post, test_info, config)
-    results += e104_duplicate_value(post, test_info, config)
+    # results += e104_duplicate_value(post, test_info, config)
     return results
+
 
 def e101_mandatory_fields(post, test_info, config):
     "Check for the presence of mandatory fields in the meta"
@@ -20,6 +21,7 @@ def e101_mandatory_fields(post, test_info, config):
         if field not in post.meta:
             results.append(['E101', test_info['E101'] % field])
     return results
+
 
 def e102_mandatory_fields_for_specific_templates(post, test_info, config):
     "Check for the presense of mandatory field for specific template"
@@ -35,6 +37,7 @@ def e102_mandatory_fields_for_specific_templates(post, test_info, config):
                 info = test_info['E102'] % (field, post.meta.template)
                 results.append(['E102', info])
     return results
+
 
 def e103_field_value(post, test_info, config):
     "Check if the value for specific fields match the list"
@@ -52,12 +55,17 @@ def e104_duplicate_value(post, test_info, config):
     "Check if a value appears twice in a field list"
     
     results = []
-    for field, value in post.meta.iteritems():
-        if type(value) == list: 
-            if len(set(value)) != len(value):
+    for field in post.meta:
+        value_field = post.meta[field]
+        if isinstance(value_field, list):
+            print post.meta.title
+            print field
+            print value_field
+            print set(value_field)
+            if len(set(value_field)) != len(value_field):
                 seen = set()
                 duplicates = []
-                for x in value:
+                for x in value_field:
                     if x not in seen:
                         seen.add(x)
                     else:
