@@ -2,25 +2,15 @@
 window.search_docs = SEARCH_DOC_PLUGIN_REPLACE;
     
 var search_index  = null
-function search_init(search_box_id, callback) {
+function search_init(fields) {
     /**
-    *  Initalize the search.
-    * @param {string} search_box_id id of the searchbox to attach to
-    * @param {function} callback function to callback with the results and the query. proto:" callback(docs, query);
+    *  Init the index
+    *  @param {Array of strings} fields fields on which perform a search
     */
-    var search_box = document.getElementById(search_box_id);    
-    search_box.onkeyup = function (e) {
-        var query = search_box.value;
-            results = search(query)
-            callback(results);
-    }
-
-    //init the index
     search_index = elasticlunr(function () {
-        this.addField('title');
-        this.addField('authors');
-        this.addField('conference');
-        this.addField('terms');
+        for (var i = 0; i < fields.length; i++) {
+          this.addField(fields[i])
+        }
         this.setRef('id');
     });
     for (var idx in window.search_docs) {
@@ -28,6 +18,22 @@ function search_init(search_box_id, callback) {
     }
     
 }
+
+
+function search_attach_to(search_box, callback) {
+  /**
+  *  Attach search to a DOM element
+  * @param {DomElement} search_box id of the searchbox to attach to
+  * @param {function} callback function to callback with the results and the query. proto:" callback(docs, query);
+  */
+
+  search_box.onkeyup = function (e) {
+      var query = search_box.value;
+      var results = search(query);
+          callback(results);
+  }
+}
+
 
 function search(query, bool_operator="AND", partial=true) {
     /**
@@ -50,18 +56,18 @@ function search(query, bool_operator="AND", partial=true) {
         }
     })
 
-    docs = Array();
-    for (var i in results) {
-        doc_idx = results[i].ref;
-        doc = search_docs[doc_idx];
+    var docs = Array();
+
+    for (var i = 0; i < results.length; i++) {
+        var doc_idx = results[i].ref;
+        var doc = search_docs[doc_idx];
         doc.score = results[i].score;
-        //console.log(doc);
-        //console.log(doc.title)
         docs.push(doc);
     }
-    //console.log(docs)
+   
     return docs;
 }
+
 
 
 /**
