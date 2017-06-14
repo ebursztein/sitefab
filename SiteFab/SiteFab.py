@@ -280,7 +280,7 @@ class SiteFab(object):
             template_name = "%s.html" % post.meta.template
             template = self.jinja2.get_template(template_name)
             html = post.html.decode("utf-8", 'ignore')
-            rv = template.render(content=html, meta=post.meta, plugin_data=self.plugin_data,
+            rv = template.render(content=html, meta=post.meta, posts=self.posts, plugin_data=self.plugin_data,
             categories=self.posts_by_category.get_as_dict(), tags=self.posts_by_tag.get_as_dict(), templates=self.posts_by_template.get_as_dict(), microdata=self.posts_by_microdata.get_as_dict())
             
             # Liniting            
