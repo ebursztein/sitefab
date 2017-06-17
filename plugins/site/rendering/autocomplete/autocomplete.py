@@ -57,7 +57,12 @@ class Autocomplete(SiteRendering):
             for author in nlp.authors:
                 other_fields[author] += boost_score
                 post_frequencies[author] += 1
-
+                # make sure autocomplete work on first and last name
+                for tok in author.split(" "):
+                    if len(tok) > 2: 
+                        other_fields[tok] += boost_score
+                        post_frequencies[tok] += 1
+                        
             other_fields[nlp.conference_name] += boost_score
             post_frequencies[nlp.conference_name] += 1
 
