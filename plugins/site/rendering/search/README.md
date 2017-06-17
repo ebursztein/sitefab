@@ -42,8 +42,12 @@ Here is a simple search page that allows to search  via an inputbox and via the 
             }
 
             //This can be optimized by doing it server side
-            search_init("searchtop", search_callback);
-
+            search_init(['title', 'authors', 'conference', 'terms'])
+            
+            // Attach the search to the search input
+            var searchBox = document.getElementById('searchtop')
+            search_attach_to(searchBox, search_callback) 
+            
             //do the search based of url parameters if needed
             var query = getURLParameter('q');
             if (query) {
