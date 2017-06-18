@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css">
+        <style>
+            h1 {
+                font-size: 2.5rem;
+                color: #2980b9;            
+            }
+            h2 {
+                font-size: 2rem;
+                color: #3498db;
+            }   
+        </style>
+    </head>
+    <body>
+        <div class="row medium-8 large-7 columns"><h1>Site statistics</h1></div>
+        <div class="row medium-8 large-7 columns">
+            <h2>Posts per category<h2>
+            <table>
+            <tr><th>category</th><th>count</th></tr>
+            {% for cat in cats %}
+                <tr><td>{{ cat[0] }}</td><td>{{ cat[1]}}</td></tr>
+            {% endfor %}
+            </table>
+        </div>
+        <div class="row medium-8 large-7 columns">
+            <h2>Posts per tag<h2>
+            <table>
+            <tr><th>tag</th><th>count</th></tr>
+            {% for tag in tags %}
+                <tr><td>{{ tag[0] }}</td><td>{{ tag[1]}}</td></tr>
+            {% endfor %}
+            </table>
+        </div>
+    </body>
+</html>

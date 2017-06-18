@@ -2,9 +2,8 @@
 """
 import time
 import jinja2
-import collections
-
 from collections import defaultdict
+from collections import Counter
 from jinja2 import Environment, FileSystemLoader
 
 import utils
@@ -26,6 +25,29 @@ class Logger():
         self.jinja2 = Environment(loader=FileSystemLoader(self.config.template_dir))
         files.clean_dir(self.config.output_dir)
     
+
+    ### statistics ###
+    def write_stats(self):
+        "Output statistics about the execution"
+        
+        # post per category
+        cat_stats = Counter()
+        cats = self.site.posts_by_category.get_as_dict()
+        for tag, posts in cats.items():
+            cat_stats[tag] = len(posts)
+
+        # post per tag
+        tag_stats = Counter()
+        tags = self.site.posts_by_tag.get_as_dict()
+        for tag, posts in tags.items():
+            tag_stats[tag] = len(posts)
+        
+        
+        template = self.jinja2.get_template(self.config.stats_template)
+        rv = template.render(cats=cat_stats.most_common(), tags=tag_stats.most_common())
+        files.write_file(self.config.output_dir, "stats.html", rv)
+
+
     def create_log(self, category, name, filename):
         """ Create a new log
             Usually used to store a plugin output or a phase information

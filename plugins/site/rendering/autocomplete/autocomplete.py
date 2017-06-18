@@ -62,7 +62,7 @@ class Autocomplete(SiteRendering):
                     if len(tok) > 2: 
                         other_fields[tok] += boost_score
                         post_frequencies[tok] += 1
-                        
+                         
             other_fields[nlp.conference_name] += boost_score
             post_frequencies[nlp.conference_name] += 1
 

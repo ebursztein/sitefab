@@ -86,6 +86,7 @@ class SiteFab(object):
         cfg.template_dir = os.path.join(files.get_site_path(),  self.config.logger.template_dir) #log template not the one from the users.
         cfg.log_template = "log.html"
         cfg.log_index_template = "log_index.html"
+        cfg.stats_template = "stats.html"
         self.logger = Logger(cfg, self)
 
         ### linter ###
@@ -119,14 +120,12 @@ class SiteFab(object):
         #collections creation
         min_posts = self.config.collections.min_posts
         
-        tlp = self.jinja2.get_template(self.config.collections.category_template)
-        path = os.path.join(self.get_output_dir(), self.config.collections.category_output_dir)
-        self.posts_by_category = PostCollections(template=tlp, path=path, min_posts=min_posts)
-
-        tlp = self.jinja2.get_template(self.config.collections.tag_template)
-        path = os.path.join(self.get_output_dir(), self.config.collections.tag_output_dir)
+        # posts_by_tag is what is rendered. Therefore it contains for as given post both its tags and its category
+        tlp = self.jinja2.get_template(self.config.collections.template)
+        path = os.path.join(self.get_output_dir(), self.config.collections.output_dir)
         self.posts_by_tag = PostCollections(template=tlp, path=path, min_posts=min_posts)
 
+        self.posts_by_category = PostCollections()
         self.posts_by_template = PostCollections()
         self.posts_by_microdata = PostCollections()
 
@@ -174,6 +173,7 @@ class SiteFab(object):
             ## insert in category
             if post.meta.category:
                 self.posts_by_category.add(post.meta.category, post)
+                self.posts_by_tag.add(post.meta.category, post) # tags is what is rendered
 
             ## insert in tags
             if post.meta.tags:
@@ -217,7 +217,7 @@ class SiteFab(object):
         self.render_posts()
         
         print "\nRendering collections"
-        self.posts_by_category.render()
+        self.posts_by_tag.render()
         
         print "\nAdditional Rendering"
         self.execute_plugins([1], "SiteRendering", " pages")
@@ -226,10 +226,11 @@ class SiteFab(object):
     def finale(self):
         "Last stage"
         
-        # Last thing to do is to output the logs index
+        # Write reminainig logs
         self.logger.write_log_index()
-        
-        # Output
+        self.logger.write_stats()
+
+        # Terminal recap
         cprint("Thread used:%s" % self.config.threads, "cyan")
         
         total_ts = round(time.time() - self.timings.start, 2)

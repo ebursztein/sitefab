@@ -14,17 +14,17 @@
     </head>
     <body>
         <div class="row medium-8 large-7 columns">
-            <div>
-                    <h1>Available logs</h1>
-            </div>
-            <div>
-                <h2>Linting </h2>
-                    <a href="linter.html">Liniting results</a>  
-            </div>
+ 
+            <h1>Log</h1>
+            <h2>Overall logs</h2>
+            <ul>
+                <li><a href="linter.html">Liniting report</a></li>
+                <li><a href="stats.html">Statistics</a></li>
+            </ul>
+            <h2>Plugin logs</h2>
             {% for cat, lgs in logs.iteritems() %}
             <div>
-                <br><br>
-                <h2>{{cat}}</h2>
+                <h3>{{cat}}</h3>
                 <table>
                     <tr>
                         <th>Name</th>

@@ -14,12 +14,11 @@ dir:
     cache: "cache/"         # store cached results for faster generation
 
 ### Collections ###
+# A collection represent a group of post grouped by their tags/category.
 collections:
     render: true
-    category_template: "collection.html"
-    category_output_dir: "tag/"
-    tag_template: "collection.html"
-    tag_output_dir: "tag/"
+    template: "collection.html"
+    output_dir: "tag/"
     min_posts: 1 # how many posts the collection must have at least before being rendered. 0 to render all
 
 ### Plugins configuration ###
