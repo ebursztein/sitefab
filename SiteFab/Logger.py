@@ -33,15 +33,14 @@ class Logger():
         # post per category
         cat_stats = Counter()
         cats = self.site.posts_by_category.get_as_dict()
-        for tag, posts in cats.items():
-            cat_stats[tag] = len(posts)
+        for tag, data in cats.items():
+            cat_stats[tag] = data.meta.num_posts
 
         # post per tag
         tag_stats = Counter()
         tags = self.site.posts_by_tag.get_as_dict()
-        for tag, posts in tags.items():
-            tag_stats[tag] = len(posts)
-        
+        for tag, data in tags.items():
+            tag_stats[tag] = data.meta.num_posts
         
         template = self.jinja2.get_template(self.config.stats_template)
         rv = template.render(cats=cat_stats.most_common(), tags=tag_stats.most_common())
