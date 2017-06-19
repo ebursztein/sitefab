@@ -1,35 +1,32 @@
-# Responsive Images
+# Frozen Images
 
-Create responsive images by using the `<picture>` element and generating the various
-images at different size
+Inspired by Facebook frozen banner generate small thumbnails that look frozen. Used to make preloading.
 
 ## Usage
-
-Specify the various resolutions and format to use and the plugin will generate the images 
-for those size and format. It will then replace the `<img>` template with a custom one that
-make use of the use of the multi resolutions/format images.
-
-**Important** the plugin depends on the [picture polyfill](https://github.com/scottjehl/picturefill) 
-to work so make sure to incluse the picture.js in your template.
+.
 
 ## Configuration
 For example
 ```yaml
-copy_dir:
-    - enable: True
-    copy:
-        - "assets/js > release/static/js"
+fixme:
 ```
 
-will copy the content of the directory *assets/js* to  *release/static/js*
+## Usage
 
-## Dependency
+To load the frozen image from its url:
 
-This plugin requires the [Pillow python package](https://python-pillow.org/).
+```jinja2
+<img src="{{ plugin_data.frozen_images[src].url }}"/>
+```
 
+To inline the image using a base64 representation:
+
+```jinja2
+<img src="{{ plugin_data.frozen_images[src].base64 }}"/>
+```
 
 ## Changlog
-- 02/18/17
+- 06/14/17
     - initial version
 
 ## Credit
