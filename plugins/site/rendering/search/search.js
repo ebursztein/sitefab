@@ -1,6 +1,10 @@
 //Search core code
 window.search_docs = SEARCH_DOC_PLUGIN_REPLACE;
-    
+//Export needed functions/data to the global context
+window.search_init = search_init;
+window.search_attach_to = search_attach_to;
+window.search = search;
+
 var search_index  = null
 function search_init(fields) {
     /**
