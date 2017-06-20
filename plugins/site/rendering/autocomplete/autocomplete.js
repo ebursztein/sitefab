@@ -1,5 +1,5 @@
 
-Octopi = function(words) {
+var Octopi = function(words) {
   this.uid = 0;
   this.tree = {$$: []};
   this.table = {};
@@ -75,14 +75,14 @@ Octopi.prototype = {
 //Search core code
 var trie_data = AUTOCOMPLETE_PLUGIN_REPLACE;
 
-Autocomplete = function() {
+var Autocomplete = function() {
   this.oct = new Octopi();
 };
 
 Autocomplete.prototype = {
   load_data: function(data) {
     for (var i = 0; data[i]; i++) {
-      info = {
+      var info = {
         'w': data[i][0],
         'd': data[i][1],
         's': data[i][2]
@@ -100,3 +100,7 @@ Autocomplete.prototype = {
     );
   }
 };
+
+// Export needed functions/data to the global context
+window.Autocomplete = Autocomplete;
+window.trie_data = trie_data;
