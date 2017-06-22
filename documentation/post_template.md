@@ -1,42 +1,53 @@
-# How to write templates
+# How to write post template
 
-## Meta data information
+This page describe how to create a template for a post page. SiteFab post page 
+are generated for each `.md` file. The template used to render a given file is 
+specified in the frontmatter under the `template` variable. Directory for where to fetch
+the templates from is specified in the site configuration.
 
-All meta information specified in the content file frontmatter are directly available from the **meta** variable. For example to get the title of the post in a template one will write:
+See the [how to format your markdown documentation](content.md) to learn how to write your markdown file that hold your site contnet.
+For the templating of the collection page which are generate for a group of post see the [collection template documentation](collection_template.md).
+
+## Meta data
+
+All meta information specified in the content file *frontmatter* are directly available from the **meta** variable. For example to get the title of the post in a template one will write:
 
 ```python
 Title: {{ meta.title }}
 ```
 
-### Examples
+## TOC
 
 Getting the table of content (toc) and list the section of the page in the template:
 
-```python
+```jinja2
 {%  for elt in toc %}
     {{elt[0]}}<br>
 {%endfor%}
 ```
 
-### post
+## Content
 
+Getting the .md content rendered as HTML is accesible in the template as follow:
 
+```jinja2
+{{content}}
+```
 
-## Post collections
+## Collections
 
-Collections are list of posts grouped by a given criteria. The following collections are available in the template:
+Collections are list of posts grouped by a given criteria. The following collections are available in the post template (for the collection page see below):
 
 * **categories**: regroup post by categories as specified in post frontmatter
 * **tags**: regroup post by tags as specified in post frontmatter
 * **templates**: regroup posts that share the same rendering template (e.g blog_post)
 * **microdata**: regroup posts that share the same microformat (e.g BlogPosting)
 
+### Examples
 
-### Usage examples
+#### Listing all the post related to security in the footer
 
-#### Listing all the posts that belong to a category
-
-To list all the post related to security:
+To list all the post related to security in yout footer you can do:
 
 ```jinja2
 <ul>
@@ -49,7 +60,7 @@ To list all the post related to security:
 </ul>
 ```
 
-### Listing the five most recent posts that belongs to a category
+#### Listing the five most recent posts that belongs to a category
 
 To list the five most recent post that use the blog_post template:
 
@@ -85,14 +96,6 @@ To list the five most recent post that use the blog_post template:
 *meta.title* : title of the page
 *meta.language*: language of the page
 
-#### post page
-
-
-#### collection page
-
-
-
-### Basic example
-
-
 ### Using template inheritance
+
+FIXME

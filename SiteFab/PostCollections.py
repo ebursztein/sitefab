@@ -48,7 +48,7 @@ class PostCollections():
                 collection.meta.slug = collection.meta.name.replace(" ", "-").lower()
                 if collection.meta.num_posts >= self.min_posts:
                     filename = "%s.html" % (collection.meta.slug)
-                    rv = self.template.render(collection=collection.posts, meta=collection.meta)
+                    rv = self.template.render(posts=collection.posts, meta=collection.meta)
                     files.write_file(self.path, filename, rv)
     
     def get_as_list(self):
