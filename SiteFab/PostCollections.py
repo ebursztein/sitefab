@@ -3,6 +3,7 @@ from collections import defaultdict
 
 import utils
 import files
+import os
 
 class PostCollections():
     "Handle posts collections"
@@ -49,7 +50,8 @@ class PostCollections():
                 if collection.meta.num_posts >= self.min_posts:
                     filename = "%s.html" % (collection.meta.slug)
                     rv = self.template.render(posts=collection.posts, meta=collection.meta)
-                    files.write_file(self.path, filename, rv)
+                    new_path = os.path.join(self.path, collection.meta.slug)
+                    files.write_file(new_path, "index.html", rv)
     
     def get_as_list(self):
         """Returns the collections as lists
