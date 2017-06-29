@@ -8,7 +8,7 @@ import os
 class PostCollections():
     "Handle posts collections"
 
-    def __init__(self, template=None, path=None, min_posts=0):
+    def __init__(self, template=None, output_path=None, web_path=None, min_posts=0):
         """Init the collections 
 
             Args:
@@ -18,7 +18,8 @@ class PostCollections():
         """
         self.collections = {}
         self.template = template
-        self.path = path
+        self.output_path = output_path
+        self.web_path = web_path
         self.min_posts = min_posts
     
     def add(self, name, post):
@@ -38,6 +39,10 @@ class PostCollections():
             collection.meta = utils.dict_to_objdict()
             collection.meta.name = name
             collection.meta.num_posts = 0
+            if self.web_path:
+                url = "/%s%s" % (self.web_path, name)
+                url = url.replace(" ", "-").lower()
+                collection.meta.url  = url
             self.collections[name] = collection
         self.collections[name].meta.num_posts += 1     
         self.collections[name].posts.append(post)
@@ -50,7 +55,7 @@ class PostCollections():
                 if collection.meta.num_posts >= self.min_posts:
                     filename = "%s.html" % (collection.meta.slug)
                     rv = self.template.render(posts=collection.posts, meta=collection.meta)
-                    new_path = os.path.join(self.path, collection.meta.slug)
+                    new_path = os.path.join(self.output_path, collection.meta.slug)
                     files.write_file(new_path, "index.html", rv)
     
     def get_as_list(self):

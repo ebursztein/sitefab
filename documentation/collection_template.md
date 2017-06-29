@@ -10,7 +10,11 @@ To learn how to write template for post see the [post page templating documentat
 
 In a collection page the template have access to the following information:
 
-- **meta**: collection meta information including name and number of posts
+- **meta**: collection meta information. Available data:
+    - *name*: name of the collection
+    - *url*: url of the collection
+    - *num_posts*: number of posts in the collection
+    - *slug*: normalized collection name
 - **posts**: list of posts that belong to the category. Each post is a normal object as used in post page. It contains its content (post.content), meta data (post.meta), toc and info.
 
 ## Example
@@ -18,7 +22,7 @@ In a collection page the template have access to the following information:
 Basic example of collection page that display the collection name and list all the posts that belong to it with their creation date:
 
 ```jinja2
-<h1>{{meta.collection_name}}</h1>
+<h1><a href="{{ meta.url }}">{{meta.name}}</a></h1>
 <ul>
     {% for post in posts %}
     <li>{{post.meta.creation_date}} - {{post.meta.title}}</li>
