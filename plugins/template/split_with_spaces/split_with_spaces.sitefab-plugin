@@ -1,8 +1,0 @@
-[Core]
-Name = Insert spaces between each characters
-Module = split_with_spaces
-
-[Documentation]
-Filename = README.md
-Description = Add custom filter called `split_with_spaces` that allows to insert spaces between each characters in a given string
-Version = 1

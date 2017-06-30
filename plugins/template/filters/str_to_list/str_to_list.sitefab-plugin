@@ -1,0 +1,8 @@
+[Core]
+Name = str_to_list
+Module = str_to_list
+
+[Documentation]
+Filename = README.md
+Description = Transform a string into a list of character
+Version = 1
