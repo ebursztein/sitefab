@@ -1,10 +1,12 @@
 <h1>{{meta.title }}</h1>
-type: {{ meta.type }}
+publications >  <a href="{{categories[meta.category].meta.url}}">{{ meta.category }}</a></br>
 {{ meta.abstract }}
-
-{{ meta.jsonld }}
+<br>
 
 {% if meta.bibtex %}
 {{ meta.bibtex }}
 {% endif %} }}
 
+<script>
+    {{ meta.jsonld }}
+</script>

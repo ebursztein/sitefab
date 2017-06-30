@@ -45,6 +45,21 @@ Collections are list of posts grouped by a given criteria. The following collect
 
 ### Examples
 
+#### Getting the url of the category of a given post
+
+If you want to link to the category of the post
+
+```jinja2
+<a href="{{categories[meta.category].meta.url}}">{{ meta.category }}</a>
+```
+
+Same works for the tags. Assuming you have the tag you are interested in the `tag` variable:
+
+```jinja2
+<a href="{{tags[tag].meta.url}}">{{ tag }}</a>
+```
+
+
 #### Listing all the post related to security in the footer
 
 To list all the post related to security in yout footer you can do:

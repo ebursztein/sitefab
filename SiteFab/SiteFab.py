@@ -125,7 +125,7 @@ class SiteFab(object):
         path = os.path.join(self.get_output_dir(), self.config.collections.output_dir)
         self.posts_by_tag = PostCollections(template=tlp, output_path=path, web_path=self.config.collections.output_dir, min_posts=min_posts)
 
-        self.posts_by_category = PostCollections()
+        self.posts_by_category = PostCollections(web_path=self.config.collections.output_dir)
         self.posts_by_template = PostCollections()
         self.posts_by_microdata = PostCollections()
 

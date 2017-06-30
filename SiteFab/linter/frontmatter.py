@@ -58,10 +58,10 @@ def e104_duplicate_value(post, test_info, config):
     for field in post.meta:
         value_field = post.meta[field]
         if isinstance(value_field, list):
-            print post.meta.title
-            print field
-            print value_field
-            print set(value_field)
+            #print post.meta.title
+            #print field
+            #print value_field
+            #print set(value_field)
             if len(set(value_field)) != len(value_field):
                 seen = set()
                 duplicates = []
