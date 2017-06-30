@@ -1,6 +1,6 @@
 from SiteFab.Plugins import SiteProcessor
 from SiteFab.SiteFab import SiteFab
-
+from SiteFab import utils
 import gensim
 from gensim import corpora, models, similarities
 
@@ -22,7 +22,7 @@ class RelatedPosts(SiteProcessor):
             corpus = [dictionary.doc2bow(doc) for doc in docs]
             tfidf = models.tfidfmodel.TfidfModel(corpus=corpus)
             # Fixme: get correct number of topics
-            num_topics = site.posts_by_category.get_num_collections() + site.posts_by_tag.get_num_collections() + 1  # use collections as a proxy for the number of topics
+            num_topics = site.posts_by_tag.get_num_collections() + 1  # use collections as a proxy for the number of topics
             topic_model = models.LsiModel(tfidf[corpus], id2word=dictionary, num_topics=num_topics)
             index = similarities.MatrixSimilarity(topic_model[tfidf[corpus]], num_best=num_related_posts + 1) #+1 because the best one is itself
             
@@ -32,8 +32,13 @@ class RelatedPosts(SiteProcessor):
                 post.meta.related_posts = []
                 log_details += '<div class="subsection"><h3>%s</h3>Related posts:<ol>' % (post.meta.title)
                 for idx, score in sims[1:]: #1: > first one is the article itself
-                    post.meta.related_posts.append((site.posts[idx], score))
-                    log_details += '<li>%s (%s)</li>' % (site.posts[idx].meta.title, round(score,2))
+                    p = site.posts[idx]
+                    o = utils.create_objdict()
+                    o.meta = p.meta
+                    o.score = score
+                    o.html = p.score
+                    post.meta.related_posts.append(o)
+                    log_details += '<li>%s (%s)</li>' % (o.meta.title, round(score,2))
                 log_details += '<ol></div>'
             return (SiteFab.OK, "Related posts via LSI", log_details)
         except Exception as e:

@@ -3,13 +3,19 @@
 {% block body %}
 <script src="https://cdn.rawgit.com/scottjehl/picturefill/3.0.2/dist/picturefill.min.js" async></script>
     <h1>{{ meta.title }}</h1>
-    {{ meta.abstract }}
-    {{ meta.creation_date_ts | format_ts }}
-
-    <a href="/tag/{{ meta.category }}">{{ meta.category }}</a>
+    {{ meta.creation_date_ts | format_ts }} | <a href="{{ categories[meta.category].meta.url }}">{{ meta.category }}</a>
+    <br><br>
 
     {{ content }}
 
-{{ meta.jsonld }}
 
+<br>
+<h2> Related posts</h2>
+{% for related_post in meta.related_posts %}
+    {{ related_post.meta.title }} ({{ related_post.score}})<br>
+{% endfor%}
+
+<script>
+{{ meta.jsonld }}
+</script>
 {% endblock %}

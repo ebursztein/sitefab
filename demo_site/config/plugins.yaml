@@ -53,7 +53,7 @@ SitePreparsing:
     additional_formats:
     - .webp
     cache_min_image_width: 400
-    enable: true
+    enable: false
     input_dir: generated/static/images/
     multithreading: false
     output_dir: generated/static/images_resized/
@@ -70,8 +70,8 @@ SitePreparsing:
 ##########################\###
 SiteProcessor:
   related_posts:
-    enable: false
-    num_related_posts: 6
+    enable: true
+    num_related_posts: 3
 
 ##########################
 # SiteRendering

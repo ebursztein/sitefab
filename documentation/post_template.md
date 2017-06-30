@@ -16,6 +16,12 @@ All meta information specified in the content file *frontmatter* are directly av
 Title: {{ meta.title }}
 ```
 
+### commonly available meta
+
+While most variables are optional, usually the frontmatter contains a few common variables:
+- *meta.title* : title of the page
+- *meta.language*: language of the page
+
 ## TOC
 
 Getting the table of content (toc) and list the section of the page in the template:
@@ -32,6 +38,15 @@ Getting the .md content rendered as HTML is accesible in the template as follow:
 
 ```jinja2
 {{content}}
+```
+
+## Related posts
+if the related_post plugin is activated, related posts are available as follow:
+
+```jinja2
+{% for related_post in meta.related_posts %}
+    {{ related_post.meta.title }} ({{ related_post.score}})<br>
+{% endfor%}
 ```
 
 ## Collections
@@ -106,10 +121,11 @@ To list the five most recent post that use the blog_post template:
 ### Format
 
 
-### Variable available
 
-*meta.title* : title of the page
-*meta.language*: language of the page
+
+{% for related_post in meta.related_posts %}
+    {{ related_post.meta.title }} ({{ related_post.score}})<br>
+{% endfor%}
 
 ### Using template inheritance
 
