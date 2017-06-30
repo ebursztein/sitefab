@@ -23,21 +23,24 @@ meta data can be accessed in the template page as follow:
 
 #### available fields
 
+| Field               | Type        | Required?    | Description                                   | Example           |
+| --------------------|-----------  | ---------  | -----------                                   | ------------------- |
+| **title**           | string 		  | Mandatory  | Title of the page                             | Hacking IoT devices |
+| **author**          | string 		  | Mandatory  | author of the page                            | Elie, Bursztein |
+| **creation_date**   | string 		  | Mandatory  | When was the post created.                    | 2 Jan 2017 17:23|
+| **update_date**     | string 		  | Optional   | When was the post was last updated. Used by search engine as hint.                   | 5 Jan 2017 22:23|
+| **permanent_url**   | URL 		    | Mandatory  | The url of the page, relative to the hostname | /blog/security/hacking-iot-devices|
+| **category**        | string 		  | Mandatory  | Category of the post                          | security | 
+| **tags**            | list 		    | Optional   | List of tags associated with the page         | [web, performance] |
+| **abstract**        | string 		  | Mandatory  | short description of the page. used in meta and search| this is how to hack iot device|
+| **template**        | filename 	  | Mandatory  | which template to use to render the page (without the *.html* extension) | post |
+| **lang**      	    | ISO code (default:site lang)	| Optional  | language of the page used for i18n | en |
+| **hidden**          | bool         | Optional (default:false)  | Don't list the post in collections or RSS or any other list| true |
 
-| Field        		  | Type        | Needed?    | Description                                   | Example           |
-| -------------       |-----------  | ---------  | -----------                                   | ------------------- |
-| **title**      	  | string 		| Mandatory  | Title of the page                             | Hacking IoT devices |
-| **author**      	  | string 		| Mandatory  | author of the page                            | Elie, Bursztein |
-| **creation_date**   | string 		| Mandatory  | When was the post created.                    | 2 Jan 2017 17:23|
-| **update_date**     | string 		| Optional  | When was the post was last updated. Used by search engine as hint.                   | 5 Jan 2017 22:23|
-| **permanent_url**   | URL 		| Mandatory  | The url of the page, relative to the hostname | /blog/security/hacking-iot-devices|
-| **category**        | string 		| Mandatory  | Category of the post                          | security | 
-| **tags**      	  | list 		| Optional  | List of tags associated with the page         | |
-| **abstract**        | string 		| Mandatory  | short description of the page. used in meta and search| this is how to hack iot device|
-| **template**        | filename 	| Mandatory  | which template to use to render the page (without the *.html* extension) | post |
-| **lang**      	  | ISO code (default:site lang)	| Optional  | language of the page used for i18n | en |
-| **hidden**         | bool         | Optional (default:false)  | Don't list the post in collections or RSS or any other list| true |
+#### Category vs Tags
 
+The reason why Sitefab have both a category and tags for a given is to allows summary pages (e.g the homepage) to display each post only once via the categories.
+Categories are also used in the generation of the URL slugs.
 
 #### Example
 

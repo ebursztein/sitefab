@@ -60,9 +60,9 @@ Collections are list of posts grouped by a given criteria. The following collect
 
 ### Examples
 
-#### Getting the url of the category of a given post
+#### Getting the url of the category or tags
 
-If you want to link to the category of the post
+If you want to url of the post category you can do:
 
 ```jinja2
 <a href="{{categories[meta.category].meta.url}}">{{ meta.category }}</a>

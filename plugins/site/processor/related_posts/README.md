@@ -16,7 +16,6 @@ Add the following code into the template to list related posts:
 
 The plugin use the [gensim](https://radimrehurek.com/gensim/) python package.
 
-
 ## Changelog
 
 - 06/29/17 Refactored code to make the list of related post easier to work with by making them look like normal post objects.
