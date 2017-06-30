@@ -8,14 +8,17 @@ import os
 class PostCollections():
     "Handle posts collections"
 
-    def __init__(self, template=None, output_path=None, web_path=None, min_posts=0):
+    def __init__(self, site, template=None, output_path=None, web_path=None, min_posts=0):
         """Init the collections 
 
             Args:
+                site (SiteFab): current instance of SiteFab
                 template (Template): the jinja2 template used to render the collections. If none can't be rendered (optional)
                 path (str): directory where to render the collections. If none can't be rendered (optional)
                 min_posts (int): minimal number of posts to render the category (optional)
         """
+        
+        self.site = site
         self.collections = {}
         self.template = template
         self.output_path = output_path
@@ -54,7 +57,7 @@ class PostCollections():
                 collection.meta.slug = collection.meta.name.replace(" ", "-").lower()
                 if collection.meta.num_posts >= self.min_posts:
                     filename = "%s.html" % (collection.meta.slug)
-                    rv = self.template.render(posts=collection.posts, meta=collection.meta)
+                    rv = self.template.render(posts=collection.posts, meta=collection.meta, plugin_data=self.site.plugin_data)
                     new_path = os.path.join(self.output_path, collection.meta.slug)
                     files.write_file(new_path, "index.html", rv)
     
