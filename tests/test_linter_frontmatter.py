@@ -157,6 +157,7 @@ class TestLinterFrontmatter(TestLinter):
             results = sitefab.linter.lint(empty_post, "", sitefab)
             error_list  = self.get_linter_errors_list(results)
             assert not "E114" in error_list
+    
     ### 115 ###
     def test_e115_triggered(self, sitefab, empty_post):
         test_values = [
@@ -182,3 +183,16 @@ class TestLinterFrontmatter(TestLinter):
             results = sitefab.linter.lint(empty_post, "", sitefab)
             error_list  = self.get_linter_errors_list(results)
             assert not "E115" in error_list
+    
+    ### 116 ###
+    def test_e116_triggered(self, sitefab, empty_post):
+        empty_post.meta.title = None
+        results = sitefab.linter.lint(empty_post, "", sitefab)
+        error_list  = self.get_linter_errors_list(results)
+        assert "E116" in error_list
+    
+    def test_e116_not_triggered(self, sitefab, empty_post):
+        empty_post.meta.title = "this is my title"
+        results = sitefab.linter.lint(empty_post, "", sitefab)
+        error_list  = self.get_linter_errors_list(results)
+        assert not "E116" in error_list

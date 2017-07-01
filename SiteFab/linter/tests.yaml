@@ -15,6 +15,7 @@ E112: "Meta field files must be a dictionary got: %s. Typo?"
 E113: "Banner is not a string. Current type is:%s"
 E114: "Banner <b>%s</b> URL contains invalid caracters"
 E115: "Banner <b>%s</b> filename contains invalid caracters"
+E116: "Field <b>%s</b> value is null"
 
 # images
 E201: "Local image <b>%s</b>  doesn't exist. Typo?"

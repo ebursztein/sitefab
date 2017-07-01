@@ -28,7 +28,8 @@ def lint(post, test_info, config):
         e107_e108_e109_authors_formating,
         e110_lowercase_fields,
         e111_e112_local_files_exists,
-        e113_e114_e115_banner_properly_formated
+        e113_e114_e115_banner_properly_formated,
+        e116_value_not_null
     ]
     for test in tests:
         results += test(post, test_info, config)
@@ -195,5 +196,13 @@ def e113_e114_e115_banner_properly_formated(post, test_info, config):
             results.append(['E115', info])
     
     return results
-# file name format (lowercase..), correct extension, correct domain
+
+def e116_value_not_null(post, test_info, config):
+    "Ensure the field value are not null"
+    results = []
+    for field in post.meta:
+        if post.meta[field] == None:
+            info = test_info['E116'] % (field)
+            results.append(['E116', info])
+    return results
 # URL validity
