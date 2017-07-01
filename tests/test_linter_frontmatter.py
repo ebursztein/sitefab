@@ -99,3 +99,16 @@ class TestLinterFrontmatter(TestLinter):
         results = sitefab.linter.lint(empty_post, "", sitefab)
         error_list  = self.get_linter_errors_list(results)
         assert not "E110" in error_list
+    
+    ### 112 ###
+    def test_e112_triggered(self, sitefab, empty_post):
+        empty_post.meta.files = "not Lower"
+        results = sitefab.linter.lint(empty_post, "", sitefab)
+        error_list  = self.get_linter_errors_list(results)
+        assert "E112" in error_list
+    
+    def test_e112_not_triggered(self, sitefab, empty_post):
+        empty_post.meta.files = {"pdf": "/test/test.pdf"}
+        results = sitefab.linter.lint(empty_post, "", sitefab)
+        error_list  = self.get_linter_errors_list(results)
+        assert not "E112" in error_list

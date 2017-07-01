@@ -1,7 +1,7 @@
 from collections import Counter
 import re
-#import os.path
-#os.path.isfile(fname) 
+import os.path
+
 def lint(post, test_info, config):
     "Check the frontmatter of a given post for potential errors"
     
@@ -20,7 +20,8 @@ def lint(post, test_info, config):
         e105_category_in_tags,
         e106_duplicate_spaces,
         e107_e108_e109_authors_formating,
-        e110_lowercase_fields
+        e110_lowercase_fields,
+        e111_e112_local_files_exists
     ]
     for test in tests:
         results += test(post, test_info, config)
@@ -146,6 +147,23 @@ def e110_lowercase_fields(post, test_info, config):
                         results.append(['E110', info])
     return results
 
-# file exist
-# file name validity 
+def e111_e112_local_files_exists(post, test_info, config):
+    "check if local files exists"
+    results = []
+    site_dir = config.site_output_dir
+    if "files" in post.meta:
+        if not isinstance(post.meta.files, dict):
+            info = test_info['E112'] % (type(post.meta.files))
+            results.append(['E112', info])
+            return results
+
+        for fname, fpath  in post.meta.files.items():
+            if fpath[0] == '/':
+                full_path = os.path.join(site_dir, fpath[1:])
+                if not os.path.isfile(full_path):
+                    info = test_info['E111'] % (fname, full_path)
+                    results.append(['E111', info])
+    return results
+
+# file name format (lowercase..), correct extension, correct domain
 # URL validity

@@ -34,7 +34,7 @@ conference_publisher: IEEE
 conference_date: 18 oct 2016 13:30
 
 files:
-    paper: https://cdn.elie.net/publications/i-am-a-legend-hacking-hearthstone-using-statistical-learning-methods.pdf
+    paper: /content/i-am-a-legend-hacking-hearthstone-using-statistical-learning-methods.pdf
 
 abstract: "This paper demonstrate how to apply machine learning to Hearthstone to predict opponent future plays and game outcome."
 
