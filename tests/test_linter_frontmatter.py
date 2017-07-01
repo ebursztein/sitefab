@@ -47,3 +47,42 @@ class TestLinterFrontmatter(TestLinter):
         results = sitefab.linter.lint(empty_post, "", sitefab)
         error_list  = self.get_linter_errors_list(results)
         assert not "E106" in error_list
+    
+    ### 107 ###
+    def test_e107_triggered(self, sitefab, empty_post):
+        empty_post.meta.authors = "this is not a list"
+        results = sitefab.linter.lint(empty_post, "", sitefab)
+        error_list  = self.get_linter_errors_list(results)
+        assert "E107" in error_list
+    
+    def test_e107_not_triggered(self, sitefab, empty_post):
+        empty_post.meta.authors = ['Elie, Bursztein', 'Celine, Bursztein']
+        results = sitefab.linter.lint(empty_post, "", sitefab)
+        error_list  = self.get_linter_errors_list(results)
+        assert not "E107" in error_list
+    
+    ### 108 ###
+    def test_e108_triggered(self, sitefab, empty_post):
+        empty_post.meta.authors = ['Elie, Bursztein', 'No Commas']
+        results = sitefab.linter.lint(empty_post, "", sitefab)
+        error_list  = self.get_linter_errors_list(results)
+        assert "E108" in error_list
+    
+    def test_e108_not_triggered(self, sitefab, empty_post):
+        empty_post.meta.authors = ['Elie, Bursztein', 'Celine, Bursztein']
+        results = sitefab.linter.lint(empty_post, "", sitefab)
+        error_list  = self.get_linter_errors_list(results)
+        assert not "E108" in error_list
+
+    ### 109 ###
+    def test_e109_triggered(self, sitefab, empty_post):
+        empty_post.meta.authors = ['Elie, Bursztein', 'not Capitalized']
+        results = sitefab.linter.lint(empty_post, "", sitefab)
+        error_list  = self.get_linter_errors_list(results)
+        assert "E109" in error_list
+    
+    def test_e109_not_triggered(self, sitefab, empty_post):
+        empty_post.meta.authors = ['Elie, Bursztein', 'Celine, Bursztein']
+        results = sitefab.linter.lint(empty_post, "", sitefab)
+        error_list  = self.get_linter_errors_list(results)
+        assert not "E109" in error_list

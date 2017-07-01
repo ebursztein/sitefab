@@ -5,7 +5,10 @@ E102: "Missing mandatory meta data field <b>%s</b> for template <b>%s</b>, add f
 E103: "Meta field <b>%s</b> have incorrect value: <b>%s</b>, use one of the following value:%s"
 E104: "Meta field <b>%s</b> contains the following duplicate entries: %s"
 E105: "Category <b>%s</b> is duplicated in tags list: %s"
-E106: "Meta Field <b>%s</b> as a value with duplicate space: '%s'"
+E106: "Meta field <b>%s</b> as a value with duplicate space: '%s'"
+E107: "Authors field is not a list: %s"
+E108: "Author %s is mis-formatted. Should be first name, last name"
+E109: "Author %s is mis-formatted. Either first name or last name is not capitalized"
 
 # images
 E201: "Local image <b>%s</b>  doesn't exist. typo?"

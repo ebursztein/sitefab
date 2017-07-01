@@ -17,6 +17,7 @@ def lint(post, test_info, config):
     results += e104_duplicate_value(post, test_info, config)
     results += e105_category_in_tags(post, test_info, config)
     results += e106_duplicate_spaces(post, test_info, config)
+    results += e107_e108_e109_authors_formating(post, test_info, config)
     return results
 
 
@@ -99,5 +100,24 @@ def e106_duplicate_spaces(post, test_info, config):
                 if extra_space:
                     info = [field, elt]
                     results.append(['E106', info])
+    return results
+
+def e107_e108_e109_authors_formating(post, test_info, config):
+    "Check if the authors list is properly formatted"
+    results = []
+    
+    if not "authors" in post.meta:
+        return results
+    
+    authors = post.meta.authors
+    if not isinstance(authors, list):
+        results.append(['E107', authors])
+        return results
+
+    for author in authors:
+        if ',' not in author:
+            results.append(['E108', author])
+        if not author.istitle():
+            results.append(['E109', author])
     return results
 # capitalization
