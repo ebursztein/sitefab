@@ -9,6 +9,7 @@ E106: "Meta field <b>%s</b> as a value with duplicate space: '%s'"
 E107: "Authors field is not a list: %s"
 E108: "Author %s is mis-formatted. Should be first name, last name"
 E109: "Author %s is mis-formatted. Either first name or last name is not capitalized"
+E110: "Field %s contains a value that is not lowercase: %s"
 
 # images
 E201: "Local image <b>%s</b>  doesn't exist. typo?"

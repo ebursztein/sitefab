@@ -86,3 +86,16 @@ class TestLinterFrontmatter(TestLinter):
         results = sitefab.linter.lint(empty_post, "", sitefab)
         error_list  = self.get_linter_errors_list(results)
         assert not "E109" in error_list
+
+    ### 110 ###
+    def test_e110_triggered(self, sitefab, empty_post):
+        empty_post.meta.category = "not Lower"
+        results = sitefab.linter.lint(empty_post, "", sitefab)
+        error_list  = self.get_linter_errors_list(results)
+        assert "E110" in error_list
+    
+    def test_e110_not_triggered(self, sitefab, empty_post):
+        empty_post.meta.category = "lower"
+        results = sitefab.linter.lint(empty_post, "", sitefab)
+        error_list  = self.get_linter_errors_list(results)
+        assert not "E110" in error_list

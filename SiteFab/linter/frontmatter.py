@@ -1,6 +1,7 @@
 from collections import Counter
 import re
- 
+#import os.path
+#os.path.isfile(fname) 
 def lint(post, test_info, config):
     "Check the frontmatter of a given post for potential errors"
     
@@ -11,13 +12,19 @@ def lint(post, test_info, config):
         results.append(['E100', test_info['E100']])
         return results
     # Run metas tests
-    results += e101_mandatory_fields(post, test_info, config)
-    results += e102_mandatory_fields_for_specific_templates(post, test_info, config)
-    results += e103_field_value(post, test_info, config)
-    results += e104_duplicate_value(post, test_info, config)
-    results += e105_category_in_tags(post, test_info, config)
-    results += e106_duplicate_spaces(post, test_info, config)
-    results += e107_e108_e109_authors_formating(post, test_info, config)
+    tests = [
+        e101_mandatory_fields,
+        e102_mandatory_fields_for_specific_templates,
+        e103_field_value,
+        e104_duplicate_value,
+        e105_category_in_tags,
+        e106_duplicate_spaces,
+        e107_e108_e109_authors_formating,
+        e110_lowercase_fields
+    ]
+    for test in tests:
+        results += test(post, test_info, config)
+
     return results
 
 
@@ -83,7 +90,7 @@ def e105_category_in_tags(post, test_info, config):
     results = []
     if "category" in post.meta and "tags" in post.meta:
         if post.meta.category in post.meta.tags:
-            info = [post.meta.category, post.meta.tags]
+            info = test_info['E105'] %  (post.meta.category, " ,".join(post.meta.tags))
             results.append(['E105', info])
     return results
 
@@ -98,7 +105,7 @@ def e106_duplicate_spaces(post, test_info, config):
             if isinstance(elt, str):
                 extra_space  = re.search(" {2,}", elt)
                 if extra_space:
-                    info = [field, elt]
+                    info = test_info['E106'] %  (field, elt)
                     results.append(['E106', info])
     return results
 
@@ -111,13 +118,34 @@ def e107_e108_e109_authors_formating(post, test_info, config):
     
     authors = post.meta.authors
     if not isinstance(authors, list):
+        info = test_info['E107'] % authors
         results.append(['E107', authors])
         return results
 
     for author in authors:
         if ',' not in author:
-            results.append(['E108', author])
+            info = test_info['E108'] % authors
+            results.append(['E108', info])
         if not author.istitle():
+            info = test_info['E109'] % authors
             results.append(['E109', author])
     return results
-# capitalization
+
+def e110_lowercase_fields(post, test_info, config):
+    "Check that field values are indeed lowercase"
+    results = []
+    for field in config.frontmatter_field_values_must_be_lowercase:
+        if field in post.meta:
+            value = post.meta[field]
+            if not isinstance(value, list):
+                value = [value]
+            for elt in value:
+                if isinstance(elt, str):
+                    if not elt.islower():
+                        info = test_info['E110'] % (field, elt)
+                        results.append(['E110', info])
+    return results
+
+# file exist
+# file name validity 
+# URL validity

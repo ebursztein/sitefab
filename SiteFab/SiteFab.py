@@ -94,6 +94,7 @@ class SiteFab(object):
         linter_config = files.load_config(linter_config_filename)
         linter_config.report_template_file = os.path.join(files.get_site_path(), self.config.linter.report_template_file)
         linter_config.output_dir = self.get_logs_dir()
+        linter_config.site_output_dir = self.get_output_dir()
         self.linter = Linter(linter_config)
 
         # finding content and assets
