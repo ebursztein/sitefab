@@ -79,6 +79,8 @@ class Linter:
                 results.has_errors += 1
             if d[0][1] == "W":
                 results.has_warnings += 1
+        
         if results.has_errors or results.has_warnings:
             self.results[post.filename] = results
+        
         return results

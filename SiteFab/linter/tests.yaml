@@ -2,8 +2,11 @@
 E100: "Meta data not present - Add a frontmatter to your post"
 E101: "Missing mandatory meta data field <b>%s</b>, add field to frontmatter"
 E102: "Missing mandatory meta data field <b>%s</b> for template <b>%s</b>, add field to frontmatter"
-E103: "meta field <b>%s</b> have incorrect value: <b>%s</b>, use one of the following value:%s"
-E104: "meta field <b>%s</b> contains the following duplicate entries: %s"
+E103: "Meta field <b>%s</b> have incorrect value: <b>%s</b>, use one of the following value:%s"
+E104: "Meta field <b>%s</b> contains the following duplicate entries: %s"
+E105: "Category <b>%s</b> is duplicated in tags list: %s"
+E106: "Meta Field <b>%s</b> as a value with duplicate space: '%s'"
+
 # images
 E201: "Local image <b>%s</b>  doesn't exist. typo?"
 E202: "The image <b>%s</b> is not loaded from a whitelisted source. typo?"

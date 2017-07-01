@@ -1,5 +1,9 @@
+from collections import Counter
+import re
+ 
 def lint(post, test_info, config):
     "Check the frontmatter of a given post for potential errors"
+    
     results = []
 
     # Testing is meta exists otherwise bailout
@@ -10,7 +14,9 @@ def lint(post, test_info, config):
     results += e101_mandatory_fields(post, test_info, config)
     results += e102_mandatory_fields_for_specific_templates(post, test_info, config)
     results += e103_field_value(post, test_info, config)
-    # results += e104_duplicate_value(post, test_info, config)
+    results += e104_duplicate_value(post, test_info, config)
+    results += e105_category_in_tags(post, test_info, config)
+    results += e106_duplicate_spaces(post, test_info, config)
     return results
 
 
@@ -24,10 +30,8 @@ def e101_mandatory_fields(post, test_info, config):
 
 
 def e102_mandatory_fields_for_specific_templates(post, test_info, config):
-    "Check for the presense of mandatory field for specific template"
-    
+    "Check for the presense of mandatory field for specific template"    
     results = []
-
     if "template" not in post.meta:
         return results
 
@@ -41,7 +45,6 @@ def e102_mandatory_fields_for_specific_templates(post, test_info, config):
 
 def e103_field_value(post, test_info, config):
     "Check if the value for specific fields match the list"
-    
     results = []
     for field in config.frontmatter_fields_value:
         if field in post.meta:
@@ -53,27 +56,48 @@ def e103_field_value(post, test_info, config):
 
 def e104_duplicate_value(post, test_info, config):
     "Check if a value appears twice in a field list"
-    
     results = []
     for field in post.meta:
         value_field = post.meta[field]
         if isinstance(value_field, list):
-            #print post.meta.title
-            #print field
-            #print value_field
-            #print set(value_field)
-            if len(set(value_field)) != len(value_field):
-                seen = set()
-                duplicates = []
-                for x in value_field:
-                    if x not in seen:
-                        seen.add(x)
-                    else:
-                        duplicates.append(x)
+            count = Counter()
+            for elt in value_field:
+                try:
+                    count[elt] += 1
+                except:
+                    continue
+
+            duplicates = []
+            for elt in count.most_common():
+                if elt[1] > 1:
+                    duplicates.append(elt[0])
+            
+            if len(duplicates):
                 info = test_info['E104'] % (field, " ,".join(duplicates))
                 results.append(['E104', info])
     return results
 
+def e105_category_in_tags(post, test_info, config):
+    "Check if the category appears in the tag list"
+    results = []
+    if "category" in post.meta and "tags" in post.meta:
+        if post.meta.category in post.meta.tags:
+            info = [post.meta.category, post.meta.tags]
+            results.append(['E105', info])
+    return results
+
+def e106_duplicate_spaces(post, test_info, config):
+    "Check if there are extra spaces"
+    results = []
+    for field in post.meta:
+        value = post.meta[field]
+        if not isinstance(value, list):
+            value = [value]
+        for elt in value:
+            if isinstance(elt, str):
+                extra_space  = re.search(" {2,}", elt)
+                if extra_space:
+                    info = [field, elt]
+                    results.append(['E106', info])
+    return results
 # capitalization
-# duplicate space
-# category in tag error
