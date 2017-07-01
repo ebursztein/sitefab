@@ -151,6 +151,10 @@ class TestLinterFrontmatter(TestLinter):
             "https://www.elie.net/test/test",
             "https://www.elie.net/test/test.pdf",
             "https://www.elie.net/test/test.pdf?a=42",
+            "/cat/file",
+            "cat/file",
+            "/cat/file.pdf"
+            "/cat/file.pdf?a=2"
             ]
         for value in test_values:
             empty_post.meta.banner = value
@@ -196,3 +200,44 @@ class TestLinterFrontmatter(TestLinter):
         results = sitefab.linter.lint(empty_post, "", sitefab)
         error_list  = self.get_linter_errors_list(results)
         assert not "E116" in error_list
+    
+    ### 117 ###
+    def test_e117_triggered(self, sitefab, empty_post):
+        test_values = [53, ['bla'], {'bla': 'oups'}, None]
+        for value in test_values:
+            empty_post.meta.permanent_url = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert "E117" in error_list
+    
+    def test_e117_not_triggered(self, sitefab, empty_post):
+        empty_post.meta.permanent_url = "this is a string"
+        results = sitefab.linter.lint(empty_post, "", sitefab)
+        error_list  = self.get_linter_errors_list(results)
+        assert not "E117" in error_list
+
+    ### 114 ###
+    def test_e118_triggered(self, sitefab, empty_post):
+        test_values = [
+            "http://",
+            "https://" # empty
+            "hTTps://elie.net", # caps
+            "https://elie.net/ test.html" #space
+            ]
+        for value in test_values:
+            empty_post.meta.permanent_url = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert "E118" in error_list
+
+    def test_e118_not_triggered(self, sitefab, empty_post):
+        test_values = [
+            "/cat/file",
+            "/cat/file?a=5"
+            "/cat/file.pdf"
+            ]
+        for value in test_values:
+            empty_post.meta.permanent_url = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert not "E118" in error_list

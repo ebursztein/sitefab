@@ -6,6 +6,8 @@ import os.path
 #from https://mathiasbynens.be/demo/url-regex diego's one
 VALID_URL= re.compile(r"^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\\x{00a1}\-\\x{ffff}0-9]+-?)*[a-z\\x{00a1}\-\\x{ffff}0-9]+)(?:\.(?:[a-z\\x{00a1}\-\\x{ffff}0-9]+-?)*[a-z\\x{00a1}\-\\x{ffff}0-9]+)*(?:\.(?:[a-z\\x{00a1}\-\\x{ffff}]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?$")
 
+VALID_LOCAL_URL = re.compile(r"^/?[a-z0-9\/_\.\-=\?]+$")
+
 VALID_FILENAME = re.compile(r'^[a-z\/][a-z0-9_\-/\.]+\.[a-z]{1,5}$')
 
 def lint(post, test_info, config):
@@ -29,7 +31,8 @@ def lint(post, test_info, config):
         e110_lowercase_fields,
         e111_e112_local_files_exists,
         e113_e114_e115_banner_properly_formated,
-        e116_value_not_null
+        e116_value_not_null,
+        e117_e118_e119_permanent_url_is_properly_formated
     ]
     for test in tests:
         results += test(post, test_info, config)
@@ -205,4 +208,28 @@ def e116_value_not_null(post, test_info, config):
             info = test_info['E116'] % (field)
             results.append(['E116', info])
     return results
+
+def e117_e118_e119_permanent_url_is_properly_formated(post, test_info, config):
+    results = []
+
+    if not "permanent_url" in post.meta:
+        return results
+    
+    url = post.meta.permanent_url
+    if not isinstance(url, str):
+        info = test_info['E117'] % (type(url))
+        results.append(['E117', info])
+        return results
+    
+    if not VALID_URL.match(url) and not VALID_LOCAL_URL.match(url):
+        info = test_info['E118'] % (url)
+        results.append(['E118', info])
+    
+    if url[0] != '/':
+        info = test_info['E119'] % (url)
+        results.append(['E119', info])
+    
+    return results
+
+
 # URL validity
