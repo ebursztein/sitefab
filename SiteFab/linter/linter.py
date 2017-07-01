@@ -7,10 +7,7 @@ import sys
 
 import frontmatter
 import images
-
-VALID_URL_CHARS = '[^a-z0-9_\-:/\.]'
-VALID_PERMA_CHARS = '[^a-z0-9-\/\.]'
-VALID_TEXT_CHARS = '[^a-zA-Z0-9_-:,;\. ]'
+import structure
 
 class Linter:
     
@@ -72,6 +69,7 @@ class Linter:
             image_info = None
 
         img_results = images.lint(post, self.test_info, self.config, image_info)
+        stucture_results = structure.lint(post, self.test_info, self.config)
         results.info.extend(img_results)
 
         for d in results.info: 

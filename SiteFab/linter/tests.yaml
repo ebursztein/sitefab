@@ -12,6 +12,9 @@ E109: "Author %s is mis-formatted. Either first name or last name is not capital
 E110: "Field %s contains a value that is not lowercase: %s"
 E111: "Local file %s: %s does not exist. Typo?"
 E112: "Meta field files must be a dictionary got: %s. Typo?"
+E113: "Banner is not a string. Current type is:%s"
+E114: "Banner <b>%s</b> URL contains invalid caracters"
+E115: "Banner <b>%s</b> filename contains invalid caracters"
 
 # images
 E201: "Local image <b>%s</b>  doesn't exist. Typo?"

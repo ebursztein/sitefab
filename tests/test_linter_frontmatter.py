@@ -112,3 +112,73 @@ class TestLinterFrontmatter(TestLinter):
         results = sitefab.linter.lint(empty_post, "", sitefab)
         error_list  = self.get_linter_errors_list(results)
         assert not "E112" in error_list
+
+    ### 113 ###
+    def test_e113_triggered(self, sitefab, empty_post):
+        test_values = [53, ['bla'], {'bla': 'oups'}, None]
+        for value in test_values:
+            empty_post.meta.banner = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert "E113" in error_list
+    
+    def test_e113_not_triggered(self, sitefab, empty_post):
+        empty_post.meta.banner = "this is a string"
+        results = sitefab.linter.lint(empty_post, "", sitefab)
+        error_list  = self.get_linter_errors_list(results)
+        assert not "E113" in error_list
+
+    ### 114 ###
+    def test_e114_triggered(self, sitefab, empty_post):
+        test_values = [
+            "http://",
+            "https://" # empty
+            "hTTps://elie.net", # caps
+            "https://elie.net/ test.html" #space
+            ]
+        for value in test_values:
+            empty_post.meta.banner = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert "E114" in error_list
+
+    def test_e114_not_triggered(self, sitefab, empty_post):
+        test_values = [
+            "http://www.elie.net",
+            "https://www.elie.net",
+            "https://www.elie.net/test.html",
+            "https://www.elie.net/test/test.html",
+            "https://www.elie.net/test/test",
+            "https://www.elie.net/test/test.pdf",
+            "https://www.elie.net/test/test.pdf?a=42",
+            ]
+        for value in test_values:
+            empty_post.meta.banner = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert not "E114" in error_list
+    ### 115 ###
+    def test_e115_triggered(self, sitefab, empty_post):
+        test_values = [
+            "file .pdf",
+            ]
+        for value in test_values:
+            empty_post.meta.banner = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert "E115" in error_list
+    
+    def test_e115_not_triggered(self, sitefab, empty_post):
+        test_values = [
+            "file.pdf",
+            "/file.pdf",
+            "/files/file.pdf",
+            "/file/file-test.pdf",
+            "/file/file-test02.jpeg",
+
+            ]
+        for value in test_values:
+            empty_post.meta.banner = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert not "E115" in error_list

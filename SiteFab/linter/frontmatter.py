@@ -1,6 +1,12 @@
+# encoding: utf-8
 from collections import Counter
 import re
 import os.path
+
+#from https://mathiasbynens.be/demo/url-regex diego's one
+VALID_URL= re.compile(r"^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\\x{00a1}\-\\x{ffff}0-9]+-?)*[a-z\\x{00a1}\-\\x{ffff}0-9]+)(?:\.(?:[a-z\\x{00a1}\-\\x{ffff}0-9]+-?)*[a-z\\x{00a1}\-\\x{ffff}0-9]+)*(?:\.(?:[a-z\\x{00a1}\-\\x{ffff}]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?$")
+
+VALID_FILENAME = re.compile(r'^[a-z\/][a-z0-9_\-/\.]+\.[a-z]{1,5}$')
 
 def lint(post, test_info, config):
     "Check the frontmatter of a given post for potential errors"
@@ -21,7 +27,8 @@ def lint(post, test_info, config):
         e106_duplicate_spaces,
         e107_e108_e109_authors_formating,
         e110_lowercase_fields,
-        e111_e112_local_files_exists
+        e111_e112_local_files_exists,
+        e113_e114_e115_banner_properly_formated
     ]
     for test in tests:
         results += test(post, test_info, config)
@@ -165,5 +172,28 @@ def e111_e112_local_files_exists(post, test_info, config):
                     results.append(['E111', info])
     return results
 
+def e113_e114_e115_banner_properly_formated(post, test_info, config):
+    "Ensure the banner is properly formated"
+    results = []
+
+    if not "banner" in post.meta:
+        return results
+    
+    banner = post.meta.banner
+    if not isinstance(banner, str):
+        info = test_info['E113'] % (type(banner))
+        results.append(['E113', info])
+        return results
+    
+    if "http" in banner[:6]:
+        if not VALID_URL.match(banner):
+            info = test_info['E114'] % (banner)
+            results.append(['E114', info])
+    else:
+        if not VALID_FILENAME.match(banner):
+            info = test_info['E115'] % (banner)
+            results.append(['E115', info])
+    
+    return results
 # file name format (lowercase..), correct extension, correct domain
 # URL validity

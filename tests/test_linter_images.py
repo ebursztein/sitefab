@@ -44,6 +44,7 @@ class TestLinterImages(TestLinter):
         }
         empty_post.meta.banner = "banner.jpg"
         results = sitefab.linter.lint(empty_post, "", sitefab)
+        print results
         error_list  = self.get_linter_errors_list(results)
         assert "E204" in error_list
 
