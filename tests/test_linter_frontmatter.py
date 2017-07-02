@@ -115,18 +115,21 @@ class TestLinterFrontmatter(TestLinter):
 
     ### 113 ###
     def test_e113_triggered(self, sitefab, empty_post):
-        test_values = [53, ['bla'], {'bla': 'oups'}, None]
-        for value in test_values:
+        values = [53, ['bla'], {'bla': 'oups'}, None]
+        for value in values:
             empty_post.meta.banner = value
             results = sitefab.linter.lint(empty_post, "", sitefab)
             error_list  = self.get_linter_errors_list(results)
             assert "E113" in error_list
     
     def test_e113_not_triggered(self, sitefab, empty_post):
-        empty_post.meta.banner = "this is a string"
-        results = sitefab.linter.lint(empty_post, "", sitefab)
-        error_list  = self.get_linter_errors_list(results)
-        assert not "E113" in error_list
+        values = ["test", u"test", "", u""]
+        for value in values:
+            empty_post.meta.banner = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            print results
+            error_list  = self.get_linter_errors_list(results)
+            assert not "E113" in error_list
 
     ### 114 ###
     def test_e114_triggered(self, sitefab, empty_post):
@@ -196,35 +199,44 @@ class TestLinterFrontmatter(TestLinter):
         assert "E116" in error_list
     
     def test_e116_not_triggered(self, sitefab, empty_post):
-        empty_post.meta.title = "this is my title"
-        results = sitefab.linter.lint(empty_post, "", sitefab)
-        error_list  = self.get_linter_errors_list(results)
-        assert not "E116" in error_list
+        tests = [
+            u"this is my title",
+            "title"
+            "title again"
+        ]
+        for t in tests:
+            empty_post.meta.title = "this is my title"
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert not "E116" in error_list
     
     ### 117 ###
     def test_e117_triggered(self, sitefab, empty_post):
-        test_values = [53, ['bla'], {'bla': 'oups'}, None]
-        for value in test_values:
+        values = [53, ['bla'], {'bla': 'oups'}, None]
+        for value in values:
             empty_post.meta.permanent_url = value
             results = sitefab.linter.lint(empty_post, "", sitefab)
             error_list  = self.get_linter_errors_list(results)
             assert "E117" in error_list
     
     def test_e117_not_triggered(self, sitefab, empty_post):
-        empty_post.meta.permanent_url = "this is a string"
-        results = sitefab.linter.lint(empty_post, "", sitefab)
-        error_list  = self.get_linter_errors_list(results)
-        assert not "E117" in error_list
+        values = ["test", u"test" u"", ""]
+        for value in values:
+            empty_post.meta.permanent_url = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            print results
+            error_list  = self.get_linter_errors_list(results)
+            assert not "E117" in error_list
 
-    ### 114 ###
+    ### 118 ###
     def test_e118_triggered(self, sitefab, empty_post):
-        test_values = [
+        values = [
             "http://",
             "https://" # empty
             "hTTps://elie.net", # caps
             "https://elie.net/ test.html" #space
             ]
-        for value in test_values:
+        for value in values:
             empty_post.meta.permanent_url = value
             results = sitefab.linter.lint(empty_post, "", sitefab)
             error_list  = self.get_linter_errors_list(results)

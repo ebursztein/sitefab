@@ -21,7 +21,6 @@ def lint(post, test_info, config, image_info):
     
     results += e202_img_origin(images, test_info, config)
     results += e203_duplicate_image(images, test_info)
-    results.append(['E42', 'b'])
     return results
 
 def e201_local_img_file_exist(images, test_info, image_info): # unit_tested: yes

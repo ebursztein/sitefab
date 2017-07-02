@@ -184,7 +184,7 @@ def e113_e114_e115_banner_properly_formated(post, test_info, config):
         return results
     
     banner = post.meta.banner
-    if not isinstance(banner, str):
+    if not isinstance(banner, str) and not isinstance(banner, unicode):
         info = test_info['E113'] % (type(banner))
         results.append(['E113', info])
         return results
@@ -216,7 +216,7 @@ def e117_e118_e119_permanent_url_is_properly_formated(post, test_info, config):
         return results
     
     url = post.meta.permanent_url
-    if not isinstance(url, str):
+    if not isinstance(url, str) and not isinstance(url, unicode):
         info = test_info['E117'] % (type(url))
         results.append(['E117', info])
         return results
@@ -225,7 +225,7 @@ def e117_e118_e119_permanent_url_is_properly_formated(post, test_info, config):
         info = test_info['E118'] % (url)
         results.append(['E118', info])
     
-    if url[0] != '/':
+    if len(url) and url[0] != '/':
         info = test_info['E119'] % (url)
         results.append(['E119', info])
     
