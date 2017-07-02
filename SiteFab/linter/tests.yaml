@@ -20,7 +20,6 @@ E117: "Permanent URL is not a string. Current type is:%s"
 E118: "Permanent URL  <b>%s</b> is not a valid URL"
 E119: "Permanent URL  <b>%s</b> is not an absolute URL"
 
-
 # images
 E201: "Local image <b>%s</b>  doesn't exist. Typo?"
 E202: "The image <b>%s</b> is not loaded from a whitelisted source. typo?"
@@ -29,3 +28,7 @@ E204: "Banner image <b>%s</b> width to small: <b>%s</b>px"
 E205: "Image <b>%s</b> width to small: <b>%s</b>px"
 E206: "Banner image <b>%s</b> file don't exist'"
 E207: "Banner image <b>%s</b> have a wrong width/height ratio:%s"
+
+# structure
+E300: "H1 element found in the content: <b>%s</b>. Don't use it as it is reserved for the title"
+E301: "There is a single H%s element:'%s'. Consider removing it or adding more "

@@ -69,8 +69,9 @@ class Linter:
             image_info = None
 
         img_results = images.lint(post, self.test_info, self.config, image_info)
-        stucture_results = structure.lint(post, self.test_info, self.config)
         results.info.extend(img_results)
+        stucture_results = structure.lint(post, self.test_info, self.config)
+        results.info.extend(stucture_results)
 
         for d in results.info: 
             if d[0][0] == "E":
