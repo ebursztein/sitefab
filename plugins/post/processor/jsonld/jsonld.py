@@ -128,12 +128,14 @@ class Jsonld(PostProcessor):
                     # keywords
                     keywords = list()
                     keywords.append(str(post.meta.category))
-                    for tag in post.meta.tags:
-                        tag_correct = tag.replace(" ", "_")
-                        meta_tag = {"name": str(tag),
-                                    "url": str("%s%s%s" % (site.config.url, site.config.collections.category_output_dir, tag_correct))}
-                        jsonld_data['about'].append(meta_tag)
-                        keywords.append(str(tag))
+
+                    if post.meta.tags:
+                        for tag in post.meta.tags:
+                            tag_correct = tag.replace(" ", "_")
+                            meta_tag = {"name": str(tag),
+                                        "url": str("%s%s%s" % (site.config.url, site.config.collections.category_output_dir, tag_correct))}
+                            jsonld_data['about'].append(meta_tag)
+                            keywords.append(str(tag))
 
                     if post.meta.seo_keywords:
                         for seo_keyword in post.meta.seo_keywords:
