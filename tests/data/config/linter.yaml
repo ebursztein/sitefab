@@ -8,6 +8,10 @@ frontmatter_fields_value:
 
 frontmatter_field_values_must_be_lowercase: ["category", "tags"]
 
+permanent_url_valid_prefixes_by_template:
+  blog: "/blog/"
+  publication: "/publication/"
+
 ### Image tests ###
 allowed_image_sources: [mysite.com] # list the domains from which images are included. use null or [] to forbidd external images.
 min_banner_width: 1900 # minimal size for the banner. Use 0 to disable.

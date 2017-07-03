@@ -8,6 +8,13 @@ frontmatter_fields_value:
 
 frontmatter_field_values_must_be_lowercase: ["category", "tags"]
 
+# ensure that the posts that use a given template have a permanent_url that start with the right prefix
+# Unspecified templates will be ignored
+permanent_url_valid_prefixes_by_template: 
+  blog: "/blog/"
+  publication: "/publication/"
+
+
 ### Image tests ###
 allowed_image_sources: ["mysite.com"] # list the domains from which images are included. use null or [] to forbidd external images.
 min_image_width: 100 # minimal size for images in post. Use 0 to disable.

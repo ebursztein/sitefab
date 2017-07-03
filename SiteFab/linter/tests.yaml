@@ -19,6 +19,7 @@ E116: "Field <b>%s</b> value is null"
 E117: "Permanent URL is not a string. Current type is:%s"
 E118: "Permanent URL  <b>%s</b> is not a valid URL"
 E119: "Permanent URL  <b>%s</b> is not an absolute URL"
+E120: "Permanent URL <b>%s</b> has an invalid prefix. Expect to start with: <b>%s</b>"
 
 # images
 E201: "Local image <b>%s</b>  doesn't exist. Typo?"

@@ -32,7 +32,8 @@ def lint(post, test_info, config):
         e111_e112_local_files_exists,
         e113_e114_e115_banner_properly_formated,
         e116_value_not_null,
-        e117_e118_e119_permanent_url_is_properly_formated
+        e117_e118_e119_permanent_url_is_properly_formated,
+        e120_valid_permanent_url_prefix
     ]
     for test in tests:
         results += test(post, test_info, config)
@@ -231,5 +232,21 @@ def e117_e118_e119_permanent_url_is_properly_formated(post, test_info, config):
     
     return results
 
+def e120_valid_permanent_url_prefix(post, test_info, config):
+    "Check if the permanent url has a valid template based of its prefix"
+    results = []
+    
+    if "template" not in post.meta or not "permanent_url" in post.meta:
+        return results
 
-# URL validity
+    tlp = post.meta.template
+    if tlp not in config.permanent_url_valid_prefixes_by_template:
+        return results
+    
+    prefix = config.permanent_url_valid_prefixes_by_template[tlp]
+    permanent_url = str( post.meta.permanent_url)
+    if not permanent_url.startswith(prefix):
+        info = test_info['E120'] % (permanent_url, prefix)
+        results.append(['E120', info])
+    
+    return results

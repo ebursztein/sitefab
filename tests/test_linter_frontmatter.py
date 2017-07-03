@@ -269,3 +269,22 @@ class TestLinterFrontmatter(TestLinter):
             results = sitefab.linter.lint(empty_post, "", sitefab)
             error_list  = self.get_linter_errors_list(results)
             assert not "E119" in error_list
+
+    ### 220 ###
+    def test_e220_triggered(self, sitefab, empty_post):
+        empty_post.meta.template = "blog"
+        values = ["wrong", "wrong/again"]
+        for value in values:
+            empty_post.meta.permanent_url = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert "E120" in error_list
+    
+    def test_e220_not_triggered(self, sitefab, empty_post):
+        empty_post.meta.template = "blog"
+        values = ["/blog/ok", "/blog/ok/as", "/blog/ok/as.well"]
+        for value in values:
+            empty_post.meta.permanent_url = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert not "E120" in error_list
