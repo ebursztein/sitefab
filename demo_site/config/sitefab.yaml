@@ -1,7 +1,7 @@
 name: "SiteFab Demo site"
 logo_url: "static/images/favicon/apple-touch-icon.png"
 #specify how various directory are named. Path are relative to the root of the site
-url: "http://localhost:8080/" #site url
+url: "http://localhost:8080" #site url
 
 threads: 4 # how many thread to use
 
