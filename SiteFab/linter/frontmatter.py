@@ -102,7 +102,8 @@ def e105_category_in_tags(post, test_info, config):
     "Check if the category appears in the tag list"
     results = []
     if "category" in post.meta and "tags" in post.meta:
-        if post.meta.category in post.meta.tags:
+
+        if post.meta.tags and post.meta.category in post.meta.tags:
             info = test_info['E105'] %  (post.meta.category, " ,".join(post.meta.tags))
             results.append(['E105', info])
     return results
