@@ -76,8 +76,8 @@ class Jsonld(PostProcessor):
                             "width": width
                         }
                 # about
-                jsonld_data["about"] = [{"name": str(post.meta.category), "url": str("%s%s%s" % (
-                    site.config.url, site.config.collections.category_output_dir, correct_category))}]
+                jsonld_data["about"] = [{"name": str(post.meta.category), "url": str("%s/%s%s" % (
+                    site.config.url, site.config.collections.output_dir, correct_category))}]
 
                 # microdata specific to PublicationEvent (talk)
                 if post.meta.microdata_type == "PublicationEvent":
@@ -106,8 +106,8 @@ class Jsonld(PostProcessor):
 
                     #headline ArticleSection
                     jsonld_data['headline'] = str(post.meta.title)
-                    jsonld_data['articleSection'] = str("%s%s%s" % (
-                        site.config.url, site.config.collections.category_output_dir, correct_category))
+                    jsonld_data['articleSection'] = str("%s/%s%s" % (
+                        site.config.url, site.config.collections.output_dir, correct_category))
                     # Dates
                     # date "2016-10-18T08:00:00+00:00"
                     published_date = datetime.datetime.fromtimestamp(post.meta.creation_date_ts, tz=pytz.UTC).isoformat()
@@ -133,7 +133,7 @@ class Jsonld(PostProcessor):
                         for tag in post.meta.tags:
                             tag_correct = tag.replace(" ", "_")
                             meta_tag = {"name": str(tag),
-                                        "url": str("%s%s%s" % (site.config.url, site.config.collections.category_output_dir, tag_correct))}
+                                        "url": str("%s/%s%s" % (site.config.url, site.config.collections.output_dir, tag_correct))}
                             jsonld_data['about'].append(meta_tag)
                             keywords.append(str(tag))
 
@@ -154,7 +154,7 @@ class Jsonld(PostProcessor):
                             "name": str(post.meta.conference_publisher)
                         }
                     if post.meta.microdata_type == "BlogPosting":
-                        filename = "%s%s" % (site.config.dir.output, site.config.logo_url)
+                        filename = "%s/%s" % (site.config.dir.output, site.config.logo_url)
                         with Image.open(filename) as im:
                             width, height = im.size
 
@@ -163,7 +163,7 @@ class Jsonld(PostProcessor):
                             "name": str(site.config.name),
                             "@logo": {
                                 "@type": "ImageObject",
-                                "url": str("%s%s" % (site.config.url, site.config.logo_url)),
+                                "url": str("%s/%s" % (site.config.url, site.config.logo_url)),
                                 "width": width,
                                 "height": height
                             }
