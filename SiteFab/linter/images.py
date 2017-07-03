@@ -52,7 +52,7 @@ def e203_duplicate_image(images, test_info): # unit_tested:yes
     "Test if an image is used multiple time"
     results = []
     cnt = Counter(images)
-    for img in cnt.most_common(100):
+    for img in cnt.most_common():
         if img[1] > 1:
             results.append(['E203', test_info['E203'] % (img[0], img[1])])
     return results

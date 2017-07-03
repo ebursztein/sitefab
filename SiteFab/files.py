@@ -41,26 +41,17 @@ def load_config(config_file):
     config = utils.dict_to_objdict(config_yaml)    
     return config
 
-cached_files = {}
-def read_file(filename, cache=True):
+def read_file(filename):
     """Read a file and return its content. Use cached version unless specified.
     Args:
         filename (str): the filename to read from
-        cache (bool): wether or not to read result from cache?
-    
     Returns
         str: the content of the file
-
     """
-    
-    if cache and filename in cached_files:
-        return cached_files[filename]
     
     if os.path.isfile(filename):
         with codecs.open(filename, "r", "utf-8-sig") as f:
             content = f.read().encode("utf-8")
-        if cache:
-            cached_files[filename] = content
         return content 
     else:
         utils.warning("file:%s don't exist" % filename)
