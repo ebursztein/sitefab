@@ -5,7 +5,7 @@ E102: "Missing mandatory meta data field <b>%s</b> for template <b>%s</b>, add f
 E103: "Meta field <b>%s</b> have incorrect value: <b>%s</b>, use one of the following value:%s"
 E104: "Meta field <b>%s</b> contains the following duplicate entries: %s"
 E105: "Category <b>%s</b> is duplicated in tags list: %s"
-E106: "Meta field <b>%s</b> as a value with duplicate space: '%s'"
+E106: "Meta field <b>%s</b> as a value with a double (or more) space: '%s'"
 E107: "Authors field is not a list: %s"
 E108: "Author %s is mis-formatted. Should be first name, last name"
 E109: "Author %s is mis-formatted. Either first name or last name is not capitalized"
@@ -18,7 +18,6 @@ E115: "Banner <b>%s</b> filename contains invalid caracters"
 E116: "Field <b>%s</b> value is null"
 E117: "Permanent URL is not a string. Current type is:%s"
 E118: "Permanent URL  <b>%s</b> is not a valid URL"
-E119: "Permanent URL  <b>%s</b> is not an absolute URL"
 
 # images
 E201: "Local image <b>%s</b>  doesn't exist. Typo?"

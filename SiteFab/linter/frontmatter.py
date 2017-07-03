@@ -224,11 +224,7 @@ def e117_e118_e119_permanent_url_is_properly_formated(post, test_info, config):
     if not VALID_URL.match(url) and not VALID_LOCAL_URL.match(url):
         info = test_info['E118'] % (url)
         results.append(['E118', info])
-    
-    if len(url) and url[0] != '/':
-        info = test_info['E119'] % (url)
-        results.append(['E119', info])
-    
+
     return results
 
 

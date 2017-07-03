@@ -20,7 +20,7 @@
     <body>
         <div class="row medium-8 large-7 columns">
             <h1>Post linter report</h1><br><br>
-            {% for post, data in results.iteritems() %}
+            {% for post, data in results.items() %}
             <div class="post">
                 <h2>{{post}}</h2><br>
                 num errors: {{data.has_errors}} - num warning: {{data.has_warnings}}
