@@ -127,7 +127,6 @@ class TestLinterFrontmatter(TestLinter):
         for value in values:
             empty_post.meta.banner = value
             results = sitefab.linter.lint(empty_post, "", sitefab)
-            print results
             error_list  = self.get_linter_errors_list(results)
             assert not "E113" in error_list
 
@@ -253,3 +252,20 @@ class TestLinterFrontmatter(TestLinter):
             results = sitefab.linter.lint(empty_post, "", sitefab)
             error_list  = self.get_linter_errors_list(results)
             assert not "E118" in error_list
+    
+    ### 119 ###
+    def test_e119_triggered(self, sitefab, empty_post):
+        values = ["notabsolute", "not/absolute/not"]
+        for value in values:
+            empty_post.meta.permanent_url = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert "E119" in error_list
+    
+    def test_e119_not_triggered(self, sitefab, empty_post):
+        values = ["/absolute", "/absolute/not"]
+        for value in values:
+            empty_post.meta.permanent_url = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert not "E119" in error_list

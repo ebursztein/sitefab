@@ -289,7 +289,7 @@ class SiteFab(object):
             linter_results = self.linter.lint(post, rv, self)
             # Are we stopping on linting errors?
             if linter_results.has_errors and self.config.linter.stop_on_error:
-                print post
+                print post.filename
                 for error in linter_results.info:
                     print "\t-%s:%s" % (error[0], error[1])
                 sys.exit(-1)
