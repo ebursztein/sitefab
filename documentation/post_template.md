@@ -27,10 +27,18 @@ While most variables are optional, usually the frontmatter contains a few common
 Getting the table of content (toc) and list the section of the page in the template:
 
 ```jinja2
-{%  for elt in toc %}
-    {{elt[0]}}<br>
+<ul>
+{%  for elt in meta.toc %}
+    <li class="headline-{{elt[1]}}"><a href="#toc-{{elt[2]}}">{{elt[0]}}</a></li>
 {%endfor%}
+</ul>
 ```
+
+Each elt in the toc contains the following information:
+- **elt[0]**: headline value. For example "my headline"
+- **elt[1]**: headline size. For example: *2* for a H2, *3* for a H3
+- **elt[2]**: headline id. This is a sequential count that allows to jump to the headline in the text using  
+anchor href. For example the second headline will have the id *2*. See example above
 
 ## Content
 
