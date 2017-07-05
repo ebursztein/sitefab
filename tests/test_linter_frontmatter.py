@@ -270,8 +270,8 @@ class TestLinterFrontmatter(TestLinter):
             error_list  = self.get_linter_errors_list(results)
             assert not "E119" in error_list
 
-    ### 220 ###
-    def test_e220_triggered(self, sitefab, empty_post):
+    ### 120 ###
+    def test_e120_triggered(self, sitefab, empty_post):
         empty_post.meta.template = "blog"
         values = ["wrong", "wrong/again"]
         for value in values:
@@ -280,7 +280,7 @@ class TestLinterFrontmatter(TestLinter):
             error_list  = self.get_linter_errors_list(results)
             assert "E120" in error_list
     
-    def test_e220_not_triggered(self, sitefab, empty_post):
+    def test_e120_not_triggered(self, sitefab, empty_post):
         empty_post.meta.template = "blog"
         values = ["/blog/ok", "/blog/ok/as", "/blog/ok/as.well"]
         for value in values:
@@ -288,3 +288,72 @@ class TestLinterFrontmatter(TestLinter):
             results = sitefab.linter.lint(empty_post, "", sitefab)
             error_list  = self.get_linter_errors_list(results)
             assert not "E120" in error_list
+
+    ### 121 ###
+    def test_e121_triggered(self, sitefab, empty_post):   
+        values = [{"not a valid type": "myslide"}]
+        for value in values:
+            empty_post.meta.files = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert "E121" in error_list
+    
+    def test_e121_not_triggered(self, sitefab, empty_post):
+        values = [{"slides": "myslide"}, {"paper": "mypaper"}, {"video": "myvideo"}]
+        for value in values:
+            empty_post.meta.files = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert not "E121" in error_list
+
+    ### 122 ###
+    def test_e122_triggered(self, sitefab, empty_post):   
+        values = [{"not a valid type": "not a valid file"}]
+        for value in values:
+            empty_post.meta.files = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert "E122" in error_list
+    
+    def test_e122_not_triggered(self, sitefab, empty_post):
+        values = [{"slides": "/myslide.pdf"}, {"video": "/files/myvideo.mp4"}]
+        for value in values:
+            empty_post.meta.files = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert not "E122" in error_list
+
+    ### 123 ###
+    def test_e123_triggered(self, sitefab, empty_post):   
+        values = [{"not a valid type": "/baprefix", "video": "files/almostcorrect"}]
+        for value in values:
+            empty_post.meta.files = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert "E123" in error_list
+    
+    def test_e123_not_triggered(self, sitefab, empty_post):
+        values = [{"slides": "/files/myslide.pdf"}, {"video": "/files/myvideo.mp4"}]
+        for value in values:
+            empty_post.meta.files = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert not "E123" in error_list
+
+    ### 124 ###
+    def test_e124_triggered(self, sitefab, empty_post):   
+        values = [{"not a valid type": "/nosuffix.pdf", "video": "files/almostcorrect.pdf"}, 
+                    {"video": "htt://whateverr/files/myvideo.mp4"}]
+        for value in values:
+            empty_post.meta.files = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert "E124" in error_list
+    
+    def test_e124_not_triggered(self, sitefab, empty_post):
+        values = [{"slides": "/files/myfiles-slides.pdf"}, {"video": "https://whateverr/files/myvideo.mp4"}]
+        for value in values:
+            empty_post.meta.files = value
+            results = sitefab.linter.lint(empty_post, "", sitefab)
+            error_list  = self.get_linter_errors_list(results)
+            assert not "E124" in error_list

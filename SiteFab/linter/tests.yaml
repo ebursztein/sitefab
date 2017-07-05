@@ -20,6 +20,10 @@ E117: "Permanent URL is not a string. Current type is:%s"
 E118: "Permanent URL  <b>%s</b> is not a valid URL"
 E119: "Permanent URL  <b>%s</b> is not an absolute URL"
 E120: "Permanent URL <b>%s</b> has an invalid prefix. Expect to start with: <b>%s</b>"
+E121: "File type <b>%s</b> is invalid. Typo?"
+E122: "File <b>%s</b> have invalid characters. Typo?"
+E123: "File <b>%s</b> has an invalid prefix. Expected to start with: <b>%s</b>"
+E124: "File <b>%s</b> has an invalid suffix. Expected to end with either one of: <b>%s</b>"
 
 # images
 E201: "Local image <b>%s</b>  doesn't exist. Typo?"

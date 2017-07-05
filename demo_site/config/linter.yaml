@@ -15,6 +15,10 @@ permanent_url_valid_prefixes_by_template:
   publication: "/publication/"
   talk: "/talk/"
 
+files:
+  valid_types: ["paper", "slides", "video"]
+  valid_prefix: "/files"
+  valid_suffixes: ["-slides.pdf", "-paper.pdf"]
 
 ### Image tests ###
 allowed_image_sources: ["mysite.com"] # list the domains from which images are included. use null or [] to forbidd external images.

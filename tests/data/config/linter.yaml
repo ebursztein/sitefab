@@ -12,6 +12,11 @@ permanent_url_valid_prefixes_by_template:
   blog: "/blog/"
   publication: "/publication/"
 
+files:
+  valid_types: ["paper", "slides", "video"]
+  valid_prefix: "/files"
+  valid_suffixes: ["-slides.pdf", "-paper.pdf"]
+
 ### Image tests ###
 allowed_image_sources: [mysite.com] # list the domains from which images are included. use null or [] to forbidd external images.
 min_banner_width: 1900 # minimal size for the banner. Use 0 to disable.

@@ -33,7 +33,8 @@ def lint(post, test_info, config):
         e113_e114_e115_banner_properly_formated,
         e116_value_not_null,
         e117_e118_e119_permanent_url_is_properly_formated,
-        e120_valid_permanent_url_prefix
+        e120_valid_permanent_url_prefix,
+        e121_file_properly_named,
     ]
     for test in tests:
         results += test(post, test_info, config)
@@ -251,3 +252,39 @@ def e120_valid_permanent_url_prefix(post, test_info, config):
         results.append(['E120', info])
     
     return results
+
+def e121_file_properly_named(post, test_info, config):
+    "Check if the files are properly named"
+    results  = []
+    # test if it contains -slides.pdf or -paper.pdf
+    # test it contains the name of the short url (see rename tools)
+    if "files" not in post.meta or not isinstance(post.meta.files, dict):
+        return results
+
+    for t, f in post.meta.files.items():
+        # valid type
+        if t not in config.files.valid_types:
+            info = test_info['E121'] % (t)
+            results.append(['E121', info])
+    
+        #valid characters
+        if not VALID_URL.match(f) and not VALID_LOCAL_URL.match(f):
+            info = test_info['E122'] % (f)
+            results.append(['E122', info])
+
+        #valid prefix
+        if not f.startswith(config.files.valid_prefix):
+            info = test_info['E123'] % (f, config.files.valid_prefix)
+            results.append(['E123', info])
+        
+        #valid suffix
+        valid = False
+        for suffix in config.files.valid_suffixes:
+            if f.endswith(suffix):
+                valid = True
+        if not valid and not f.startswith("http"):
+            info = test_info['E124'] % (f, " ,".join(config.files.valid_suffixes))
+            results.append(['E124', info])
+    
+    return results
+
