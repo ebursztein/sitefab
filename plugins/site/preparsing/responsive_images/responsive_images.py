@@ -106,7 +106,7 @@ def generate_thumbnails((images, params)):
             requested_height = int(height * ratio)  # preserve the ratio
         
             for extension in requested_extensions:
-                pil_extension_codename, web_extension = utils.get_img_extension_alternative_naming(img_extension)
+                pil_extension_codename, web_extension = utils.get_img_extension_alternative_naming(extension)
                 if not pil_extension_codename:
                     # unknown extension marking the image as errors and skipping
                     log += '<tr><td class="error">ERROR</td><td>%spx</td><td>%s</td><td>N/A</td><td>N/A</td><td>Unkown extension: %s</td></tr>' % (requested_width, extension, extension)
@@ -120,7 +120,6 @@ def generate_thumbnails((images, params)):
                 output_filename = "%s.%s%s" % (img_name, requested_width, extension)
                 output_full_path = os.path.join(img_output_path, output_filename)
                 output_web_path = output_full_path.replace("\\", "/").replace(params['site_output_dir'], "/")
-            
                 cache_secondary_key = "%s-%s" % (pil_extension_codename, requested_width)
                 if cache_secondary_key in cached_value:
                     start = time.time()
@@ -176,7 +175,7 @@ def generate_thumbnails((images, params)):
         if 'opening' in cache_timing:
             log += "<h3>Cache stats</h3>"
             log += '<table><tr><th>Action</th><th>Timing</th></tr><tr><td>Open</td><td>%s</td></tr><tr><td>Fetch</td><td>%s</td></tr><tr><td>Write</td><td>%s</td></tr></table>' % (cache_timing['opening'], cache_timing['fetching'], cache_timing['writing'])
-   
+
         results.append([web_path, resize_list, width, log, num_errors, img_hash])
     
     log += "Total time:%s<br>" % (round(time.time() - total_time, 3))
@@ -298,6 +297,7 @@ class ResponsiveImages(SitePreparsing):
         log += pprint.pformat(resize_images)
         # configuring the parser to make use of the resize images
         site.plugin_data['responsive_images'] = resize_images # expose the list of resized images
+        
         site.inject_parser_html_template("reponsive_images", "img", html_template) # modify the template used to render images
         
         if errors:

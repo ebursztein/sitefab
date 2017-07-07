@@ -53,7 +53,7 @@ SitePreparsing:
     additional_formats:
     - .webp
     cache_min_image_width: 400
-    enable: false
+    enable: true
     input_dir: generated/static/images/
     multithreading: false
     output_dir: generated/static/images_resized/
