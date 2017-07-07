@@ -134,9 +134,19 @@ def generate_thumbnails((images, params)):
                     start = time.time()
                     resized_img = img.resize((requested_width, requested_height), Image.ANTIALIAS)
                     stringio_file = StringIO()
+                    if requested_width < 400:
+                        quality = 100
+                    else:
+                        quality = 90
+
                     if resized_img.mode != "RGBA":
                         resized_img = resized_img.convert('RGBA')
-                    resized_img.save(stringio_file, pil_extension_codename)#, compress_level=1)
+                    if pil_extension_codename == 'PNG':
+                        resized_img.save(stringio_file, pil_extension_codename, optimize=True, compress_level=9)#
+                    elif pil_extension_codename == 'WEBP':
+                        resized_img.save(stringio_file, pil_extension_codename, optimize=True, compress_level=9, quality=quality)#
+                    else:
+                        resized_img.save(stringio_file, pil_extension_codename, optimize=True, quality=quality)#, compress_level=1)
                     resize_time = time.time() - start
                     log += '<tr><td class="generated">generated</td>'
                     #log += "[GENERATED] %spx thumbnail - generation time: %s" % (requested_width, round(resize_time, 2))
