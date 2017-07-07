@@ -79,8 +79,6 @@ class HTMLRendererMixin(object):
 
     def block_code(self, code, lang):
         "Block code highlighter and formater"
-        css = ""
-
         try:
             if not lang:
                 lexer = guess_lexer(code, stripall=True)
@@ -88,18 +86,14 @@ class HTMLRendererMixin(object):
                 lexer = get_lexer_by_name(lang, stripall=True)
             detected = True
             code = highlight(code, lexer, self.code_formatter)
-            css = self.code_formatter.get_style_defs()
         except:
             code = escape(code)
             lang = None
        
         self.info.code.append(code)
 
-        # template
-        #fixing class name
-        code = code.replace('class="highlight"', 'class="hll"')
         template = self.jinja2.get_template('code')
-        rv = template.render(code=code, lang=lang, css=css)
+        rv = template.render(code=code, lang=lang)
         rv = rv.encode('utf-8')
         return rv
 

@@ -48,6 +48,19 @@ Getting the .md content rendered as HTML is accesible in the template as follow:
 {{content}}
 ```
 
+### code hilighting
+
+Sitefab uses [pygments](http://pygments.org/) to perform code hilighting. During the parsing phase
+the code blocks are automatically processed and the needed annotation are added. Parsing option are configured
+in the config under the parser category:
+```yaml
+parser:
+    code_highlighting_theme: "monokai" # Template to apply, choose from https://help.farbox.com/pygments.html 
+    code_display_line_num: True # display line number?
+```
+
+**important**: while the parser do add the needed HTML and CSS classname, the CSS is **not** included in the page for obvious reason. It is your responsability to embed the CSS of the template of your choice directly into your CSS file. You can get them [here on github](https://github.com/richleland/pygments-css)
+
 ## Related posts
 if the related_post plugin is activated, related posts are available as follow:
 
