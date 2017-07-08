@@ -78,7 +78,8 @@ class Thumbnails(SitePreparsing):
                 log += "<h3>%s</h3>" % (thumb_key)
                 output_filename = "%s-thumb-%s%s" % (img_info['name'], thumb_key, img_info['extension'])
                 output_full_path = os.path.join(img_output_path, output_filename)
-                output_web_path = output_full_path.replace("\\", "/").replace(site_output_dir, "/") #frozen 
+                output_web_path = output_full_path.replace("\\", "/").replace(site_output_dir, "/")
+                thumb[thumb_key] = output_web_path
                 
                 # generating image
                 start = time.time()
@@ -192,7 +193,6 @@ class Thumbnails(SitePreparsing):
                     f = open(output_full_path, "wb+")
                     f.write(thumb_stringio.getvalue())
                     f.close()
-
                     progress_bar.update(1)
 
 

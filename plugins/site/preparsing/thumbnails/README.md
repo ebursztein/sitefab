@@ -1,33 +1,29 @@
-#  Image Thumbnails
+# Image Thumbnails
 
-Inspired by Facebook frozen banner generate small thumbnails that look frozen. Used to make preloading.
-
-## Usage
-.
+Generated thumbnails hard-croped to the specified size. If you want to have images resized (soft-cropped) then use the reactive_images plugin
 
 ## Configuration
-For example
+
 ```yaml
-fixme:
+input_dir: "generated/static/images/"
+output_dir: "generated/static/thumbnails/" #don't output under input dir to avoid overloading other images plugins
+thumbnail_sizes: #thumbnails size.
+  - [120,120]
+  - [96, 56]
 ```
 
 ## Usage
 
-To load the frozen image from its url:
+Assuming you have generated a 120x120 thumbnail you can access it as follow:
 
 ```jinja2
-<img src="{{ plugin_data.frozen_images[src].url }}"/>
-```
-
-To inline the image using a base64 representation:
-
-```jinja2
-<img src="{{ plugin_data.frozen_images[src].base64 }}"/>
+<img src="{{ plugin_data.thumbnails[src]['120x120'] }}"/>
 ```
 
 ## Changlog
-- 06/14/17
+- v1
     - initial version
 
 ## Credit
-Plugin by Elie Bursztein. Javascript polyfill by the [picture polyfill team](https://raw.githubusercontent.com/scottjehl/picturefill/master/Authors.txt)
+
+Plugin by Elie Bursztein.
