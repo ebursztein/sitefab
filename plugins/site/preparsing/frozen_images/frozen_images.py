@@ -24,7 +24,6 @@ class FrozenImages(SitePreparsing):
         input_dir = config.input_dir
         output_dir = config.output_dir        
         cache_file = os.path.join(site.config.dir.cache, plugin_name)
-        additional_formats = config.additional_formats
         site_output_dir = site.config.dir.output
         blur_value = 2
 
