@@ -35,14 +35,14 @@ class FrozenImages(SitePreparsing):
             os.makedirs(output_dir)
 
         # reading images list
-        if not input_dir:
-            return (SiteFab.ERROR, plugin_name, "no input_dir specified")
+        #if not input_dir:
+        #    return (SiteFab.ERROR, plugin_name, "no input_dir specified")
         
-        images  =  files.get_files_list(input_dir, ["*.jpg", "*.jpeg", "*.png", "*.gif"])
-        num_images = len(images)
+        #images  =  files.get_files_list(input_dir, ["*.jpg", "*.jpeg", "*.png", "*.gif"])
+        #num_images = len(images)
 
-        if num_images == 0:
-            return (SiteFab.ERROR, plugin_name, "no images found")
+        #if num_images == 0:
+        #    return (SiteFab.ERROR, plugin_name, "no images found")
         
         # opening cache
         start = time.time()
@@ -53,66 +53,55 @@ class FrozenImages(SitePreparsing):
              'writing': 0
         }
 
+        # using the list of images from image_info
+        images = site.plugin_data['image_info'].values()
 
         # processing images
         frozen_images = {}
-        progress_bar = tqdm(total=num_images, unit=' frozen thumb', desc="Generating frozen images", leave=False)
-        for image_full_path in images:
-            log += "<br><br><h2>%s</h2>" % (image_full_path)
+        progress_bar = tqdm(total=len(images), unit=' frozen thumb', desc="Generating frozen images", leave=False)
+        for img_info in images:
+            log += "<br><br><h2>%s</h2>" % (img_info['full_path'])
             # Creating needed directories
-            img_path, img_filename = os.path.split(image_full_path)
-            sub_path = img_path.replace(input_dir, "") # preserve the directory structure under the input dir
+            sub_path = img_info['path'].replace(input_dir, "") # preserve the directory structure under the input dir
             img_output_path = os.path.join(output_dir, sub_path)
             if not os.path.exists(img_output_path):
                 os.makedirs(img_output_path)
             
-            # File info extraction
-            img_path, img_filename = os.path.split(image_full_path)
-            img_name, img_extension = os.path.splitext(img_filename)
-            pil_extension_codename, web_extension = utils.get_img_extension_alternative_naming(img_extension)            
-
-
-            # directories
-            sub_path = img_path.replace(input_dir, "") # preserve the directory structure under the input dir
             img_output_path = os.path.join(output_dir, sub_path)
-            web_path = image_full_path.replace('\\', '/' ).replace(site_output_dir, "/") # base image url
-            output_filename = "%s.frozen%s" % (img_name, img_extension)
+            output_filename = "%s.frozen%s" % (img_info['name'], img_info['extension'])
             output_full_path = os.path.join(img_output_path, output_filename)
-            output_web_path = output_full_path.replace("\\", "/").replace(site_output_dir, "/") #frozen image  url
-
-            # loading
-            start = time.time()
-            raw_image = open(image_full_path, 'rb').read() #we need the raw bytes to do the hashing. Asking PIL for is 10x slower.
-            img = Image.open(StringIO(raw_image))
-            log += "Image loading time:<i>%s</i><br>" % (round(time.time() - start, 3))
+            output_web_path = output_full_path.replace("\\", "/").replace(site_output_dir, "/") #frozen 
             
             # hashing
-            start = time.time()
-            img_hash = utils.hexdigest(raw_image)
-            log += "Hashing time:<i>%s</i><br>" % (round(time.time() - start, 3))
-            log += "hash: %s<br>" % (img_hash)
-
-            # width and height
-            width, height = img.size
-            ratio = float(frozen_width) / width
-            frozen_height = int(height * ratio)  # preserve the ratio
-            log += "size: %sx%s<br>"  % (width, height)
-            log += "frozen width:%sx%s<br>"
+            #start = time.time()
+            #img_hash = utils.hexdigest(raw_image)
+            #log += "Hashing time:<i>%s</i><br>" % (round(time.time() - start, 3))
+            #log += "hash: %s<br>" % (img_hash)
 
             # cache fetch
             start = time.time()
-            cached_value = cache.get(img_hash)
+            cached_value = cache.get(img_info['hash'])
             cache_timing['fetching'] += time.time() - start
-            if not cached_value: # cache miss!
-                log += "Cache status: MISS<br>"
-            else:
-                log += "Cache status: HIT<br>"
         
             # generating image
             start = time.time()
             if cached_value:
-               stringio_file = cached_value
+                log += "Cache status: HIT<br>"
+                stringio_file = cached_value
             else:
+                log += "Cache status: MISS<br>"
+                # loading
+                start = time.time()
+                raw_image = open(img_info['full_path'], 'rb').read()
+                log += "Image loading time:<i>%s</i><br>" % (round(time.time() - start, 3))
+                img = Image.open(StringIO(raw_image))
+                
+                # width and height
+                width, height = img.size
+                ratio = float(frozen_width) / width
+                frozen_height = int(height * ratio)  # preserve the ratio
+                log += "size: %sx%s<br>"  % (width, height)
+                log += "frozen width:%sx%s<br>"
                 resized_img = img.resize((frozen_width, frozen_height), Image.ANTIALIAS)
                 if resized_img.mode != "RGBA":
                     resized_img = resized_img.convert('RGBA')
@@ -122,7 +111,7 @@ class FrozenImages(SitePreparsing):
 
             #cache storing
             start_set = time.time()
-            cache.set(img_hash, stringio_file)
+            cache.set(img_info['hash'], stringio_file)
             cache_timing["writing"] += time.time() - start_set
 
             "IMG manipulation:%ss<br>" % (time.time() - start)
@@ -139,7 +128,7 @@ class FrozenImages(SitePreparsing):
 
             "Write to disk:%ss<br>" % (time.time() - start)
 
-            frozen_images[web_path] = {
+            frozen_images[img_info['web_path']] = {
                 "url": output_web_path,
                 "base64": img_base64, 
             }

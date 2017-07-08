@@ -34,7 +34,7 @@ class ImageInfo(SitePreparsing):
 
         # processing images
         image_info = {}
-        progress_bar = tqdm(total=num_images, unit=' frozen thumb', desc="Generating frozen images", leave=False)
+        progress_bar = tqdm(total=num_images, unit=' img', desc="Generating images stats", leave=False)
         for image_full_path in images:
             log += "<br><br><h2>%s</h2>" % (image_full_path)
             # Creating needed directories
@@ -42,7 +42,6 @@ class ImageInfo(SitePreparsing):
             sub_path = img_path.replace(input_dir, "") # preserve the directory structure under the input dir
               
             # File info extraction
-            img_path, img_filename = os.path.split(image_full_path)
             img_name, img_extension = os.path.splitext(img_filename)
             pil_extension_codename, web_extension = utils.get_img_extension_alternative_naming(img_extension)            
 
@@ -59,14 +58,26 @@ class ImageInfo(SitePreparsing):
             width, height = img.size
             log += "size: %sx%s<br>"  % (width, height)
             
+            #hash
+            img_hash = utils.hexdigest(raw_image) # we use the hash of the content to make sure we regnerate if the image is different 
+
             # FIXME dominante colors
 
 
             image_info[web_path] = {
-                "extension": img_extension,
-                "filename": img_filename,
+                "filename": img_filename,       #image filename without path: photo.jpg
+                "name": img_name,               #image name without path and extension: photo
+                "extension": img_extension,     # image extension: .jpg
+
+                "full_path": image_full_path,   #path on disk with filename: /user/elie/site/content/img/photo.jpg
+                "path": img_path,               #path on disk without filename: /user/elie/site/img/
+                "web_path": web_path,           #path on the site: /static/img/photo.jpg
+         
+                "pil_extension": pil_extension_codename, #image type in PIl: JPEG
+                "mime_type": web_extension,              #mime-type: image/jpeg
                 "width": width,
-                "height": height 
+                "height": height,
+                "hash": img_hash
             }
             progress_bar.update(1)
 

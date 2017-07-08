@@ -248,7 +248,7 @@ class ResponsiveImages(SitePreparsing):
 
         resize_images = {} # store the results
         num_images = len(images)
-        progress_bar = tqdm(total=num_images, unit=' images', desc="Generating thumbnails", leave=False)
+        progress_bar = tqdm(total=num_images, unit=' images', desc="Generating responsive_images", leave=False)
 
         # batching images to reduce cache operation cost.
         random.shuffle(images) # ensuring that the load will be uniformly split among the threads

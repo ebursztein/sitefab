@@ -1,7 +1,7 @@
 [Core]
 Name = Frozen Images
 Module = frozen_images
-Dependencies =  copy_dir
+Dependencies =  copy_dir, image_info
 
 [Documentation]
 Description = Create a frozen version of the images using gaussian blur
