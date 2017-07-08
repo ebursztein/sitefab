@@ -13,8 +13,7 @@ Plugins are stored in the **Plugins/** directory which is organized as follow:
 - The first level represent the entity the plugin apply to
 - The 2nd level represent the phase in which the plugin is to be applied
 
-Note: as always with SiteFab this organization is just here for readability and what really define 
-which data the plugin get and when it is called is its configuration and its class.
+*Note*: Like everything with SiteFab the directory organization is just here for readability and don't influence when plugins are called or with which data. What do define which data the plugin get and when it is called is its configuration and its class.
 
 ```bash
 plugins/
@@ -32,17 +31,14 @@ plugins/
   ..
 ```
 
-
-
-
 ## Plugin structure
 
-Plugins use the [YAPSY framework](http://yapsy.sourceforge.net/) and require four files:
+Plugins use the [YAPSY framework](http://yapsy.sourceforge.net/) and is composed of the following four files:
 
-1. A **.sitefab-plugin** description file which describes the plugin.
-2. A **.py** file which contains the actual code of the plugin.
-3. A **.md** markdown file which the document the plugin.
-4. A **.yaml** yaml file that contains the plugin default configuration.
+1. **.sitefab-plugin** description file which describes the plugin.
+2. **.py** file which contains the actual code of the plugin.
+3. **.md** markdown file which the document the plugin.
+4. **.yaml** yaml file that contains the plugin default configuration.
 
 ## Basic Example
 
@@ -68,6 +64,7 @@ Filename = config.yaml
 ```
 
 Where
+
 - The *Name* and *Description* are used to inform the users what the plugin do. Those information are returned by the site.get_plugin_info() method.
 - The *Module* variable must be exactly the name of the python file that contains the code with the *.py* removed.
 - *Version* allows to track change and when to notify the users when a plugin was changed.
@@ -92,14 +89,12 @@ class FullUrl(PostProcessor):
         return False
 ```
 
-Each plugin only implement the function **process()** which return True if executed, False otherwise.
+Each plugin only implements the function **process()** which return True if executed, False otherwise.
 
-As visible in the import, plugins must inherit from one of the plugin class available in SiteFab/plugins.py. The class is used to define at which stage
-of the pipeline the plugin will be executed and the information passed to it.
-See below for the list of plugin class available and their process function prototype.
+As visible in the import, plugins must inherit from one of the plugin class available in SiteFab/plugins.py. 
+The class is used to define at which stage of the pipeline the plugin will be executed and the information passed to it. See below for the list of plugin class available and their process function prototype.
 
-**Important**: While every plugin has access to the full site object to get the information it need, the site object should not be manipulated directly except
-if it is a site plugin. Choosing the most specific plugin type is required.
+**Important**: While every plugin has access to the full site object to get the information it need, the site object should not be manipulated directly except if it is a site plugin. Choosing the most specific plugin type possible.
 
 ### Configuration
 Each plugin must come with a default configuration. It is used to generate the default "plugins.yaml" file so users know what to configure.
@@ -125,7 +120,8 @@ wpm = config.wpm
 
 Notes:
 - All plugins are disable by default to not suprise the user.
-- The plugin.yaml default file is constructed from the plugin default configurations using the command `SiteFab -c config/sitefab.yam sitefab_build`.
+- The plugin.yaml default file is constructed from the plugin default configurations using the command `sitefab.py -c config/sitefab.yaml sitefab_build`.
+- Plugins new options are reflected to the site configuration files by calling `sitefab.py -c config/sitefab.yaml upgrade`
 
 ### Exposing plugin data to the templates and parser
 

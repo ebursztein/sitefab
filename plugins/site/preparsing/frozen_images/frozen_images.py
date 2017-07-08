@@ -120,10 +120,10 @@ class FrozenImages(SitePreparsing):
                 stringio_file = StringIO()
                 resized_img.save(stringio_file, 'JPEG', optimize=True)
 
-                #cache storing
-                start_set = time.time()
-                cache.set(img_hash, stringio_file)
-                cache_timing["writing"] += time.time() - start_set
+            #cache storing
+            start_set = time.time()
+            cache.set(img_hash, stringio_file)
+            cache_timing["writing"] += time.time() - start_set
 
             "IMG manipulation:%ss<br>" % (time.time() - start)
 
