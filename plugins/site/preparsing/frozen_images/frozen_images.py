@@ -33,16 +33,6 @@ class FrozenImages(SitePreparsing):
             return (SiteFab.ERROR, plugin_name, "no output_dir specified")
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-
-        # reading images list
-        #if not input_dir:
-        #    return (SiteFab.ERROR, plugin_name, "no input_dir specified")
-        
-        #images  =  files.get_files_list(input_dir, ["*.jpg", "*.jpeg", "*.png", "*.gif"])
-        #num_images = len(images)
-
-        #if num_images == 0:
-        #    return (SiteFab.ERROR, plugin_name, "no images found")
         
         # opening cache
         start = time.time()
@@ -72,12 +62,6 @@ class FrozenImages(SitePreparsing):
             output_full_path = os.path.join(img_output_path, output_filename)
             output_web_path = output_full_path.replace("\\", "/").replace(site_output_dir, "/") #frozen 
             
-            # hashing
-            #start = time.time()
-            #img_hash = utils.hexdigest(raw_image)
-            #log += "Hashing time:<i>%s</i><br>" % (round(time.time() - start, 3))
-            #log += "hash: %s<br>" % (img_hash)
-
             # cache fetch
             start = time.time()
             cached_value = cache.get(img_info['hash'])
