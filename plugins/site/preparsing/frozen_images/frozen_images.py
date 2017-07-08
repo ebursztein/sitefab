@@ -118,7 +118,13 @@ class FrozenImages(SitePreparsing):
                     resized_img = resized_img.convert('RGBA')
                 resized_img = resized_img.filter(ImageFilter.GaussianBlur(blur_value))
                 stringio_file = StringIO()
-                resized_img.save(stringio_file, 'JPEG')
+                resized_img.save(stringio_file, 'JPEG', optimize=True)
+
+                #cache storing
+                start_set = time.time()
+                cache.set(img_hash, stringio_file)
+                cache_timing["writing"] += time.time() - start_set
+
             "IMG manipulation:%ss<br>" % (time.time() - start)
 
 
@@ -144,6 +150,8 @@ class FrozenImages(SitePreparsing):
         # reporting data
         site.plugin_data['frozen_images'] = frozen_images # expose the list of resized images
         cache.close()
+
+        #FIXME: add counter output
 
         if errors:
             return (SiteFab.ERROR, plugin_name, log)
