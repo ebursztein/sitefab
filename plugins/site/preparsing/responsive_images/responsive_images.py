@@ -131,7 +131,7 @@ def generate_thumbnails((images, params)):
                     # do the real work
                     #print "cache key:%s --  available keys:%s" % (cache_secondary_key, cached_value.keys()) 
                     start = time.time()
-                    resized_img = img.resize((requested_width, requested_height), Image.ANTIALIAS)
+                    resized_img = img.resize((requested_width, requested_height), Image.LANCZOS)
                     stringio_file = StringIO()
                     if requested_width < 400:
                         quality = 100

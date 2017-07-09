@@ -101,21 +101,21 @@ class Thumbnails(SitePreparsing):
                         if thumb_width  * ratio >  thumb_height: #take into account thumb requested ratio
                             ratio2 = thumb_width / float(img_width)
                             tmp_height = int(img_height * ratio2)
-                            thumb_img = img.resize((thumb_width, tmp_height)) #FIXME: optimize resampling method
+                            thumb_img = img.resize((thumb_width, tmp_height), Image.LANCZOS) #FIXME: optimize resampling method
                         else:
                             ratio2 = thumb_height / float(img_height)
                             tmp_width = int(img_width * ratio2)
-                            thumb_img = img.resize((tmp_width, thumb_height))
+                            thumb_img = img.resize((tmp_width, thumb_height), Image.LANCZOS)
                     else:
                         ratio = float(img_width) / img_height
                         if thumb_height * ratio > thumb_width:
                             ratio2 = thumb_height / float(img_height)
                             tmp_width = int(img_width * ratio2)
-                            thumb_img = img.resize((tmp_width, thumb_height)) 
+                            thumb_img = img.resize((tmp_width, thumb_height), Image.LANCZOS) 
                         else:
                             ratio2 = thumb_width / float(img_width)
                             tmp_height = int(img_height * ratio2)
-                            thumb_img = img.resize((thumb_width, tmp_height))
+                            thumb_img = img.resize((thumb_width, tmp_height), Image.LANCZOS)
 
 
                     scaled_width = thumb_img.width

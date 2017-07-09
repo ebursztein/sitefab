@@ -85,7 +85,7 @@ class FrozenImages(SitePreparsing):
                 frozen_height = int(height * ratio)  # preserve the ratio
                 log += "size: %sx%s<br>"  % (width, height)
                 log += "frozen width:%sx%s<br>"
-                resized_img = img.resize((frozen_width, frozen_height), Image.ANTIALIAS)
+                resized_img = img.resize((frozen_width, frozen_height), Image.LANCZOS)
                 if resized_img.mode != "RGBA":
                     resized_img = resized_img.convert('RGBA')
                 resized_img = resized_img.filter(ImageFilter.GaussianBlur(blur_value))
