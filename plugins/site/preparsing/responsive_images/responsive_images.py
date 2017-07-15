@@ -21,7 +21,8 @@ def generate_thumbnails((images, params)):
     total_time = time.time()
     num_errors = 0
     MIN_CACHED_SIZE = params['min_image_width']  #minimal width where it make sense to cache.
-
+    JPEG_QUALITY = 85
+    WEBP_QUALITY = 85
 
     #print "\n\n%s\n%s\n\n" % ( params['requested_format_list'], requested_extensions)
 
@@ -133,19 +134,14 @@ def generate_thumbnails((images, params)):
                     start = time.time()
                     resized_img = img.resize((requested_width, requested_height), Image.LANCZOS)
                     stringio_file = StringIO()
-                    if requested_width < 400:
-                        quality = 100
-                    else:
-                        quality = 90
-
                     if resized_img.mode != "RGBA":
                         resized_img = resized_img.convert('RGBA')
                     if pil_extension_codename == 'PNG':
                         resized_img.save(stringio_file, pil_extension_codename, optimize=True, compress_level=9)#
                     elif pil_extension_codename == 'WEBP':
-                        resized_img.save(stringio_file, pil_extension_codename, optimize=True, compress_level=9, quality=quality)#
+                        resized_img.save(stringio_file, pil_extension_codename, optimize=True, compress_level=9, quality=JPEG_QUALITY)#
                     else:
-                        resized_img.save(stringio_file, pil_extension_codename, optimize=True, quality=quality)#, compress_level=1)
+                        resized_img.save(stringio_file, pil_extension_codename, optimize=True, quality=WEBP_QUALITY, compress_level=9)
                     resize_time = time.time() - start
                     log += '<tr><td class="generated">generated</td>'
                     #log += "[GENERATED] %spx thumbnail - generation time: %s" % (requested_width, round(resize_time, 2))
