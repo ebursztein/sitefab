@@ -150,7 +150,7 @@ class Thumbnails(SitePreparsing):
                         baricenter = 0.5 #FIXME: potentially compute using interest points
                         center = float(scaled_width) * baricenter
                         left = (center - thumb_width / 2) / float(scaled_width)
-                        rigth = left - ratio_width
+                        right = left + ratio_width
                         
                         # correcting potential overflow
                         if left < 0:
@@ -164,7 +164,8 @@ class Thumbnails(SitePreparsing):
                             right = 1.0
 
                         log += "baricenter:%s, reduction_factor:%s, center:%s, left:%s, right:%s<br>" % (baricenter, reduction_factor, center, left, right)
-                                    # cut height
+                    
+                    # cut height
                     ratio_height = thumb_height / float(scaled_height)
                     if ratio_height < 1:
                         reduction_factor = 1 - ratio_height
@@ -185,11 +186,18 @@ class Thumbnails(SitePreparsing):
                             bottom = 1.0
                         
                     log += "bounding box left: %s, top: %s, right: %s, bottom: %s<br>" % (left, top, right, bottom)
-                    left_pixel = scaled_width * left
-                    top_pixel = scaled_height * top
-                    right_pixel = scaled_width * right
-                    bottom_pixel = scaled_height * bottom
-                    log += "crop pixel box: %s, top: %s, right: %s, bottom: %s<br>" % (left_pixel, top_pixel, right_pixel, bottom_pixel)
+                    left_pixel = int(scaled_width * left)
+                    top_pixel = int(scaled_height * top)
+                    right_pixel = int(scaled_width * right)
+                    bottom_pixel = int(scaled_height * bottom)
+
+                    if right_pixel - left_pixel != thumb_width: #happen when both are at .5
+                        right_pixel += thumb_width - (right_pixel - left_pixel)
+
+                    if bottom_pixel - top_pixel != thumb_height: #happen when both are at .5
+                        bottom_pixel += thumb_height - (bottom_pixel - top_pixel)
+
+                    log += "crop pixel box: left %s, top: %s, right: %s, bottom: %s<br>" % (left_pixel, top_pixel, right_pixel, bottom_pixel)
 
                     thumb_img = thumb_img.crop([left_pixel, top_pixel, right_pixel, bottom_pixel])
                     log += "thumbnail size: %sx%s<br>" % (thumb_img.width, thumb_img.height)
