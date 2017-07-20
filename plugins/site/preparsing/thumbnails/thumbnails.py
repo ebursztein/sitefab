@@ -49,9 +49,23 @@ class Thumbnails(SitePreparsing):
         for img_info in images:
             thumb = {}
             log += "<br><br><h2>%s</h2>" % (img_info['full_path'])
-            # Creating needed directories
-            sub_path = img_info['path'].replace(input_dir, "") # preserve the directory structure under the input dir
+            
+            sub_path = img_info['path']
+            if sub_path[-1] != "/": # not ideal as it might crash on windwos. FIXME:more testing
+                sub_path += "/" 
+            sub_path = sub_path.replace(input_dir[:-1], "") # preserve the directory structure under the input dir
+            
+            
+            if sub_path[0] == "/" or sub_path[0] == "\\": # startingv with / or \ on the 2nd arg mess-up os.path.join
+                sub_path = sub_path[1:]
+
             img_output_path = os.path.join(output_dir, sub_path)
+            log += "img_output_path: %s<br>" % img_output_path
+            log += "output_dir: %s<br>" % output_dir
+            log += "sub_path: %s<br>" % sub_path
+            log += "input_dir: %s<br>" % input_dir
+            
+            # Creating needed directories
             if not os.path.exists(img_output_path):
                 os.makedirs(img_output_path)
 
@@ -59,8 +73,6 @@ class Thumbnails(SitePreparsing):
             start = time.time()
             cached_version = cache.get(img_info['hash'])
             cache_timing['fetching'] += time.time() - start
-
-            img_output_path = os.path.join(output_dir, sub_path)
 
             #Do we have a cached version else creating it
             if cached_version:
@@ -80,7 +92,10 @@ class Thumbnails(SitePreparsing):
                 output_full_path = os.path.join(img_output_path, output_filename)
                 output_web_path = output_full_path.replace("\\", "/").replace(site_output_dir, "/")
                 thumb[thumb_key] = output_web_path
-                
+                log += "output_filename: %s<br>" % output_filename
+                log += "output_full_path: %s<br>" % output_full_path
+                log += "output_web_path: %s<br>" % output_web_path
+
                 # generating image
                 start = time.time()
                 if thumb_key in cached_version:
@@ -205,7 +220,6 @@ class Thumbnails(SitePreparsing):
 
         site.plugin_data['thumbnails'] = thumbs # expose the list of resized images
         cache.close()
-
         #FIXME: add counter output
 
         if errors:

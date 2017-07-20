@@ -40,7 +40,7 @@ class ImageInfo(SitePreparsing):
             # Creating needed directories
             img_path, img_filename = os.path.split(image_full_path)
             sub_path = img_path.replace(input_dir, "") # preserve the directory structure under the input dir
-              
+            
             # File info extraction
             img_name, img_extension = os.path.splitext(img_filename)
             pil_extension_codename, web_extension = utils.get_img_extension_alternative_naming(img_extension)            
