@@ -1,5 +1,5 @@
 import shutil
-
+from tqdm import tqdm
 from SiteFab.Plugins import SitePreparsing
 from SiteFab.SiteFab import SiteFab
 
@@ -16,7 +16,7 @@ class CopyDir(SitePreparsing):
         log = ""
         errors = False
         targets = config.targets
-        
+        progress_bar = tqdm(total=len(targets), unit=' dir', desc="Copying directories", leave=False)
         for target in targets:
             try:
                 src, dst = target.split('>')
@@ -32,7 +32,7 @@ class CopyDir(SitePreparsing):
                 errors = True
                 log += "[Failed] failed to copy '%s' to '%s' <br/>" % (src, dst)
                 continue
-
+            progress_bar.update(1)
             log += "[OK]copied: '%s' to '%s'<br>" % (src, dst)
     
         if errors:
