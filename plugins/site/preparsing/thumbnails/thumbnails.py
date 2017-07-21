@@ -100,7 +100,7 @@ class Thumbnails(SitePreparsing):
                 start = time.time()
                 if thumb_key in cached_version:
                     log += "Cache status: HIT<br>"
-                    stringio_file = cached_version[thumb_key]
+                    thumb_stringio = cached_version[thumb_key]
                 else:
                     log += "Cache status: MISS<br>"
                     
@@ -211,12 +211,12 @@ class Thumbnails(SitePreparsing):
                     log += "thumbnail generation:%ss<br>" % (round(time.time() - start, 5))
 
 
-                    #writing to disk
-                    start = time.time() 
-                    f = open(output_full_path, "wb+")
-                    f.write(thumb_stringio.getvalue())
-                    f.close()
-                    progress_bar.update(1)
+                #writing to disk
+                start = time.time() 
+                f = open(output_full_path, "wb+")
+                f.write(thumb_stringio.getvalue())
+                f.close()
+                progress_bar.update(1)
 
 
             #cache storing
