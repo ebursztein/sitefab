@@ -1,0 +1,12 @@
+[Core]
+Name = Image resizer
+Module = image_resizer
+Dependencies =  copy_dir, image_info, image_resizer
+
+[Documentation]
+Description = Resize images that are above a given width
+Filename = README.md
+Version = 1.0
+
+[Configuration]
+Filename = "config.yaml"
