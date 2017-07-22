@@ -1,7 +1,7 @@
 [Core]
 Name = Responsive Images
 Module = responsive_images
-Dependencies =  copy_dir, image_info
+Dependencies =  copy_dir, image_info, image_resizer
 
 [Documentation]
 Description = Create responsive images by using the picture element and creating multiple resolutions images
