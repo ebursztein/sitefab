@@ -35,7 +35,9 @@ class JSPosts(SiteRendering):
             if 'responsive_banner' in plugin_data_to_output and 'responsive_images' in site.plugin_data:
                 if post.meta.banner in site.plugin_data['responsive_images']:
                     js_post['banner_srcsets'] = site.plugin_data['responsive_images'][post.meta.banner]['srcsets']
-
+            if 'thumbnail_banner' in plugin_data_to_output and 'thumbnails' in site.plugin_data:
+                if post.meta.banner in site.plugin_data['thumbnails']:
+                    js_post['thumbnails'] = site.plugin_data['thumbnails'][post.meta.banner]
 
             js_posts[post.id] = js_post
         

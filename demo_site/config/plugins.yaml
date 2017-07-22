@@ -98,8 +98,7 @@ SiteRendering:
     - authors
     - permanent_url
     output_path: static/js/
-    plugin_data_to_output:
-    - responsive_banner
+    plugin_data_to_output: ['responsive_banner', 'thumbnail_banner']
   nlp:
     enable: true
     max_word_letters: 16
