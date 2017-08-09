@@ -54,6 +54,9 @@ SitePreparsing:
     input_dir: generated/static/images/
     max_width: 960
     quality: 90
+  press:
+    article_list: config/press.yaml
+    enable: true
   responsive_images:
     additional_formats:
     - .webp
