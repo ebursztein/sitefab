@@ -29,6 +29,7 @@ class JSPosts(SiteRendering):
         js_posts = {}
         for post in site.posts:
             js_post = {}
+            js_post['id'] = post.id
             for field in meta_fields_to_output:
                 if field in post.meta:
                     js_post[field]  = post.meta[field]
