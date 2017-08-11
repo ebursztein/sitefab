@@ -75,7 +75,7 @@ class SiteFab(object):
         self.plugin_results = defaultdict(int)
 
         ### template rendering engine init ###
-        self.jinja2 = Environment(loader=FileSystemLoader(self.get_template_dir()))
+        self.jinja2 = Environment(loader=FileSystemLoader(self.get_template_dir()), extensions=['jinja2.ext.do'])
         custom_filters = self.plugins.get_template_filters()
         for flt_name, flt_fct in custom_filters.iteritems():
             self.jinja2.filters[flt_name] = flt_fct
