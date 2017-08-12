@@ -57,7 +57,7 @@ class PostCollections():
                 collection.meta.slug = collection.meta.name.replace(" ", "-").lower()
                 if collection.meta.num_posts >= self.min_posts:
                     filename = "%s.html" % (collection.meta.slug)
-                    rv = self.template.render(posts=collection.posts, meta=collection.meta, plugin_data=self.site.plugin_data)
+                    rv = self.template.render(posts=collection.posts, meta=collection.meta, plugin_data=self.site.plugin_data, config=self.site.config)
                     new_path = os.path.join(self.output_path, collection.meta.slug)
                     files.write_file(new_path, "index.html", rv)
     
