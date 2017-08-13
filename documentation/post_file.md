@@ -1,16 +1,25 @@
-# Writing content
+# Post file
 
-To generate a page, two files are required:
+The post file is where you store the content of a post. This page describe how to structure these files and make the most out of the them.
 
-- a *Content file*: Written in [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) the content file contains the content of the page, its meta data and its configuration. The meta data and configuration are stored in the frontmatter in the [YAML format](http://docs.ansible.com/ansible/YAMLSyntax.html). The meta data are made accessible to the template in the [meta object](/documentation/post.md)
+## Structure
 
-- a *Template file*: Written in Jinga2 format the template file is used to specify how the page is rendered.
+Each post file start with the frontmatter that contains the meta data associated with the post such as its author, title, publication date and so forth. These meta data are made available in the template used to render the post under the `meta` variable. The frontmatter must be formated in the [YAML format](http://docs.ansible.com/ansible/YAMLSyntax.html). The frontmatter is is isolated by lines that start with three dash:`---`.
 
-## Content file
+The remainder of the file is your content that is expected to be written in the [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 
-Here is how a content file is structured
+Here is an incomplete but valid example of what the structure of a post look like, a complete example is available below in the example subsection.
 
-### Frontmatter
+ ```md
+ ---
+title: my title
+category: my category
+ ---
+ ## my content
+ This is the text in mark down that will be transformed in *html*
+ ```
+
+## Frontmatter
 
 The front matter is used to store the page configuration and meta data. It is written in the YAML format.
 
@@ -21,7 +30,7 @@ meta data can be accessed in the template page as follow:
 {% meta.title %}
 ```
 
-#### available fields
+### available fields
 
 | Field               | Type        | Required?    | Description                                   | Example           |
 | --------------------|-----------  | ---------  | -----------                                   | ------------------- |
@@ -37,12 +46,46 @@ meta data can be accessed in the template page as follow:
 | **lang**      	    | ISO code (default:site lang)	| Optional  | language of the page used for i18n | en |
 | **hidden**          | bool         | Optional (default:false)  | Don't list the post in collections or RSS or any other list| true |
 
-#### Category vs Tags
+
+## Specifying which template to apply to which post
+
+The template used to render a given post file is specified in the frontmatter under the `template` variable. When specficying the template filename in the frontmatter omit the `.html` at the end. You instruct SiteFab where to fetch the templates from by specifying the following variable in the site configuration:
+
+```yaml
+dir:
+    templates: "templates/" # where to fetch the templates used to render the various posts
+```
+
+
+### Date fields
+
+When parsing the content, SiteFab attempts to find all the date fields and create for each of them an additional field that contains the data timestamp which make it 
+easier to manipulate the date and output it formated in various ways thanks to the template [filter format_date](Fixme).
+
+
+
+### Custom fields
+
+On top of the specific field, any additional field can be added to the frontmatter and will be accessible by the template as part of the meta object.
+For example the easiest way to have a banner image for each post is too add a meta banner:
+
+```
+banner: /static/images/iot-device-banner.jpg
+```
+
+which then can be used in the template page as follow:
+
+```python
+<img src="{% meta.banner %}"/>
+```
+
+
+### Category vs Tags
 
 The reason why Sitefab have both a category and tags for a given is to allows summary pages (e.g the homepage) to display each post only once via the categories.
 Categories are also used in the generation of the URL slugs.
 
-#### Example
+### Complete example
 
 Here is an example of a frontmatter. It is the one I used to generate the publication page for one of my paper on my [site](https://www.elie.net/publication/i-am-a-legend-hacking-hearthstone-using-statistical-learning-method)
 ```YAML
@@ -84,19 +127,4 @@ files:
 abstract: this paper demonstrate how to apply machine learning to Hearthstone to predict opponent future plays and game outcome.
 
 ---
-```
-
-#### Custom fields
-
-On top of the specific field, any additional field can be added to the frontmatter and will be accessible by the template as part of the meta object.
-For example the easiest way to have a banner image for each post is too add a meta banner:
-
-```
-banner: /static/images/iot-device-banner.jpg
-```
-
-which then can be used in the template page as follow:
-
-```python
-<img src="{% meta.banner %}"/>
 ```

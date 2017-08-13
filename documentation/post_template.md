@@ -1,14 +1,18 @@
 # How to write post template
 
-This page describe how to create a template for a post page. SiteFab post page 
-are generated for each `.md` file. The template used to render a given file is 
-specified in the frontmatter under the `template` variable. Directory for where to fetch
-the templates from is specified in the site configuration.
-
-See the [how to format your markdown documentation](content.md) to learn how to write your markdown file that hold your site contnet.
+This page describe how to create template to render your site content. See [how to write a post](post_content.md) to learn how to write the post files that hold your site contnet.
 For the templating of the collection page which are generate for a group of post see the [collection template documentation](collection_template.md).
 
-## Meta data
+## Specifying which template to apply to which post
+
+The template used to render a given post file is specified in the frontmatter under the `template` variable. When specficying the template filename in the frontmatter omit the `.html` at the end. You instruct SiteFab where to fetch the templates from by specifying the following variable in the site configuration:
+
+```yaml
+dir:
+    templates: "templates/" # where to fetch the templates used to render the various posts
+```
+
+## Accessing meta data
 
 All meta information specified in the content file *frontmatter* are directly available from the **meta** variable. For example to get the title of the post in a template one will write:
 
@@ -60,6 +64,10 @@ parser:
 ```
 
 **important**: while the parser do add the needed HTML and CSS classname, the CSS is **not** included in the page for obvious reason. It is your responsability to embed the CSS of the template of your choice directly into your CSS file. You can get them [here on github](https://github.com/richleland/pygments-css)
+
+### Date manipulation
+
+FIXME
 
 ### Plugin data
 

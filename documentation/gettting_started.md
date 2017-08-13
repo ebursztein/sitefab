@@ -61,16 +61,22 @@ Don't forget to use your new configuration while generating :)
 
 `python ../sitefab.py -c config/mysite.yaml generate`
 
+### plugins
+FIXME
 
-## Writing pages
+## Writing content
 
-All is left is to write your pages:
+All is left is to write your content :)
 
-- **Page content** is written in [Markdown format](https://guides.github.com/features/mastering-markdown/) and embedded a [front matter](/documentation/content.md#frontmatter) that is used to configure the output (e.g stipulates the template to use) and specify meta information. To create a page simply add a file in the `content/` directory of  your project
+This is done by creating two files:
 
-- **Page template** are written in Jinja2 and have access to environement variables that give you access to the page content as HTML, the post information and many more useful data. See the [template documentation](/documentation/template.md) for more information on how to write templates.
+- A **post file** which contains your content and its meta data. This is the core of your site. See [the post file documentation](/documentation/post_file.md) to learn how to write it.
 
-- **Collections** are special page generated for each categories / tags that your page have. See the [template documentation](/documentation/template.md) for more information.
+- A **template file** which is used to specify how you would like to render your content in HTML/CSS/Javascript. Usually many posts use the same templates but you can create as many as you wish. See the [template documentation](/documentation/post_template.md) for more information on how to write templates.
+
+Remember in SiteFab terminology everything is a post even if you treat it as a page so if you would like for example to create an about page, you will write a post called `about.md` which contains which ever information you want and an `about.html` template that will render it. While it might seems confusing at first, treating each page the same way will makes it easier and more fool proof on the long run.
+
+Note that SiteFab also generate **Collections** pages for each categories and tags that your posts have. See the [collection documentation](/documentation/collection_template.md) for more information.
 
 ## Serving your site
 
