@@ -7,6 +7,30 @@ from SiteFab import utils
 date_matcher = re.compile('(\d+) +(\w{3}) +(\d+) +(\d+):(\d+)')
 frontmatter_matcher = re.compile(r'(^\s*---.*?---\s*$)', re.DOTALL|re.MULTILINE)
 
+
+def parse_fields(fields=None):
+    """ Recursively parse a given dict of fields to add extra information (e.g timestamp) if needed
+    
+    Args:
+        fields (dict): the fields to parse
+
+    Returns: 
+        objdict: the fields with the additional properties
+    """
+    if fields:
+        for field_name, field_value in fields.items():
+            if type(field_value) == dict:
+                fields[field_name] = parse_fields(field_value)
+            else:
+                # adding timestamp
+                if field_value and "_date" in field_name:
+                    ts = parse_date_to_ts(field_value)
+                    if ts:
+                        fts = field_name + "_ts"
+                        fields[fts] = ts
+                
+    return fields
+
 def parse_date_to_ts(date_str):
     """ create the timestamp coresponding to a given date string"""
     if not date_str:
@@ -45,10 +69,8 @@ def parse(post):
     @note: all sanity check must be done via the linter and used in linter.validate()
     """
     md = post
-    metas = None
     d = frontmatter_matcher.search(post)
     if d:
-        metas = utils.dict_to_objdict()   
         frontmatter = d.group(1);
         md = md.replace(frontmatter, "")
         frontmatter = frontmatter.replace("---", '')
@@ -62,16 +84,8 @@ def parse(post):
             m =  None
 
         if type(m) != dict:
-            metas = None
+            meta_data = None
         else:
-            for field_name, field_value in m.iteritems():
-                    metas[field_name] = field_value
-
-                    # adding timestamp
-                    if field_name == "creation_date" or field_name == "update_date" or field_name == "conference_date":
-                        ts = parse_date_to_ts(field_value)
-                        if ts:
-                            fts = field_name + "_ts"
-                            metas[fts] = ts
-
-    return [metas, md]
+            meta_data = parse_fields(m)
+            meta = utils.dict_to_objdict(meta_data)
+    return [meta, md]

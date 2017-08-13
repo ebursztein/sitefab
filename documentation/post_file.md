@@ -60,9 +60,12 @@ dir:
 ### Date fields
 
 When parsing the content, SiteFab attempts to find all the date fields and create for each of them an additional field that contains the data timestamp which make it 
-easier to manipulate the date and output it formated in various ways thanks to the template [filter format_date](Fixme).
+easier to manipulate the date and output it formated in various ways thanks to the template [filter format_date](Fixme). For example SiteFab will recognize the following
+field and create an additional meta data field `update_date_ts` which will contains the date as timestamp:
 
-
+```yaml
+update_date: 18 oct 2016 13:29
+```
 
 ### Custom fields
 
