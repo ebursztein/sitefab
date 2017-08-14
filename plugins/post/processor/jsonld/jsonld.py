@@ -25,6 +25,7 @@ class Jsonld(PostProcessor):
             #
             pre_txt = '<script type="application/ld+json">'
             post_txt = '</script>'
+            json_ld_person = None
 
             jsonld_data = {
                 "@context": "http://schema.org",
@@ -53,41 +54,47 @@ class Jsonld(PostProcessor):
                         "addressCountry": str(country)
                     }
 
+            if post.meta.microdata_type == "AboutPage" or post.meta.microdata_type == "WebSite":
+                json_ld_person = {
+                    "@context": "http://schema.org",
+                    "@type": "Person",
+                    "image":  str("%s/%s" % (site.config.url, site.config.logo_url)),
+                    "jobTitle": "Anti-abuse Research Lead",
+                    "name": "Elie Bursztein",
+                    "alumniOf": "Stanford University",
+                    "birthPlace": "Paris, France",
+                    "gender": "male",
+                    "nationality": "French",
+                    "url": "http://www.elie.net.com",
+                    "sameAs": ["https://www.facebook.com/elieblog",
+                               "https://www.linkedin.com/in/bursztein/",
+                               "http://twitter.com/elie",
+                               "https://www.youtube.com/eliebursztein",
+                               "http://instagram.com/eliebursztein",
+                               "https://plus.google.com/+eliebursztein"]
+                }
+
             # banner image for include_images types
             if post.meta.microdata_type in Jsonld.common:
                 # create correct category name
                 correct_category = post.meta.category.replace(" ", "_")
                 # banner
                 if post.meta.banner:
-                    filename = "%s/%s" % (site.config.dir.output, post.meta.banner)
+                    jsonld_data["image"] = str("%s%s" % (site.config.url, post.meta.banner))
 
-                    width, height = 0, 0
-                    try:
-                        with Image.open(filename) as im:
-                            width, height = im.size
-                    except IOError as e:
-                        print "banner not found"
-
-                    if width != 0 and height != 0:
-                        jsonld_data["image"] = {
-                            "@type": "ImageObject",
-                            "url": str("%s%s" % (site.config.url, post.meta.banner)),
-                            "height": height,
-                            "width": width
-                        }
                 # about
                 jsonld_data["about"] = [{"name": str(post.meta.category), "url": str("%s/%s%s" % (
                     site.config.url, site.config.collections.output_dir, correct_category))}]
 
                 # microdata specific to PublicationEvent (talk)
                 if post.meta.microdata_type == "PublicationEvent":
-
-                    jsonld_data['releasedEvent'] = {
-                        "@type": "PublicationEvent",
+                    # organizer = conference
+                    jsonld_data['organizer'] = {
+                        "@type": "Organization",
                         "name": str(post.meta.conference_name),
                     }
                     if location:
-                        jsonld_data['releasedEvent']['location'] = location
+                        jsonld_data['location'] = location
 
                     # performers
                     jsonld_data['performer'] = []
@@ -153,23 +160,23 @@ class Jsonld(PostProcessor):
                             "@type": "Organization",
                             "name": str(post.meta.conference_publisher)
                         }
+
                     if post.meta.microdata_type == "BlogPosting":
-                        filename = "%s/%s" % (site.config.dir.output, site.config.logo_url)
-                        with Image.open(filename) as im:
-                            width, height = im.size
 
                         jsonld_data['publisher'] = {
                             "@type": "Organization",
                             "name": str(site.config.name),
-                            "@logo": {
+                            "logo": {
                                 "@type": "ImageObject",
-                                "url": str("%s/%s" % (site.config.url, site.config.logo_url)),
-                                "width": width,
-                                "height": height
+                                "url": str("%s/%s" % (site.config.url, site.config.logo.url)),
+                                "width":  site.config.logo.width,
+                                "height": site.config.logo.height
                             }
                         }
 
             jsonld_text = "%s%s%s" % (pre_txt, json.dumps(jsonld_data), post_txt)
+            if json_ld_person:
+                jsonld_text = "%s%s%s%s" % (jsonld_text, pre_txt, json.dumps(json_ld_person), post_txt)
             post.meta.jsonld = jsonld_text
 
             return SiteFab.OK, post.meta.title, jsonld_data
