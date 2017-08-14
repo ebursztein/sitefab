@@ -10,9 +10,7 @@ class Rss(SiteRendering):
 
     def process(self, unused, site, config):
         template_name = config.template
-        rss_url = config.url
 
-        config.url = "%s%s" % (site.config.url, rss_url)
         config.banner = "%s%s" % (site.config.url, config.banner)
         config.icon = "%s%s" % (site.config.url, config.icon)
         config.logo_svg = "%s%s" % (site.config.url, config.logo_svg)
@@ -28,7 +26,6 @@ class Rss(SiteRendering):
         posts = []
         for post in site.posts:
             posts.append(post)
-
 
         # sort posts from newer to older
         k = lambda x: x.meta.creation_date_ts
