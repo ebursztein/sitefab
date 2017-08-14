@@ -1,3 +1,4 @@
+import copy
 from datetime import datetime
 
 from SiteFab.Plugins import SiteRendering
@@ -15,7 +16,6 @@ class Rss(SiteRendering):
         config.banner = "%s%s" % (site.config.url, config.banner)
         config.icon = "%s%s" % (site.config.url, config.icon)
         config.logo_svg = "%s%s" % (site.config.url, config.logo_svg)
-        config.banner = "%s%s" % (site.config.url, config.banner)
 
         # Loading
         try:
@@ -24,8 +24,18 @@ class Rss(SiteRendering):
             return SiteFab.ERROR, "rss", "can't find template:%s" % template_name
 
         rss_items = []
+        count = 0
+        posts = []
         for post in site.posts:
-            if post.meta.hidden or (post.meta.microdata_type != "BlogPosting" and post.meta.microdata_type != "ScholarlyArticle"):
+            posts.append(post)
+
+
+        # sort posts from newer to older
+        k = lambda x: x.meta.creation_date_ts
+        posts.sort(key=k, reverse=True)
+
+        for post in posts:
+            if post.meta.hidden or (post.meta.microdata_type != "BlogPosting" and post.meta.microdata_type != "ScholarlyArticle" and post.meta.microdata_type != "PublicationEvent"):
                 continue
 
             formatted_rss_creation_date = datetime.fromtimestamp(int(post.meta.creation_date_ts)).strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -39,7 +49,9 @@ class Rss(SiteRendering):
 
             post.meta.author = post.meta.authors[0].replace(",", "")
             rss_items.append(post)
-
+            count += 1
+            if count == config.num_posts:
+                break
         config.formatted_update = rss_items[0].meta.formatted_update
 
         try:

@@ -5,6 +5,7 @@ banner: /static/images/banner/fuller-house-exposing-high-end-poker-cheating-devi
 icon: /static/images/favicon/favicon-160x160.png
 logo_svg: /static/svg/test.svg
 accent_color: 03A9F4
-analytics_code: UA-112090-10
+analytics_code: XXX
 layout_type: card
 url: "rss"
+num_posts: 10
