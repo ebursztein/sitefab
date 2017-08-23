@@ -280,7 +280,7 @@ class SiteFab(object):
     def render_posts(self):
         """Render posts using jinja2 templates."""
 
-        for post in tqdm(self.posts, unit=' pages', miniters=1, desc="Posts"):            
+        for post in tqdm(self.posts, unit=' pages', miniters=1, desc="Posts"):
             template_name = "%s.html" % post.meta.template
             template = self.jinja2.get_template(template_name)
             html = post.html.decode("utf-8", 'ignore')
