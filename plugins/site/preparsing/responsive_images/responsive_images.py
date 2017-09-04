@@ -132,17 +132,20 @@ def generate_thumbnails((images, params)):
                     # do the real work
                     #print "cache key:%s --  available keys:%s" % (cache_secondary_key, cached_value.keys()) 
                     start = time.time()
-                    resized_img = img.resize((requested_width, requested_height), Image.LANCZOS)
+
                     stringio_file = StringIO()
                     if pil_extension_codename == 'PNG':
+                        resized_img = img.resize((requested_width, requested_height), Image.LANCZOS)
                         resized_img.save(stringio_file, pil_extension_codename, optimize=True, compress_level=9)#
                     elif pil_extension_codename == 'WEBP':
-                        if resized_img.mode != "RGBA":
-                            resized_img = resized_img.convert('RGBA')                        
+                        if img.mode != "RGBA":
+                            img = img.convert('RGBA')
+                        resized_img = img.resize((requested_width, requested_height), Image.LANCZOS)
                         resized_img.save(stringio_file, pil_extension_codename, optimize=True, compress_level=9, quality=WEBP_QUALITY)#
                     else:
-                        if resized_img.mode != "RGB":
-                            resized_img = resized_img.convert('RGB')
+                        if img.mode != "RGB":
+                            img = resized_img.convert('RGB')
+                        resized_img = img.resize((requested_width, requested_height), Image.LANCZOS)
                         resized_img.save(stringio_file, pil_extension_codename, optimize=True, quality=JPEG_QUALITY, compress_level=9)
                     resize_time = time.time() - start
                     log += '<tr><td class="generated">generated</td>'
