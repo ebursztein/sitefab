@@ -137,11 +137,11 @@ def generate_thumbnails((images, params)):
                     if pil_extension_codename == 'PNG':
                         resized_img.save(stringio_file, pil_extension_codename, optimize=True, compress_level=9)#
                     elif pil_extension_codename == 'WEBP':
-                        if resized_img.mode == "P":
+                        if resized_img.mode != "RGBA":
                             resized_img = resized_img.convert('RGBA')                        
                         resized_img.save(stringio_file, pil_extension_codename, optimize=True, compress_level=9, quality=WEBP_QUALITY)#
                     else:
-                        if resized_img.mode == "P":
+                        if resized_img.mode != "RGB":
                             resized_img = resized_img.convert('RGB')
                         resized_img.save(stringio_file, pil_extension_codename, optimize=True, quality=JPEG_QUALITY, compress_level=9)
                     resize_time = time.time() - start

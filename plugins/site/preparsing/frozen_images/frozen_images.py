@@ -86,7 +86,7 @@ class FrozenImages(SitePreparsing):
                 log += "size: %sx%s<br>"  % (width, height)
                 log += "frozen width:%sx%s<br>"
                 resized_img = img.resize((frozen_width, frozen_height), Image.LANCZOS)
-                if resized_img.mode == "P":
+                if resized_img.mode != "RGB":
                     resized_img = resized_img.convert('RGB')
                 resized_img = resized_img.filter(ImageFilter.GaussianBlur(blur_value))
                 stringio_file = StringIO()

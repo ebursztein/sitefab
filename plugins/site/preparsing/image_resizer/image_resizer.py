@@ -84,9 +84,11 @@ class ImageResizer(SitePreparsing):
                 if pil_extension_codename == 'PNG':
                     resized_img.save(stringio, pil_extension_codename, optimize=True, compress_level=9)#
                 elif pil_extension_codename == 'WEBP':
+                    if resized_img.mode != "RGBA":
+                        resized_img = resized_img.convert('RGBA')
                     resized_img.save(stringio, pil_extension_codename, optimize=True, compress_level=9, quality=quality)#
                 else: #jpg
-                    if resized_img.mode == "P":
+                    if resized_img.mode != "RGB":
                         resized_img = resized_img.convert('RGB')
                     resized_img.save(stringio, pil_extension_codename, optimize=True, quality=quality, compress_level=9)
 
