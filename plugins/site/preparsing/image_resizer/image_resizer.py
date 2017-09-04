@@ -79,16 +79,15 @@ class ImageResizer(SitePreparsing):
                 resized_img = img.resize((max_width, new_height), Image.LANCZOS)
                 log += "Image resized to %sx%s<br>" % (max_width, new_height)
 
-                if resized_img.mode != "RGBA":
-                    resized_img = resized_img.convert('RGBA')
-
                 stringio = StringIO()
                 pil_extension_codename =  img_info['pil_extension']
                 if pil_extension_codename == 'PNG':
                     resized_img.save(stringio, pil_extension_codename, optimize=True, compress_level=9)#
                 elif pil_extension_codename == 'WEBP':
                     resized_img.save(stringio, pil_extension_codename, optimize=True, compress_level=9, quality=quality)#
-                else:
+                else: #jpg
+                    if resized_img.mode == "P":
+                        resized_img = resized_img.convert('RGB')
                     resized_img.save(stringio, pil_extension_codename, optimize=True, quality=quality, compress_level=9)
 
                 cached_version['max_width'] = max_width
