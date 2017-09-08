@@ -32,12 +32,18 @@ class Sitemap(SiteRendering):
             if post.meta.microdata_type == "CollectionPage":  # publications page
                 post.meta.priority = 0.8
                 post.meta.frequency = "daily"
+
+            if post.meta.banner:
+                post.meta.sitemap_banner_url = "%s%s" % (site.config.url, post.meta.banner)
+            else:
+                post.meta.sitemap_banner_url = "%s/static/images/banner/default.png" % site.config.url
             post_list.append(post)
 
         for collection in site.posts_by_category.get_as_list():
             # add priority and frequency
             collection.meta.priority = 0.7
             collection.meta.frequency = "daily"
+            collection.meta.sitemap_banner_url = "%s/static/images/banner/default.png" % site.config.url
 
         try:
             rv = template.render(posts=post_list, collections=site.posts_by_category.get_as_list())
