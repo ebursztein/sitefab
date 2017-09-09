@@ -133,7 +133,7 @@ if __name__ == '__main__':
     try:
         options, args = getopt.getopt(sys.argv[1:], short_options, long_options)
     except getopt.GetoptError:
-        displat_help()
+        print_help()
 
     # options
     for opt, arg in options:

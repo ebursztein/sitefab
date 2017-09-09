@@ -20,7 +20,7 @@ def load_config(config_file):
     Args:
         config_file (str): The path to the config file to load.
 
-    Return:
+    Returns:
         objdict: configuration file parsed as dict or empty if parsing fail
     """
     
@@ -43,9 +43,11 @@ def load_config(config_file):
 
 def read_file(filename):
     """Read a file and return its content. Use cached version unless specified.
+    
     Args:
         filename (str): the filename to read from
-    Returns
+    
+    Returns:
         str: the content of the file
     """
     
@@ -61,9 +63,10 @@ def write_file(path, filename, content, binary=False):
     """ Write a file at a given path. Create directory if necessary
 
     Args:
-    binary (bool): write a binary file? default False.
+        binary (bool): write a binary file? default False.
 
-    Returns
+    Returns:
+        None: no returns
     """
     if not os.path.exists(path):
         os.makedirs(path)
@@ -78,13 +81,16 @@ def write_file(path, filename, content, binary=False):
 
 def get_files_list(content_dir, extensions="*.md"):
     """ Return the list of files in a directory and its sub directories that match a set of extensions.
-       Args:
+    
+    Args:
         content_dir (str): file path where content is located.
         extensions(str or list): single extension like "*.md" or array of extensions ["*.jpg", "*.png"]
-    Return:
+    
+    Returns:
         list: list of content filename.
 
-    Note: matching is done the Usenix file matching way much like ls 
+    Notes: 
+        matching is done the Usenix file matching way much like ls 
     """
 
     # normalize the input

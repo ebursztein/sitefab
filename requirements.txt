@@ -1,5 +1,5 @@
 pyyaml
-jinja2==2.9.6
+jinja2
 tqdm
 termcolor
 yapsy

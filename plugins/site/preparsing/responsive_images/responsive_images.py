@@ -134,19 +134,25 @@ def generate_thumbnails((images, params)):
                     start = time.time()
 
                     stringio_file = StringIO()
+                    resized_img = img.resize((requested_width, requested_height), Image.LANCZOS)
+                    #print "image:%s, image mode:%s resized image mode:%s" % (image_full_path, img.mode, resized_img.mode)
                     if pil_extension_codename == 'PNG':
-                        resized_img = img.resize((requested_width, requested_height), Image.LANCZOS)
                         resized_img.save(stringio_file, pil_extension_codename, optimize=True, compress_level=9)#
                     elif pil_extension_codename == 'WEBP':
-                        if img.mode != "RGBA":
-                            img = img.convert('RGBA')
-                        resized_img = img.resize((requested_width, requested_height), Image.LANCZOS)
+                        if resized_img.mode == "P":
+                            resized_img = img.convert('RGBA')
+                        if resized_img.mode == "L":
+                            resized_img = img.convert('RGB')
                         resized_img.save(stringio_file, pil_extension_codename, optimize=True, compress_level=9, quality=WEBP_QUALITY)#
+                    elif pil_extension_codename == "JPEG":
+                        if resized_img.mode != "RGB":
+                            resized_img = resized_img.convert('RGB')
+                        resized_img.save(stringio_file, pil_extension_codename, optimize=True, quality=JPEG_QUALITY)
+                    elif pil_extension_codename == "GIF":
+                        resized_img.save(stringio_file, pil_extension_codename, optimize=True)
                     else:
-                        if img.mode != "RGB":
-                            img = resized_img.convert('RGB')
-                        resized_img = img.resize((requested_width, requested_height), Image.LANCZOS)
-                        resized_img.save(stringio_file, pil_extension_codename, optimize=True, quality=JPEG_QUALITY, compress_level=9)
+                        print "Unknown: %s" % image_full_path
+
                     resize_time = time.time() - start
                     log += '<tr><td class="generated">generated</td>'
                     #log += "[GENERATED] %spx thumbnail - generation time: %s" % (requested_width, round(resize_time, 2))
@@ -254,7 +260,7 @@ class ResponsiveImages(SitePreparsing):
         # batching images to reduce cache operation cost.
         random.shuffle(images) # ensuring that the load will be uniformly split among the threads
 
-        batch_size =  min(100, num_images / (site.config.threads * 2))
+        batch_size =  20
         #batch_size = num_images / (site.config.threads)
         batches =  [images[x: x + batch_size] for x in xrange(0, len(images), batch_size)]
 

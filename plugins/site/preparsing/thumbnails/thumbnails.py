@@ -201,9 +201,11 @@ class Thumbnails(SitePreparsing):
 
                     thumb_img = thumb_img.crop([left_pixel, top_pixel, right_pixel, bottom_pixel])
                     log += "thumbnail size: %sx%s<br>" % (thumb_img.width, thumb_img.height)
-                    if thumb_img.mode != "RGB": 
-                        thumb_img = thumb_img.convert('RGB')
-
+                    
+                    if thumb_img.mode == "P":
+                        thumb_img = thumb_img.convert('RGBA')
+                    thumb_img = thumb_img.convert('RGB')
+                    
                     thumb_stringio = StringIO()
                     thumb_img.save(thumb_stringio, 'JPEG', optimize=True, quality=90) #FIXME support webp and tune parameters
                     cached_version[thumb_key] = thumb_stringio

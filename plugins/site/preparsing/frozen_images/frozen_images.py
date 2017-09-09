@@ -86,8 +86,9 @@ class FrozenImages(SitePreparsing):
                 log += "size: %sx%s<br>"  % (width, height)
                 log += "frozen width:%sx%s<br>"
                 resized_img = img.resize((frozen_width, frozen_height), Image.LANCZOS)
-                if resized_img.mode != "RGB":
-                    resized_img = resized_img.convert('RGB')
+                if resized_img.mode == "P": # PIL complain if we don't force the conversion first
+                    resized_img = img.convert('RGBA')
+                resized_img = resized_img.convert('RGB')
                 resized_img = resized_img.filter(ImageFilter.GaussianBlur(blur_value))
                 stringio_file = StringIO()
                 resized_img.save(stringio_file, 'JPEG', optimize=True)
