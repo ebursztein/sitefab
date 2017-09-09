@@ -36,8 +36,9 @@ pip install -r requirements.txt
 Note if you have a modern CPU you might want to enable the avx2 optimization for Pillow by running:
 
 ```bash
-sudo -H CC="cc -mavx2" pip install -U --force-reinstall pillow-simd
+CC="cc -mavx2" pip install -U --force-reinstall pillow-simd
 ```
+add sudo -H for version below Sierra.
 
 ## Creating your site
 
