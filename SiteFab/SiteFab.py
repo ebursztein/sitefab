@@ -38,7 +38,7 @@ class SiteFab(object):
     SKIPPED = 2
     ERROR = 3
 
-    def __init__(self, config_filename):
+    def __init__(self, config_filename, version):
         
         # Timers
         self.timings  = utils.create_objdict()
@@ -59,6 +59,9 @@ class SiteFab(object):
             else:
                 raise Exception("Configuration file not found: %s" % config_filename)
         
+        self.config.build = utils.create_objdict()
+        self.config.build.sitefab_version = version #expose sitefab version to the templates
+
         ### parser ###
         self.config.parser.templates_path =  os.path.join(files.get_site_path(),  self.config.parser.template_dir)
         self.config.parser.injected_html_templates = {} # Used to allows plugins to dynamically inject html templates.
@@ -285,7 +288,8 @@ class SiteFab(object):
             template = self.jinja2.get_template(template_name)
             html = post.html.decode("utf-8", 'ignore')
             rv = template.render(content=html, meta=post.meta, posts=self.posts, plugin_data=self.plugin_data, config=self.config,
-            categories=self.posts_by_category.get_as_dict(), tags=self.posts_by_tag.get_as_dict(), templates=self.posts_by_template.get_as_dict(), microdata=self.posts_by_microdata.get_as_dict())
+            categories=self.posts_by_category.get_as_dict(), tags=self.posts_by_tag.get_as_dict(), templates=self.posts_by_template.get_as_dict(), 
+            microdata=self.posts_by_microdata.get_as_dict())
             
             # Liniting            
             linter_results = self.linter.lint(post, rv, self)

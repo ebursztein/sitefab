@@ -126,6 +126,7 @@ SiteRendering:
     icon: /static/images/favicon/favicon-160x160.png
     layout_type: card
     logo_svg: /static/svg/
+    num_posts: 10
     subtitle: Blog about web technologies and games with a focus performance and security.
     template: rss.xml
     title: Elie on Internet Security and Performance
