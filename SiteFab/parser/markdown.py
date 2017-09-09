@@ -71,11 +71,18 @@ class HTMLRendererMixin(object):
         
         template = self.jinja2.get_template('h')
         rv = template.render(level=level, text=text, id=self.toc_count).encode('utf-8')
-
+        rv = rv.encode('utf-8')
+        
         self.toc_tree.append((self.toc_count, text, level, raw))
         self.toc_count += 1
         return rv
 
+    def block_quote(self, text):
+        "Block quote highlighter"
+        template = self.jinja2.get_template('blockquote')
+        rv = template.render(text=text)
+        rv = rv.encode('utf-8')
+        return rv
 
     def block_code(self, code, lang):
         "Block code highlighter and formater"
