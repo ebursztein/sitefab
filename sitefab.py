@@ -1,8 +1,9 @@
-#!/usr/bin/python  
+#!/usr/bin/python
 """ 
 SiteFab take content in, output static site
 """
 import sys
+import os
 import getopt
 from collections import defaultdict
 
@@ -10,7 +11,7 @@ from SiteFab.SiteFab import SiteFab
 from termcolor import colored, cprint
 from SiteFab.utils import print_color_list, section, print_header
 from SiteFab.admin import build
-
+from SiteFab  import files
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -61,11 +62,11 @@ def print_plugins_list(site, only_enable=True):
         print "\n"
 
 
-def generate(config):
+def generate(config, version):
     "generate command main function"
     section("Init")
     # initializing site
-    site = SiteFab(config)
+    site = SiteFab(config, version)
     cprint("Directories", 'magenta')
     dirs = []
     dirs.append("Ouput:\t%s" % site.get_output_dir())
@@ -122,8 +123,9 @@ def print_help():
 
 if __name__ == '__main__':
     config = "sitefab.yaml"
-
-    print_header()
+    version_fname = os.path.join(files.get_code_path(), "VERSION")
+    version = open(version_fname).read()
+    print_header(version)
 
     # args parsing
     short_options = "c:h"
@@ -144,7 +146,7 @@ if __name__ == '__main__':
     if len(args):
         cmd = args[0]
         if cmd == "generate":
-            generate(config)
+            generate(config,version)
         
         elif cmd == "plugins":
             site = SiteFab(config)
@@ -152,7 +154,7 @@ if __name__ == '__main__':
             print_plugins_list(site, only_enable=False)
         
         elif cmd == "upgrade":
-            site = SiteFab(config)
+            site = SiteFab(config, version)
             cprint("Upgrading", 'magenta')
             build.sitefab_upgrade(site)
             
@@ -160,7 +162,7 @@ if __name__ == '__main__':
         ### Developper command ###
         elif cmd == "sitefab_build":
             # this function rebuild the documentation & configurations
-            site = SiteFab(config)
+            site = SiteFab(config, version)
             build.sitefab_build(site)
 
         

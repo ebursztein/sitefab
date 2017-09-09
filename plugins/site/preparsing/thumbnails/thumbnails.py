@@ -205,7 +205,7 @@ class Thumbnails(SitePreparsing):
                         thumb_img = thumb_img.convert('RGB')
 
                     thumb_stringio = StringIO()
-                    thumb_img.save(thumb_stringio, 'JPEG', optimize=True, quality=85) #FIXME support webp and tune parameters
+                    thumb_img.save(thumb_stringio, 'JPEG', optimize=True, quality=90) #FIXME support webp and tune parameters
                     cached_version[thumb_key] = thumb_stringio
             
                     log += "thumbnail generation:%ss<br>" % (round(time.time() - start, 5))
