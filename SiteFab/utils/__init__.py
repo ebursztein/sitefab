@@ -102,9 +102,8 @@ def objdict_to_dict(objdict):
                 d[k] = v
     return d
 
-def print_header():
-        cprint('''
-                                                                       
+def print_header(version):
+        cprint('''                                                                    
  ad88888ba   88                      88888888888          88           
 d8"     "8b  ""    ,d                88                   88           
 Y8,                88                88                   88           
@@ -112,9 +111,7 @@ Y8,                88                88                   88
   `"""""8b,  88    88    a8P_____88  88"""""  ""     `Y8  88P'    "8a  
         `8b  88    88    8PP"""""""  88       ,adPPPPP88  88       d8  
 Y8a     a8P  88    88,   "8b,   ,aa  88       88,    ,88  88b,   ,a8"  
- "Y88888P"   88    "Y888  `"Ybbd8"'  88       `"8bbdP"Y8  8Y"Ybbd8"'   
-                                                                       
-        ''', "blue")
-        cprint('''             
-                -= https://github.com/ebursztein/SiteFab =-                                                                                     
+ "Y88888P"   88    "Y888  `"Ybbd8"'  88       `"8bbdP"Y8  8Y"Ybbd8"'   v: %s                                                                   
+        ''' % version, "blue")
+        cprint('''              -= https://github.com/ebursztein/SiteFab =-                                                                                     
         ''', "cyan")
