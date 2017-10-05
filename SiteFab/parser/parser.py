@@ -28,22 +28,19 @@ def parse_post((filename, parser_config)):
 
 class Parser():
     
-    def __init__(self, config, linter_config=None):
+    def __init__(self, config):
         """ Initialize a new parser for a given type of parsing
 
         Args:
-            config (dictobj): parser configuration 
-            linter_config (str): The path to the linter config file. Can be None if no linting
-        
+            config (dictobj): parser configuration        
         Return:
             None
 
         note: one parser is instanciated by thread. potentially batching more than one post per thread might help with performance.
 
         """
-
-        #FIXME verify the linter config exist
-        self.linter_config = linter_config
+        
+        # verify that the config exist
         self.config = config
 
         #Loadings template strings in memory so we can manipulate them
@@ -73,46 +70,11 @@ class Parser():
         
         self.code_formatter = html.HtmlFormatter(style=self.config.code_highlighting_theme, nobackground=False, linenos=linenos)
 
-    def lint(self, post, online_checks=False, check_content=False):
-        """ Lint post for various errors.
-
-        Args:
-            post (str): The post object to lint.
-            online_check (bool): perform online check. E.g test for URL existence. Off by default
-            check_content (bool): use language tool to check the content against common mistake. Off by default
-        
-        Return:
-            Object: None if no errors, errors object otherwise
-        """
-
-        result = linter.lint(post, self.linter_config, online_checks, check_content)
-        return result
-
     def list_templates(self):
         "Return the list of available templates"
         return self.templates.keys()
 
     
-
-
-    def has_errors(self, post, config_file):
-        """Validate that post has basic no errors.
-
-        Args:
-            post (str): The post object to lint.
-            config_file (str): The path to the linter config file.
-
-        Return:
-            bool: True if there is error False otherwise
-        """
-        
-        return linter.has_errors(post, self.linter_config)
-
-    def format_errors(self, errors):
-        """ Format errors """
-        return linter.format_errors(errors, self.linter_config)
-        
-
     def parse(self, md_file):
         """ Parse a md file into a post object
         """
@@ -134,5 +96,4 @@ class Parser():
         parsed_post.meta.statistics = self.renderer.get_stats()
         parsed_post.meta.toc = self.renderer.get_json_toc()
         parsed_post.elements = self.renderer.get_info()
-
         return parsed_post
