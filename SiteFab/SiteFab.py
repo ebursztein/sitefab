@@ -63,10 +63,7 @@ class SiteFab(object):
         self.config.build.sitefab_version = version #expose sitefab version to the templates
 
         ### parser ###
-        self.config.parser.templates_path =  os.path.join(files.get_site_path(),  self.config.parser.template_dir)
-        self.config.parser.injected_html_templates = {} # Used to allows plugins to dynamically inject html templates.
-        self.config.parser.injected_html_templates_owner = {} # store who was responsible for the injection
-        self.config.parser.plugin_data = {} # store plugin data that need to be passed to the parser. E.g resized images
+        self.config.parser = Parser.make_config(self.config.parser) # initialize the parser config
 
         ### plugins ###
         plugins_config_filename = os.path.join(files.get_site_path(), self.config.plugins_configuration_file)

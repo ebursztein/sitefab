@@ -21,7 +21,7 @@
             <title>{{ post.meta.title|safe }}</title>
             <content type="html">
                 <![CDATA[
-                {{ post.html }}
+                {{ post.rss }}
             ]]>
             </content>
             <link type="text/html" rel="alternate" href="{{ post.meta.full_url }}?utm_source=rss"/>

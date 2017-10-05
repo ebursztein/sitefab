@@ -158,15 +158,12 @@ if __name__ == '__main__':
             cprint("Upgrading", 'magenta')
             build.sitefab_upgrade(site)
             
-
         ### Developper command ###
         elif cmd == "sitefab_build":
             # this function rebuild the documentation & configurations
             site = SiteFab(config, version)
             build.sitefab_build(site)
 
-        
-        
         else:
             print_help()
     else:

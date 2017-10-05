@@ -43,9 +43,14 @@ def get_img_extension_alternative_naming(extension):
 def warning(txt):
     cprint("\n[Warning] %s\n" % txt, 'yellow')
 
-def error(txt):
-    cprint("\n[Error] %s" % txt, 'red')
+def error(error_msg):
+    cprint("\n[Error] %s" % error_msg, 'red')
     sys.exit(-1)
+
+def detailed_error(module, function, error_msg):
+    msg = "\n[Error] %s:%s: %s\n" % (module, function, error_msg)
+    cprint(msg)
+    sys.exit(-42)
 
 def section(val):
     cprint ("\n[%s]" % val, 'yellow')

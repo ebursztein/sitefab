@@ -4,12 +4,15 @@ from datetime import datetime
 from SiteFab.Plugins import SiteRendering
 from SiteFab.SiteFab import SiteFab
 from SiteFab import files
+from SiteFab import utils
+from SiteFab.parser.parser import Parser
 
 
 class Rss(SiteRendering):
 
     def process(self, unused, site, config):
         template_name = config.template
+        parser_config = config.parser_config
 
         config.banner = "%s%s" % (site.config.url, config.banner)
         config.icon = "%s%s" % (site.config.url, config.icon)
@@ -21,6 +24,10 @@ class Rss(SiteRendering):
         except:
             return SiteFab.ERROR, "rss", "can't find template:%s" % template_name
 
+        cfg = utils.dict_to_objdict(parser_config)
+        cfg = Parser.make_config(cfg) # initialize the parser config
+        parser = Parser(cfg)
+   
         rss_items = []
         count = 0
         posts = []
@@ -34,6 +41,11 @@ class Rss(SiteRendering):
         for post in posts:
             if post.meta.hidden or (post.meta.microdata_type != "BlogPosting" and post.meta.microdata_type != "ScholarlyArticle" and post.meta.microdata_type != "PublicationEvent"):
                 continue
+            
+            # parse the post with a customized parser
+            file_content = files.read_file(post.filename)
+            parsed_post = parser.parse(file_content)
+            post.rss = parsed_post.html # adding the newly generated HTML as RSS
 
             formatted_rss_creation_date = datetime.fromtimestamp(int(post.meta.creation_date_ts)).strftime('%Y-%m-%dT%H:%M:%SZ')
             if post.meta.update_date_ts:

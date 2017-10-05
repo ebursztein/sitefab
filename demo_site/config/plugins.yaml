@@ -127,6 +127,10 @@ SiteRendering:
     layout_type: card
     logo_svg: /static/svg/
     num_posts: 10
+    parser_config:
+      code_display_line_num: true
+      code_highlighting_theme: monokai
+      template_dir: config/generator_templates/parser/rss/
     subtitle: Blog about web technologies and games with a focus performance and security.
     template: rss.xml
     title: Elie on Internet Security and Performance

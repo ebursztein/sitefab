@@ -9,3 +9,8 @@ analytics_code: XXX
 layout_type: card
 url: "rss"
 num_posts: 10
+## The RSS content is generated directly from the markdown using the same parser than the normal site but with a different set of templates.
+parser_config: 
+    template_dir: "config/generator_templates/parser/rss/"  # template used to format the element emitted by the parser.
+    code_highlighting_theme: "monokai" # choose from https://help.farbox.com/pygments.html 
+    code_display_line_num: True # display line number?
