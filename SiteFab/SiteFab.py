@@ -1,16 +1,12 @@
 import os
 import sys
-import operator
 import time
 from tqdm import tqdm
 from collections import defaultdict
 from jinja2 import Environment, FileSystemLoader
-from termcolor import colored, cprint
+from termcolor import cprint
 
 import files
-import copy
-import json
-import dill
 
 from parser.parser import Parser
 from Logger import Logger
@@ -19,7 +15,7 @@ from PostCollections import PostCollections
 from linter.linter import Linter
 
 import utils
-from utils import warning, error
+from utils import error
 
 class SiteFab(object):
     """ Object representation of the site being built. 
