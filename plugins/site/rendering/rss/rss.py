@@ -17,16 +17,15 @@ class Rss(SiteRendering):
         config.banner = "%s%s" % (site.config.url, config.banner)
         config.icon = "%s%s" % (site.config.url, config.icon)
         config.logo_svg = "%s%s" % (site.config.url, config.logo_svg)
-
+        return SiteFab.OK, "rss", ""
         # Loading
         try:
             template = site.jinja2.get_template(template_name)
         except:
             return SiteFab.ERROR, "rss", "can't find template:%s" % template_name
 
-        cfg = utils.dict_to_objdict(parser_config)
         cfg = Parser.make_config(cfg) # initialize the parser config
-        parser = Parser(cfg)
+        parser = Parser(cfg, site)
    
         rss_items = []
         count = 0

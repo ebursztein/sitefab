@@ -6,14 +6,13 @@ from tqdm import tqdm
 from collections import defaultdict
 from jinja2 import Environment, FileSystemLoader
 from termcolor import colored, cprint
-from multiprocessing import Pool as ThreadPool 
-from itertools import repeat
 
 import files
 import copy
 import json
+import dill
 
-from parser.parser import Parser, parse_post
+from parser.parser import Parser
 from Logger import Logger
 from Plugins import Plugins
 from PostCollections import PostCollections
@@ -21,7 +20,6 @@ from linter.linter import Linter
 
 import utils
 from utils import warning, error
-
 
 class SiteFab(object):
     """ Object representation of the site being built. 
@@ -135,22 +133,18 @@ class SiteFab(object):
         
         # Parsing
         cprint("\nParsing posts", "magenta")
-        # thread pool creation
-        tpool = ThreadPool(processes=self.config.threads)
-        parser_config = utils.objdict_to_dict(self.config.parser)
-        parser_config['plugin_data'] = self.plugin_data # make plugins data available to the parser. e.g responsive images.
         progress_bar = tqdm(total=len(filenames), unit=' files', desc="Files", leave=True)
-        # chunksize = (len(filenames) / (self.config.threads * 2)) < using a different chunksize don't seems to make a huge difference
         errors = []
         post_idx = 1
-        for res in tpool.imap_unordered(parse_post, zip(filenames, repeat(parser_config)), chunksize=1):
-        #for filename in filenames:
-        #    res = parse_post((filename, parser_config))
-            res = json.loads(res)
-            post = utils.dict_to_objdict(res)
+        #NOTE: passing self.config.parser might seems strange but it is need as in plugin we pass other configurations.
+        parser = Parser(self.config.parser, self)
+        for filename in filenames:
+            file_content = files.read_file(filename)
+            post = parser.parse(file_content)
+            post.filename = filename
             post.id = post_idx
             post_idx += 1
-            # do not add hidden post
+            # do not process hidden post
             if post.meta.hidden:
                 continue
             
@@ -184,9 +178,6 @@ class SiteFab(object):
                     self.posts_by_tag.add(tag, post)
 
             progress_bar.update(1)
-        
-        tpool.close()
-        tpool.join()
         if len(errors):
             utils.error("\n".join(errors))
 

@@ -17,22 +17,14 @@ from pygments.formatters import html
 from SiteFab import utils
 from SiteFab import files
 
-def parse_post((filename, parser_config)):
-    file_content = files.read_file(filename)
-    cfg = utils.dict_to_objdict(parser_config)
-    parser = Parser(cfg)
-    post = parser.parse(file_content)
-    post.filename = filename
-    d = utils.objdict_to_dict(post)
-    return json.dumps(d)
-
 class Parser():
     
-    def __init__(self, config):
+    def __init__(self, config, site):
         """ Initialize a new parser for a given type of parsing
 
         Args:
-            config (dictobj): parser configuration        
+            confi (obj_dict): the parser config. It is explicitly defined to allows  different conf
+            site (dictobj): sitefab instantiated object        
         Return:
             None
 
@@ -42,14 +34,15 @@ class Parser():
         
         # verify that the config exist
         self.config = config
+        self.site = site
 
-
-        # Start from basic configuration templates that laoded from memory
+        # NOTE: Might seems weird to do this but templates is what allows to have different rendering for each plugins.
+        # So we keep it explict in the code as this got messed up countless time :(
         self.templates = self.config.templates 
 
-        #NOTE: This part must be done at parsing time to let plugins time to be loaded/executed.
+        # NOTE: This part must be done at parsing time to let plugins time to be loaded/executed.
         # Replacing standard template with the one injected by plugins
-        for elt, template in config.injected_html_templates.iteritems():
+        for elt, template in self.config.injected_html_templates.items():
             self.templates[elt] = template
             
         # templates are not compiled yet, they will be when parsing will be called the first time 
@@ -116,7 +109,7 @@ class Parser():
         parsed_post.meta, parsed_post.md = frontmatter.parse(md_file)
 
         # parsing markdown and extractring info
-        self.renderer.init(self.jinja2, self.code_formatter, self.config.plugin_data)
+        self.renderer.init(self.jinja2, self.code_formatter, self.config.plugin_data, self.site)
 
         parsed_post.html = self.md_parser.parse(parsed_post.md)
         parsed_post.meta.statistics = self.renderer.get_stats()

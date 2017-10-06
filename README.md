@@ -7,7 +7,7 @@ Follow our [Getting Started Guide](/documentation/getting_started.md) to get up 
 
 ## Key Features
 
-Here are some of the key highlevel functionalities that makes SiteFab 
+Here are some of the key highlevel functionalities that makes SiteFab the static generator of choice for modern websites: 
 
 - **State of the art images processing stack**: The images stack generate out of the box all you need to use image in optimal fashion including: reactive images for the `<picture>` element, webp versions for the browsers who support it, frozen thumbnail for the loading and cropped thumbnails for previews.
 - **Bleeding edge natural language processing stack**: Leveraging the latest advance in NLP Sitefab offers: An accurate list of related posts (LSI algorithm), a client side faceted search and a smart client-side autocompletion
