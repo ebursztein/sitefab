@@ -43,14 +43,11 @@ class Parser():
         # verify that the config exist
         self.config = config
 
-        #Loadings template strings in memory so we can manipulate them
-        self.templates = {}
-        for fname in files.get_files_list(self.config.templates_path, "*.html"):
-            template_name = os.path.basename(fname).replace(".html", "")
-            template = files.read_file(fname)
-            #print "%s -> %s" % (template_name, template)
-            self.templates[template_name] = template
 
+        # Start from basic configuration templates that laoded from memory
+        self.templates = self.config.templates 
+
+        #NOTE: This part must be done at parsing time to let plugins time to be loaded/executed.
         # Replacing standard template with the one injected by plugins
         for elt, template in config.injected_html_templates.iteritems():
             self.templates[elt] = template
@@ -90,13 +87,20 @@ class Parser():
         config.injected_html_templates = {} # Used to allows plugins to dynamically inject html templates.
         config.injected_html_templates_owner = {} # store who was responsible for the injection
         config.plugin_data = {} # store plugin data that need to be passed to the parser. E.g resized images
+        
+        config.templates = {}
+        for fname in files.get_files_list(config.templates_path, "*.html"):
+            template_name = os.path.basename(fname).replace(".html", "")
+            template = files.read_file(fname)
+            #print "%s -> %s" % (template_name, template)
+            config.templates[template_name] = template
+        
         return config
 
     def list_templates(self):
         "Return the list of available templates"
         return self.templates.keys()
-
-    
+  
     def parse(self, md_file):
         """ Parse a md file into a post object
         """

@@ -143,9 +143,9 @@ class SiteFab(object):
         # chunksize = (len(filenames) / (self.config.threads * 2)) < using a different chunksize don't seems to make a huge difference
         errors = []
         post_idx = 1
-        #for res in tpool.imap_unordered(parse_post, zip(filenames, repeat(parser_config)), chunksize=1):
-        for filename in filenames:
-            res = parse_post((filename, parser_config))
+        for res in tpool.imap_unordered(parse_post, zip(filenames, repeat(parser_config)), chunksize=1):
+        #for filename in filenames:
+        #    res = parse_post((filename, parser_config))
             res = json.loads(res)
             post = utils.dict_to_objdict(res)
             post.id = post_idx
