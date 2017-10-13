@@ -108,8 +108,9 @@ class Parser():
         # parsing frontmatter and getting the md
         parsed_post.meta, parsed_post.md = frontmatter.parse(md_file)
 
-        # parsing markdown and extractring info
-        self.renderer.init(self.jinja2, self.code_formatter, self.config.plugin_data, self.site)
+        # parsing markdown and extractring info 
+        # NOTE: this must called before every parsing
+        self.renderer.init(self.jinja2, self.code_formatter, self.config.plugin_data, self.site, parsed_post.meta)
 
         parsed_post.html = self.md_parser.parse(parsed_post.md)
         parsed_post.meta.statistics = self.renderer.get_stats()
