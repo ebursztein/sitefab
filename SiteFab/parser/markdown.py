@@ -16,19 +16,17 @@ youtube_matcher = re.compile("v=([^&]+)")
 class HTMLRendererMixin(object):
     """Customized HTML renderer"""
     def link(self, link, title, content):
-        
         embed = False
+        src = link
 
         # Youtube
-        if "https://youtu.be/" in link or "https://www.youtube/" in link:
+        if ("https://youtu.be/" in link or "https://www.youtube.com/" in link) and "&no_embed=1" not in link:
             embed = True
-
             if "embed" in link:  # Already correct link
                 src = link
                 template = self.jinja2.get_template('youtube')
-            
-            elif "&no_embed=1" not in link:
-                #already embeded url or need to convert?
+            else:
+                # need to convert url
                 if "https://youtu.be/" in link:
                     src = "https://www.youtube.com/embed/" + link.replace("https://youtu.be/", "")
                 else:
@@ -38,22 +36,15 @@ class HTMLRendererMixin(object):
                         src = "https://www.youtube.com/embed/" + vid
                     else:
                         print "error can't detect video id for link: %s" % link
+                        print self.meta.title
                 template = self.jinja2.get_template('youtube')
-                self.info.videos.append(link)
-            
-            else:
-                # Youtube videos that are not embedded
-                embed = False
-                src = link.replace("&no_embed=1", "")
-                template = self.jinja2.get_template('a')
-                self.info.links.append(link)
+                self.info.videos.append(src)
 
-
-        # Normal links
+        # Normal links or not embedded youtube videos
         else:
-            src = link
+            src = link.replace("&no_embed=1", "")
             template = self.jinja2.get_template('a')
-            self.info.links.append(link)
+            self.info.links.append(src)
 
         rv = template.render(href=src, text=content, title=title, embed=embed, site=self.site, meta=self.meta)
         rv = rv.encode('utf-8')
