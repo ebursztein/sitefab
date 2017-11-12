@@ -49,6 +49,7 @@ class JSPosts(SiteRendering):
 
         # output
         path = os.path.join(site.get_output_dir(), output_path)
+        log_info += "output directory: %s" % path
         files.write_file(path, js_filename, js)
  
         return (SiteFab.OK, plugin_name, log_info)

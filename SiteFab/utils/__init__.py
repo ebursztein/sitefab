@@ -48,6 +48,16 @@ def error(error_msg):
     sys.exit(-1)
 
 def detailed_error(module, function, error_msg):
+    """ Display detail error and exit
+    
+    Args:
+        module (str): the module where the error occured
+        function (str): the function that triggred the errror message
+        error_msg (str): the error message to display
+    
+    Return:
+        None
+    """
     msg = "\n[Error] %s:%s: %s\n" % (module, function, error_msg)
     cprint(msg)
     sys.exit(-42)
