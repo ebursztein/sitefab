@@ -32,7 +32,7 @@ class SiteFab(object):
     SKIPPED = 2
     ERROR = 3
 
-    def __init__(self, config_filename, version):
+    def __init__(self, config_filename, version='1.0'):
         
         # Timers
         self.timings  = utils.create_objdict()

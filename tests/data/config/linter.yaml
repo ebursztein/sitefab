@@ -14,7 +14,7 @@ permanent_url_valid_prefixes_by_template:
 
 files:
   valid_types: ["paper", "slides", "video"]
-  valid_prefix: "/files"
+  valid_prefixes: ["/files"]
   valid_suffixes: ["-slides.pdf", "-paper.pdf"]
 
 ### Image tests ###

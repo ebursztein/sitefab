@@ -273,8 +273,12 @@ def e121_file_properly_named(post, test_info, config):
             results.append(['E122', info])
 
         #valid prefix
-        if not f.startswith(config.files.valid_prefix):
-            info = test_info['E123'] % (f, config.files.valid_prefix)
+        valid = False
+        for prefix in config.files.valid_prefixes:
+            if f.startswith(prefix):
+                valid = True
+        if not valid:
+            info = test_info['E123'] % (f, " ,".join(config.files.valid_prefixes))
             results.append(['E123', info])
         
         #valid suffix
