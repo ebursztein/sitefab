@@ -50,10 +50,11 @@ def read_file(filename):
     Returns:
         str: the content of the file
     """
-    
+  
     if os.path.isfile(filename):
         with codecs.open(filename, "r", "utf-8-sig") as f:
             content = f.read().encode("utf-8")
+            f.close()
         return content 
     else:
         utils.warning("file:%s don't exist" % filename)
@@ -74,6 +75,7 @@ def write_file(path, filename, content, binary=False):
     if not binary:
         with codecs.open(file_path, "w", "utf-8-sig") as f:
             f.write(content)
+            f.close()
     else:
         f = open(file_path, "wb")
         f.write(content)
@@ -102,7 +104,7 @@ def get_files_list(content_dir, extensions="*.md"):
             utils.warning("extension: %s will not match as it is missing .* somewhere" % ext)
 
     matches = []
-    for root, dirnames, filenames in os.walk(content_dir):
+    for root, unused, filenames in os.walk(content_dir):
         for extension in extensions:
             for filename in fnmatch.filter(filenames, extension):
                 matches.append(os.path.join(root, filename))
