@@ -141,9 +141,11 @@ def e107_e108_e109_authors_formating(post, test_info, config):
         if ',' not in author:
             info = test_info['E108'] % authors
             results.append(['E108', info])
-        if not author.istitle():
-            info = test_info['E109'] % authors
-            results.append(['E109', author])
+        else:
+            firstname, lastname = author.replace(' ', '').split(',')
+            if not firstname[0].isupper() or not lastname[0].isupper():
+                info = test_info['E109'] % firstname
+                results.append(['E109', info])
     return results
 
 def e110_lowercase_fields(post, test_info, config):
