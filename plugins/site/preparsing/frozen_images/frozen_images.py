@@ -75,7 +75,9 @@ class FrozenImages(SitePreparsing):
                 log += "Cache status: MISS<br>"
                 # loading
                 start = time.time()
-                raw_image = open(img_info['full_path'], 'rb').read()
+                f = open(img_info['full_path'], 'rb')
+                raw_image = f.read() 
+                f.close()
                 log += "Image loading time:<i>%s</i><br>" % (round(time.time() - start, 3))
                 img = Image.open(StringIO(raw_image))
                 

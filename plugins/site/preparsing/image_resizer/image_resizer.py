@@ -56,7 +56,10 @@ class ImageResizer(SitePreparsing):
                 raw_image = cached_version['raw_image']
             else:
                 start = time.time()
-                raw_image = open(img_info['full_path'], 'rb').read()
+                f = open(img_info['full_path'], 'rb')
+                raw_image = f.read()
+                f.close()
+                
                 log += "Image loading time:<i>%s</i><br>" % (round(time.time() - start, 5))
                 cached_version = {}
                 cached_version['raw_image'] = raw_image
@@ -91,6 +94,7 @@ class ImageResizer(SitePreparsing):
                     if resized_img.mode != "RGB":
                         resized_img = resized_img.convert('RGB')
                     resized_img.save(stringio, pil_extension_codename, optimize=True, quality=quality, compress_level=9)
+                img.close()
 
                 cached_version['max_width'] = max_width
                 cached_version['resized_img'] = stringio

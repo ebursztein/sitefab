@@ -50,7 +50,11 @@ class ImageInfo(SitePreparsing):
 
             # loading
             start = time.time()
-            raw_image = open(image_full_path, 'rb').read() #we need the raw bytes to do the hashing. Asking PIL for is 10x slower.
+            # We need the raw bytes to do the hashing. Asking PIL for is 10x slower.
+            f = open(image_full_path, 'rb')
+            raw_image = f.read() 
+            f.close()
+
             img = Image.open(StringIO(raw_image))
             log += "Image loading time:<i>%s</i><br>" % (round(time.time() - start, 3))
             
@@ -80,7 +84,7 @@ class ImageInfo(SitePreparsing):
                 "hash": img_hash
             }
             progress_bar.update(1)
-
+            img.close()
     
         # reporting data
         site.plugin_data['image_info'] = image_info # expose images info

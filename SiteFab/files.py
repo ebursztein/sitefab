@@ -52,9 +52,9 @@ def read_file(filename):
     """
   
     if os.path.isfile(filename):
-        with codecs.open(filename, "r", "utf-8-sig") as f:
-            content = f.read().encode("utf-8")
-            f.close()
+        f = codecs.open(filename, "r", "utf-8-sig")
+        content = f.read().encode("utf-8")
+        f.close()
         return content 
     else:
         utils.warning("file:%s don't exist" % filename)
@@ -73,9 +73,9 @@ def write_file(path, filename, content, binary=False):
         os.makedirs(path)
     file_path = os.path.join(path, filename)
     if not binary:
-        with codecs.open(file_path, "w", "utf-8-sig") as f:
-            f.write(content)
-            f.close()
+        f = codecs.open(file_path, "w", "utf-8-sig")
+        f.write(content)
+        f.close()
     else:
         f = open(file_path, "wb")
         f.write(content)

@@ -58,7 +58,9 @@ def generate_thumbnails((images, params)):
     
         # loading image in memory
         start = time.time()
-        raw_image = open(image_full_path, 'rb').read() #we need the raw bytes to do the hashing. Asking PIL for is 10x slower.
+        f = open(image_full_path, 'rb')
+        raw_image = f.read() 
+        f.close()
         img = Image.open(StringIO(raw_image))
         log += "Opening time:<i>%s</i><br>" % (round(time.time() - start, 3))
 
