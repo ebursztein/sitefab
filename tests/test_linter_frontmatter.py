@@ -245,7 +245,8 @@ class TestLinterFrontmatter(TestLinter):
         test_values = [
             "/cat/file",
             "/cat/file?a=5"
-            "/cat/file.pdf"
+            "/cat/file.pdf",
+            ""
             ]
         for value in test_values:
             empty_post.meta.permanent_url = value
