@@ -46,7 +46,6 @@ def generate_thumbnails((images, params)):
         sub_path = img_path.replace(params['input_dir'], "") # preserve the directory structure under the input dir
         img_output_path = os.path.join(params['output_dir'], sub_path)
         web_path = image_full_path.replace('\\', '/' ).replace(params['site_output_dir'], "/") #replace the root for output by / as it is what the webserver sees.
-        
         log += "MIN_CACHED_SIZE:%s<br>" % MIN_CACHED_SIZE
         log += "img_path:%s<br>img_filename:%s<br>img_name:%s<br>img_extention:%s<br>img_output_path:%s<br>" % (img_path, img_filename, img_name, img_extension, img_output_path)
 
@@ -72,7 +71,7 @@ def generate_thumbnails((images, params)):
         # width and height
         width, height = img.size
         log += "hash: %s<br>" % (img_hash)
-        log += "size: %sx%s<br>"  % (width, height)
+        log += "size: %sx%s<br>" % (width, height)
         log += "</br>"
 
 
@@ -201,18 +200,11 @@ class ResponsiveImages(SitePreparsing):
     def process(self, unused, site, config):
         log = ""
         errors = False
-        plugin_name  = "responsive_images"
+        plugin_name = "responsive_images"
         input_dir = config.input_dir
         output_dir = config.output_dir
         multithreading = config.multithreading
         cache_file = os.path.join(site.config.dir.cache, plugin_name)
-
-        #loading HTML template
-        fname = os.path.join(files.get_site_path(), config.template_file)
-        html_template = files.read_file(fname)
-
-        if len(html_template) == "":
-            return (SiteFab.ERROR, plugin_name, log)
 
         # creating output directory
         if not output_dir:
@@ -226,7 +218,7 @@ class ResponsiveImages(SitePreparsing):
             return (SiteFab.ERROR, plugin_name, "no input_dir specified")
         
         
-        images  =  files.get_files_list(input_dir, ["*.jpg","*.jpeg", "*.png", "*.gif"])
+        images = files.get_files_list(input_dir, ["*.jpg","*.jpeg", "*.png", "*.gif"])
         
         if len(images) == 0:
             return (SiteFab.ERROR, plugin_name, "no images found")
@@ -295,20 +287,26 @@ class ResponsiveImages(SitePreparsing):
 
             #store all the resized images info
             srcsets = {}
-            for webformat, srcset in resize_list.iteritems():
-                srcsets[webformat] = ", ".join(srcset)
+            for webformat, srcset in resize_list.items():
+                if webformat == "image/webp":
+                    key = 'webp'
+                else:
+                    key = 'original'
+                srcsets[key] = {
+                    'srcset': ", ".join(srcset),
+                    'format': webformat
+                }
+
             resize_images[web_path] = {"srcsets": srcsets,
                                     "media": '(max_width: %spx)' % width,
                                     "sizes": '(max_width: %spx)' % width,
-                                    "hash": img_hash
+                                    "hash": img_hash,
+
             }
-        
+
         log += pprint.pformat(resize_images)
         # configuring the parser to make use of the resize images
         site.plugin_data['responsive_images'] = resize_images # expose the list of resized images
-        
-        site.inject_parser_html_template("reponsive_images", "img", html_template) # modify the template used to render images
-        
         if errors:
             return (SiteFab.ERROR, plugin_name, log)
         else:

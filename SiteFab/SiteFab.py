@@ -124,8 +124,6 @@ class SiteFab(object):
         self.posts_by_template = PostCollections(site=self)
         self.posts_by_microdata = PostCollections(site=self)
 
-        # Display injected template so the user understand who is responsible for what
-        self.list_injected_html_templates()
         
         # Parsing
         cprint("\nParsing posts", "magenta")
@@ -266,7 +264,6 @@ class SiteFab(object):
 
     def render_posts(self):
         """Render posts using jinja2 templates."""
-
         for post in tqdm(self.posts, unit=' pages', miniters=1, desc="Posts"):
             template_name = "%s.html" % post.meta.template
             template = self.jinja2.get_template(template_name)
@@ -298,40 +295,6 @@ class SiteFab(object):
         "Return the list of templates loaded."
         return self.jinja2.list_templates()
 
-    ### HTML Template plugins ###
-    
-    def inject_parser_html_template(self, pluging_name, html_elt, jinja_template):
-        """Allows plugins to replace the template of a given HTML element with their own
-        Args:
-            pluging_name (str): the name of the plugin responsible for the injection. Used for debug
-            html_elt (str): the HTML element the template is for 
-            jinja_template (str): The jinja_template that will be used to render a given element
-        
-        Return:
-            bool: True ok, False error
-
-        note: Due to the way plugins works a template can be overwritten many time. It is okay
-        
-        """
-
-        if not html_elt or not jinja_template or not pluging_name:
-            error("%s: plugin_name or html_elt or template not specified in inject_parser_template", pluging_name)
-            return False
-        
-        self.config.parser.injected_html_templates[html_elt] = jinja_template
-        self.config.parser.injected_html_templates_owner[html_elt] = pluging_name
-        return True
-        
-    def list_injected_html_templates(self):
-        "Display the list of the injected templates and which plugin was reponsible for it"
-        if len(self.config.parser.injected_html_templates_owner) == 0:
-            return
-        cprint("\nInjected html template", "magenta")
-        lst = []
-        for html_elt, plugin_name in self.config.parser.injected_html_templates_owner.iteritems():
-            s = "%s: %s" % (html_elt, plugin_name)
-            lst.append(s)
-        utils.print_color_list(lst)
 
     ### Plugins ###
     def execute_plugins(self, items, plugin_class, unit):

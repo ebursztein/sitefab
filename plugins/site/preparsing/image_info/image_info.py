@@ -25,7 +25,7 @@ class ImageInfo(SitePreparsing):
         if not input_dir:
             return (SiteFab.ERROR, plugin_name, "no input_dir specified")
         
-        images  =  files.get_files_list(input_dir, ["*.jpg", "*.jpeg", "*.png", "*.gif"])
+        images = files.get_files_list(input_dir, ["*.jpg", "*.jpeg", "*.png", "*.gif"])
         num_images = len(images)
 
         if num_images == 0:
@@ -60,7 +60,7 @@ class ImageInfo(SitePreparsing):
             
             # width and height
             width, height = img.size
-            log += "size: %sx%s<br>"  % (width, height)
+            log += "size: %sx%s<br>" % (width, height)
             
             #hash
             img_hash = utils.hexdigest(raw_image) # we use the hash of the content to make sure we regnerate if the image is different 

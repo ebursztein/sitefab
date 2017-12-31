@@ -28,8 +28,6 @@ output_dir: "generated/static/images/resized/"
 additional_formats: [".webp"]
 thumbnail_size: [300, 400, 500, 600, 700, 800, 900, 1000]
 
-template_file: "config/generator_templates/responsive_images/img.html"
-
 cache_min_image_width: 500  # Minimal size for image to be cached
 cache_name: "responsive_images" # name of the cache directory 
 ```
@@ -39,31 +37,9 @@ Where
 - **input_dir**: is where the images are located
 - **output_dir**: is where the thumbnails will be written. **DO NOT** use the input_dir or a sub-directory of it as it will create an ever expanding list of thumbnails
 - **additional_formats**: list additional formats on top of the one from the original images that the thumbnails need to be outputed.
-- **template_file**: This is the html snipset that replace the parser img.html to convert images into HTML attribute. Configure it to match your site class, view port definition etc.
 - **cache_min_image_width** specify what the minimal width for the images thumbnails to be cached. Caching small images actually cause a slow down. This need to be experimented with but on a medium site 500px with about 6 thumbnails per images seems to work out okay.
 - **cache_name**: this is the name of the sub-directory where thumbnails are cached. It leave under the cache directory which is specified in the config file.
 
-### Reactive images template
-The reactive images template location is specified in the configuration in the **template_file** option.
-It look like this:
-```jinja2
-{% if src in plugin_data.responsive_images %}
-    <picture>
-        {% for img_type, srcset in plugin_data.responsive_images[src].srcsets.iteritems() %}
-            <source srcset="{{ srcset }}" type="{{ img_type }}"> 
-        {% endfor %}
-        <img src="{{ src }}">
-    </picture>
-    <!--
-            media="{{plugin_data.responsive_images[src].media}}"
-    -->
-{% else %}
-    <img src="{{ src }}" alt="{{ alt }}">
-{% endif %}
-```
-
-The difference with the traditional template is that it use the picture  elements and the list of thumbnails generated
-by the plugins. Those are accessible under `plugin_data.responsive_images[src]`. 
 
 ## Dependencies
 

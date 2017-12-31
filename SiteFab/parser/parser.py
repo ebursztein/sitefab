@@ -33,11 +33,6 @@ class Parser():
         # So we keep it explict in the code as this got messed up countless time :(
         self.templates = self.config.templates 
 
-        # NOTE: This part must be done at parsing time to let plugins time to be loaded/executed.
-        # Replacing standard template with the one injected by plugins
-        for elt, template in self.config.injected_html_templates.items():
-            self.templates[elt] = template
-            
         # templates are not compiled yet, they will be when parsing will be called the first time 
         self.jinja2 = None 
 
@@ -70,10 +65,7 @@ class Parser():
             utils.detailed_error("Parser", 'make_config', 'template_dir not found')
 
         config.templates_path =  os.path.join(files.get_site_path(),  config.template_dir)
-        config.injected_html_templates = {} # Used to allows plugins to dynamically inject html templates.
-        config.injected_html_templates_owner = {} # store who was responsible for the injection
-        config.plugin_data = {} # store plugin data that need to be passed to the parser. E.g resized images
-        
+
         config.templates = {}
         for fname in files.get_files_list(config.templates_path, "*.html"):
             template_name = os.path.basename(fname).replace(".html", "")
@@ -103,7 +95,7 @@ class Parser():
 
         # parsing markdown and extractring info 
         # NOTE: this must called before every parsing
-        self.renderer.init(self.jinja2, self.code_formatter, self.config.plugin_data, self.site, parsed_post.meta)
+        self.renderer.init(self.jinja2, self.code_formatter, self.site, parsed_post.meta)
 
         parsed_post.html = self.md_parser.parse(parsed_post.md)
         parsed_post.meta.statistics = self.renderer.get_stats()
