@@ -1,12 +1,13 @@
+import re
 from SiteFab.Plugins import PostProcessor
 from SiteFab.SiteFab import SiteFab
 
 class ReadTime(PostProcessor):
     def process(self, post, site, config):
         if post.md and len(post.md):
-            
+            txt = re.sub("<.+>.+</.+>", '', post.md, 0, re.MULTILINE | re.DOTALL)
             # basic read time
-            words = post.md.count(" ")
+            words = txt.count(" ")
             wps = float(config.wpm) / 60
             num_sec = words / wps
 
