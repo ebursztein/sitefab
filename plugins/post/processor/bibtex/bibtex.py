@@ -1,7 +1,7 @@
 from datetime import date
 
-from SiteFab.Plugins import PostProcessor
-from SiteFab.SiteFab import SiteFab
+from sitefab.Plugins import PostProcessor
+from sitefab.SiteFab import SiteFab
 
 
 class Bibtex(PostProcessor):
@@ -19,9 +19,9 @@ class Bibtex(PostProcessor):
         """
         bibtex_data = ""
         if post.meta.template == "publication":
-            year = date.fromtimestamp(post.meta.conference_date_ts).year
-            id_publication = "Bursztein%s%s" % (year, post.meta.title[:10].replace(" ", ""))
+
             authors_okay = []
+            first_author_lastname = None
             for author in post.meta.authors:
                 author_details = []
                 author_details = author.split(",")
@@ -34,9 +34,17 @@ class Bibtex(PostProcessor):
                         author_details.append(author)
                         author_details.append(" ")
 
-                author_okay = "%s, %s" % (author_details[1].strip(), author_details[0].strip())
+                author_okay = "%s, %s" % (author_details[1].strip(),
+                                          author_details[0].strip())
                 authors_okay.append(author_okay)
 
+                if not first_author_lastname:
+                    first_author_lastname = author_details[0].strip().upper()
+
+            year = date.fromtimestamp(post.meta.conference_date_ts).year
+            stub = post.meta.title[:10].replace(" ", "").upper()
+
+            id_publication = "%s%s%s" % (first_author_lastname, year, stub)
             authors = (" and ").join(authors_okay)
 
             bibtex_data = "@inproceedings{%s, " \
@@ -44,7 +52,12 @@ class Bibtex(PostProcessor):
                           "author={%s}," \
                           "booktitle={%s}," \
                           "year={%s}," \
-                          "organization={%s}}" % (id_publication, post.meta.title, authors, post.meta.conference_name, year, post.meta.conference_publisher)
+                          "organization={%s}}" % (id_publication,
+                                                  post.meta.title, authors,
+                                                  post.meta.conference_name,
+                                                  year,
+                                                  post.meta.conference_publisher  # noqa
+                                                )
 
             post.meta.bibtex = bibtex_data
 
