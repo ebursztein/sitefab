@@ -1,5 +1,5 @@
 #!/usr/bin/python
-""" 
+"""
 SiteFab take content in, output static site
 """
 import sys
@@ -11,14 +11,15 @@ from SiteFab.SiteFab import SiteFab
 from termcolor import colored, cprint
 from SiteFab.utils import print_color_list, section, print_header
 from SiteFab.admin import build
-from SiteFab  import files
+from SiteFab import files
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+
 def print_plugins_list(site, only_enable=True):
     "Output the list of plugins"
-    info = defaultdict(lambda : defaultdict(list))
+    info = defaultdict(lambda: defaultdict(list))
     categories = ['Collection', 'Post', 'Site']
     phases = ['Preparsing', 'Parsing', 'Processor', 'Rendering']
 
@@ -45,21 +46,21 @@ def print_plugins_list(site, only_enable=True):
             if category in cat:
                 phase = cat.replace(category, "")
                 info[category][phase].append([status, s])
-    
+
     for category, data in info.iteritems():
-        print colored("[%s]" % category, 'yellow')
+        print(colored("[%s]" % category, 'yellow'))
         for phase in phases:
             if len(data[phase]):
-                print colored("  %s" % phase, 'magenta')
+                print(colored("  %s" % phase, 'magenta'))
                 count = 0
                 for plugin in data[phase]:
                     if count % 2:
                         plugin[1] = colored(plugin[1], 'blue')
                     else:
                         plugin[1] = colored(plugin[1], 'cyan')
-                    print "    |-%s%s" %  (plugin[0], plugin[1])
+                    print("    |-%s%s" % (plugin[0], plugin[1]))
                     count += 1
-        print "\n"
+        print("\n")
 
 
 def generate(config, version):
@@ -76,7 +77,7 @@ def generate(config, version):
     dirs.append("Plugins:\t%s" % site.get_plugins_dir())
     dirs.append("Cache:\t%s" % site.get_cache_dir())
     print_color_list(dirs)
-    print "\n"
+    print("\n")
     cprint("Active plugins", 'magenta')
     print_plugins_list(site)
 
@@ -93,17 +94,18 @@ def generate(config, version):
     section("Rendering")
     site.render()
     # Generate auxiliary files (sitemap, facebook_instant etc)
-    #FIXME Cleanup the output
+    # FIXME Cleanup the output
     section("Summary")
     site.finale()
 
+
 def print_help():
     "Display help and exist"
-    
+
     cprint("usage: SiteFab -c <config_file> command", 'yellow')
 
     cmds = [
-        "generate: generate the site", 
+        "generate: generate the site",
         "deploy: deploy generated site to remote server",
         "plugins: list available plugins",
         "upgrade: upgrade SiteFab plugins."
@@ -111,7 +113,7 @@ def print_help():
 
     cprint("commands", 'magenta')
     print_color_list(cmds, prefix="\t")
-    
+
     dev_cmds = [
         "sitfab_build: generate the default configs and documentation",
         ]
@@ -121,6 +123,7 @@ def print_help():
 
     sys.exit(2)
 
+
 if __name__ == '__main__':
     config = "sitefab.yaml"
     version_fname = os.path.join(files.get_code_path(), "VERSION")
@@ -129,9 +132,10 @@ if __name__ == '__main__':
 
     # args parsing
     short_options = "c:h"
-    long_options = ["config=","help"]
+    long_options = ["config=", "help"]
     try:
-        options, args = getopt.getopt(sys.argv[1:], short_options, long_options)
+        options, args = getopt.getopt(sys.argv[1:], short_options,
+                                      long_options)
     except getopt.GetoptError:
         print_help()
 
@@ -141,24 +145,24 @@ if __name__ == '__main__':
             config = arg
         elif opt in ('-h', '--help'):
             print_help()
-    
+
     # arguments
     if len(args):
         cmd = args[0]
         if cmd == "generate":
-            generate(config,version)
-        
+            generate(config, version)
+
         elif cmd == "plugins":
             site = SiteFab(config)
             cprint("Plugins status", 'magenta')
             print_plugins_list(site, only_enable=False)
-        
+
         elif cmd == "upgrade":
             site = SiteFab(config, version)
             cprint("Upgrading", 'magenta')
             build.sitefab_upgrade(site)
-            
-        ### Developper command ###
+
+        # Developper command
         elif cmd == "sitefab_build":
             # this function rebuild the documentation & configurations
             site = SiteFab(config, version)
