@@ -4,10 +4,11 @@ from tqdm import tqdm
 import time
 from StringIO import StringIO
 
-from SiteFab.Plugins import SitePreparsing
-from SiteFab.SiteFab import SiteFab
-from SiteFab import files
-from SiteFab import utils
+from sitefab.Plugins import SitePreparsing
+from sitefab.SiteFab import SiteFab
+from sitefab import files
+from sitefab import utils
+
 
 class ImageInfo(SitePreparsing):
     """
@@ -24,7 +25,7 @@ class ImageInfo(SitePreparsing):
         # reading images list
         if not input_dir:
             return (SiteFab.ERROR, plugin_name, "no input_dir specified")
-        
+
         images = files.get_files_list(input_dir, ["*.jpg", "*.jpeg", "*.png", "*.gif"])
         num_images = len(images)
 
@@ -40,10 +41,10 @@ class ImageInfo(SitePreparsing):
             # Creating needed directories
             img_path, img_filename = os.path.split(image_full_path)
             sub_path = img_path.replace(input_dir, "") # preserve the directory structure under the input dir
-            
+
             # File info extraction
             img_name, img_extension = os.path.splitext(img_filename)
-            pil_extension_codename, web_extension = utils.get_img_extension_alternative_naming(img_extension)            
+            pil_extension_codename, web_extension = utils.get_img_extension_alternative_naming(img_extension)
 
             # directories
             web_path = image_full_path.replace('\\', '/' ).replace(site_output_dir, "/") # base image url
@@ -52,18 +53,18 @@ class ImageInfo(SitePreparsing):
             start = time.time()
             # We need the raw bytes to do the hashing. Asking PIL for is 10x slower.
             f = open(image_full_path, 'rb')
-            raw_image = f.read() 
+            raw_image = f.read()
             f.close()
 
             img = Image.open(StringIO(raw_image))
             log += "Image loading time:<i>%s</i><br>" % (round(time.time() - start, 3))
-            
+
             # width and height
             width, height = img.size
             log += "size: %sx%s<br>" % (width, height)
-            
+
             #hash
-            img_hash = utils.hexdigest(raw_image) # we use the hash of the content to make sure we regnerate if the image is different 
+            img_hash = utils.hexdigest(raw_image) # we use the hash of the content to make sure we regnerate if the image is different
 
             # FIXME dominante colors
 
@@ -76,7 +77,7 @@ class ImageInfo(SitePreparsing):
                 "full_path": image_full_path,   #path on disk with filename: /user/elie/site/content/img/photo.jpg
                 "path": img_path,               #path on disk without filename: /user/elie/site/img/
                 "web_path": web_path,           #path on the site: /static/img/photo.jpg
-         
+
                 "pil_extension": pil_extension_codename, #image type in PIl: JPEG
                 "mime_type": web_extension,              #mime-type: image/jpeg
                 "width": width,
@@ -85,7 +86,7 @@ class ImageInfo(SitePreparsing):
             }
             progress_bar.update(1)
             img.close()
-    
+
         # reporting data
         site.plugin_data['image_info'] = image_info # expose images info
 

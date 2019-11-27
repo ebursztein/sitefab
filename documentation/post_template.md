@@ -41,7 +41,7 @@ Getting the table of content (toc) and list the section of the page in the templ
 Each elt in the toc contains the following information:
 - **elt[0]**: headline value. For example "my headline"
 - **elt[1]**: headline size. For example: *2* for a H2, *3* for a H3
-- **elt[2]**: headline id. This is a sequential count that allows to jump to the headline in the text using  
+- **elt[2]**: headline id. This is a sequential count that allows to jump to the headline in the text using
 anchor href. For example the second headline will have the id *2*. See example above
 
 ## Content
@@ -59,7 +59,7 @@ the code blocks are automatically processed and the needed annotation are added.
 in the config under the parser category:
 ```yaml
 parser:
-    code_highlighting_theme: "monokai" # Template to apply, choose from https://help.farbox.com/pygments.html 
+    code_highlighting_theme: "monokai" # Template to apply, choose from https://help.farbox.com/pygments.html
     code_display_line_num: True # display line number?
 ```
 
@@ -143,7 +143,7 @@ To list the five most recent post that use the blog_post template:
 ### Listing all the blog posts by categories
 
 ```jinga2
-{% for category, data in categories.iteritems() %}
+{% for category, data in categories.items() %}
     <h3>{{ category }} </h3>
     <ul>
         {% for post in data.posts %}

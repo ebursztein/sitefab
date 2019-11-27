@@ -1,5 +1,5 @@
-from SiteFab.Plugins import CollectionProcessor
-from SiteFab.SiteFab import SiteFab
+from sitefab.Plugins import CollectionProcessor
+from sitefab.SiteFab import SiteFab
 
 
 class FullUrl(CollectionProcessor):

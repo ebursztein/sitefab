@@ -1,8 +1,8 @@
 {% if src in plugin_data.responsive_images %}
     <strong>FOUND IT</strong>
     <picture>
-        {% for img_type, srcset in plugin_data.responsive_images[src].srcsets.iteritems() %}
-            <source srcset="{{ srcset }}" type="{{ img_type }}"> 
+        {% for img_type, srcset in plugin_data.responsive_images[src].srcsets.items() %}
+            <source srcset="{{ srcset }}" type="{{ img_type }}">
         {% endfor %}
         <img src="{{ src }}">
     </picture>

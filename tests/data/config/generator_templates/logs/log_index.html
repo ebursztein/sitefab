@@ -4,12 +4,12 @@
         <style>
             h1 {
                 font-size: 2.5rem;
-                color: #2980b9;            
+                color: #2980b9;
             }
             h2 {
                 font-size: 2rem;
                 color: #3498db;
-            }   
+            }
         </style>
     </head>
     <body>
@@ -19,9 +19,9 @@
             </div>
             <div>
                 <h2>Linting </h2>
-                    <a href="linter.html">Liniting results</a>  
+                    <a href="linter.html">Liniting results</a>
             </div>
-            {% for cat, lgs in logs.iteritems() %}
+            {% for cat, lgs in logs.items() %}
             <div>
                 <br><br>
                 <h2>{{cat}}</h2>

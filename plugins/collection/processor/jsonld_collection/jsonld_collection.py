@@ -1,7 +1,7 @@
 import json
 
-from SiteFab.Plugins import CollectionProcessor
-from SiteFab.SiteFab import SiteFab
+from sitefab.Plugins import CollectionProcessor
+from sitefab.SiteFab import SiteFab
 
 
 class JsonldCollection(CollectionProcessor):
@@ -18,7 +18,8 @@ class JsonldCollection(CollectionProcessor):
                        "url": collection.meta.full_url,
                        "name": collection.meta.name,
                        "inLanguage": "English",
-                       "description": "List of blog posts and publications about %s" % collection.meta.name
+                       "description": "List of blog posts and publications\
+                        about % s" % collection.meta.name
                        }
 
         jsonld_text = "%s%s%s" % (pre_txt, json.dumps(jsonld_data), post_txt)

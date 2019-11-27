@@ -1,20 +1,16 @@
-#!/usr/bin/python
+# coding: utf-8
 """
-SiteFab take content in, output static site
+SiteFab: content > sitefab > static site
 """
 import sys
-import os
 import getopt
 from collections import defaultdict
 
-from SiteFab.SiteFab import SiteFab
+from sitefab import __version__ as version
+from sitefab.SiteFab import SiteFab
 from termcolor import colored, cprint
-from SiteFab.utils import print_color_list, section, print_header
-from SiteFab.admin import build
-from SiteFab import files
-
-reload(sys)
-sys.setdefaultencoding('utf-8')
+from sitefab.utils import print_color_list, section, print_header
+from sitefab.admin import build
 
 
 def print_plugins_list(site, only_enable=True):
@@ -47,7 +43,7 @@ def print_plugins_list(site, only_enable=True):
                 phase = cat.replace(category, "")
                 info[category][phase].append([status, s])
 
-    for category, data in info.iteritems():
+    for category, data in info.items():
         print(colored("[%s]" % category, 'yellow'))
         for phase in phases:
             if len(data[phase]):
@@ -102,7 +98,7 @@ def generate(config, version):
 def print_help():
     "Display help and exist"
 
-    cprint("usage: SiteFab -c <config_file> command", 'yellow')
+    cprint("Usage: sitefab -c <config_file> command", 'yellow')
 
     cmds = [
         "generate: generate the site",
@@ -111,28 +107,28 @@ def print_help():
         "upgrade: upgrade SiteFab plugins."
         ]
 
-    cprint("commands", 'magenta')
+    cprint("Available Commands", 'magenta')
     print_color_list(cmds, prefix="\t")
 
-    dev_cmds = [
-        "sitfab_build: generate the default configs and documentation",
-        ]
+    # dev_cmds = [
+    #    "sitfab_build: generate the default configs and documentation",
+    #    ]
 
-    cprint("Developper command", 'magenta')
-    print_color_list(dev_cmds, prefix="\t")
+    # cprint("Developper command", 'magenta')
+    # print_color_list(dev_cmds, prefix="\t")
 
     sys.exit(2)
 
 
 if __name__ == '__main__':
-    config = "sitefab.yaml"
-    version_fname = os.path.join(files.get_code_path(), "VERSION")
-    version = open(version_fname).read()
-    print_header(version)
-
-    # args parsing
+    config = None
     short_options = "c:h"
     long_options = ["config=", "help"]
+
+    # pretty banner
+    print_header(version)
+
+    # parsing
     try:
         options, args = getopt.getopt(sys.argv[1:], short_options,
                                       long_options)
@@ -149,6 +145,12 @@ if __name__ == '__main__':
     # arguments
     if len(args):
         cmd = args[0]
+
+        if not config:
+            cprint('[ERROR] Please provide a config file via the -c option',
+                   'red')
+            print_help()
+
         if cmd == "generate":
             generate(config, version)
 

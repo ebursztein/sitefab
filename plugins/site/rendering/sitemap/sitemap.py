@@ -1,12 +1,12 @@
-from SiteFab.Plugins import SiteRendering
-from SiteFab.SiteFab import SiteFab
-from SiteFab import files
+from sitefab.Plugins import SiteRendering
+from sitefab.SiteFab import SiteFab
+from sitefab import files
 
 
 class Sitemap(SiteRendering):
     def process(self, unused, site, config):
         template_name = config.template
-        
+
         # Loading
         try:
             template = site.jinja2.get_template(template_name)

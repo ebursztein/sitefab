@@ -6,10 +6,11 @@ import base64
 from diskcache import Cache as dc
 from StringIO import StringIO
 
-from SiteFab.Plugins import SitePreparsing
-from SiteFab.SiteFab import SiteFab
-from SiteFab import files
-from SiteFab import utils
+from sitefab.Plugins import SitePreparsing
+from sitefab.SiteFab import SiteFab
+from sitefab import files
+from sitefab import utils
+
 
 class Thumbnails(SitePreparsing):
     "Generate thumbnail images"
@@ -20,7 +21,7 @@ class Thumbnails(SitePreparsing):
         plugin_name = "thumbnails"
         input_dir = config.input_dir
         output_dir = config.output_dir
-        thumbnail_sizes = config.thumbnail_sizes        
+        thumbnail_sizes = config.thumbnail_sizes
         cache_file = os.path.join(site.config.dir.cache, plugin_name)
         site_output_dir = site.config.dir.output
 
@@ -29,7 +30,7 @@ class Thumbnails(SitePreparsing):
             return (SiteFab.ERROR, plugin_name, "no output_dir specified")
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-        
+
         # opening cache
         start = time.time()
         cache = dc(cache_file)
@@ -49,13 +50,13 @@ class Thumbnails(SitePreparsing):
         for img_info in images:
             thumb = {}
             log += "<br><br><h2>%s</h2>" % (img_info['full_path'])
-            
+
             sub_path = img_info['path']
             if sub_path[-1] != "/": # not ideal as it might crash on windwos. FIXME:more testing
-                sub_path += "/" 
+                sub_path += "/"
             sub_path = sub_path.replace(input_dir[:-1], "") # preserve the directory structure under the input dir
-            
-            
+
+
             if sub_path[0] == "/" or sub_path[0] == "\\": # startingv with / or \ on the 2nd arg mess-up os.path.join
                 sub_path = sub_path[1:]
 
@@ -64,7 +65,7 @@ class Thumbnails(SitePreparsing):
             log += "output_dir: %s<br>" % output_dir
             log += "sub_path: %s<br>" % sub_path
             log += "input_dir: %s<br>" % input_dir
-            
+
             # Creating needed directories
             if not os.path.exists(img_output_path):
                 os.makedirs(img_output_path)
@@ -84,7 +85,7 @@ class Thumbnails(SitePreparsing):
                 cached_version = {}
                 cached_version['raw_image'] = raw_image
 
-            img = None 
+            img = None
             for thumb_width, thumb_height in thumbnail_sizes:
                 thumb_key = "%sx%s" % (thumb_width, thumb_height)
                 log += "<h3>%s</h3>" % (thumb_key)
@@ -103,13 +104,13 @@ class Thumbnails(SitePreparsing):
                     thumb_stringio = cached_version[thumb_key]
                 else:
                     log += "Cache status: MISS<br>"
-                    
+
                     # parsing image if needed
                     if not img:
                         img = Image.open(StringIO(raw_image))
                         img_width, img_height = img.size
                         log += "img size: %sx%s<br>" % (img_width, img_height)
-                    
+
                     #scale on the smallest side to maximize quality
                     if img_width < img_height:
                         ratio = img_height  / float(img_width)
@@ -126,7 +127,7 @@ class Thumbnails(SitePreparsing):
                         if thumb_height * ratio > thumb_width:
                             ratio2 = thumb_height / float(img_height)
                             tmp_width = int(img_width * ratio2)
-                            thumb_img = img.resize((tmp_width, thumb_height), Image.LANCZOS) 
+                            thumb_img = img.resize((tmp_width, thumb_height), Image.LANCZOS)
                         else:
                             ratio2 = thumb_width / float(img_width)
                             tmp_height = int(img_height * ratio2)
@@ -151,7 +152,7 @@ class Thumbnails(SitePreparsing):
                         center = float(scaled_width) * baricenter
                         left = (center - thumb_width / 2) / float(scaled_width)
                         right = left + ratio_width
-                        
+
                         # correcting potential overflow
                         if left < 0:
                             log += "correcting overflow on the left<br>"
@@ -164,7 +165,7 @@ class Thumbnails(SitePreparsing):
                             right = 1.0
 
                         log += "baricenter:%s, reduction_factor:%s, center:%s, left:%s, right:%s<br>" % (baricenter, reduction_factor, center, left, right)
-                    
+
                     # cut height
                     ratio_height = thumb_height / float(scaled_height)
                     if ratio_height < 1:
@@ -184,7 +185,7 @@ class Thumbnails(SitePreparsing):
                             log += "correcting overflow on the bottom<br>"
                             top -= (bottom - 1.0)
                             bottom = 1.0
-                        
+
                     log += "bounding box left: %s, top: %s, right: %s, bottom: %s<br>" % (left, top, right, bottom)
                     left_pixel = int(scaled_width * left)
                     top_pixel = int(scaled_height * top)
@@ -201,20 +202,20 @@ class Thumbnails(SitePreparsing):
 
                     thumb_img = thumb_img.crop([left_pixel, top_pixel, right_pixel, bottom_pixel])
                     log += "thumbnail size: %sx%s<br>" % (thumb_img.width, thumb_img.height)
-                    
+
                     if thumb_img.mode == "P":
                         thumb_img = thumb_img.convert('RGBA')
                     thumb_img = thumb_img.convert('RGB')
-                    
+
                     thumb_stringio = StringIO()
                     thumb_img.save(thumb_stringio, 'JPEG', optimize=True, quality=90) #FIXME support webp and tune parameters
                     cached_version[thumb_key] = thumb_stringio
-            
+
                     log += "thumbnail generation:%ss<br>" % (round(time.time() - start, 5))
 
 
                 #writing to disk
-                start = time.time() 
+                start = time.time()
                 f = open(output_full_path, "wb+")
                 f.write(thumb_stringio.getvalue())
                 f.close()

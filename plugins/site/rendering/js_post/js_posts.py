@@ -1,9 +1,10 @@
 import os
 import json
 
-from SiteFab.SiteFab import SiteFab
-from SiteFab import files
-from SiteFab.Plugins import SiteRendering
+from sitefab.Plugins import SiteRendering
+from sitefab.SiteFab import SiteFab
+from sitefab import files
+
 
 class JSPosts(SiteRendering):
 
@@ -16,16 +17,16 @@ class JSPosts(SiteRendering):
         output_path = config.output_path
         meta_fields_to_output = config.meta_fields_to_output
         plugin_data_to_output = config.plugin_data_to_output
-        
+
         log_info = "base javascript: %s<br>ouput:%s%s<br>" % (js_filename, output_path, js_filename)
         log_info = "meta fields to outputs:%s" % (", ".join(meta_fields_to_output))
         #Reading the base JS
         plugin_dir = os.path.dirname(__file__)
         js_file = os.path.join(plugin_dir, js_filename)
-        js = files.read_file(js_file) 
+        js = files.read_file(js_file)
         if not js or len(js) < 10:
             return (SiteFab.ERROR, plugin_name, "Base Javascript:%s not found or too small." % js_file)
-        
+
         js_posts = {}
         for post in site.posts:
             js_post = {}
@@ -41,7 +42,7 @@ class JSPosts(SiteRendering):
                     js_post['thumbnails'] = site.plugin_data['thumbnails'][post.meta.banner]
 
             js_posts[post.id] = js_post
-        
+
         # replacing placeholder with computation result
         output_string = json.dumps(js_posts)
         log_info += "output string:<br>%s" % output_string
@@ -51,5 +52,5 @@ class JSPosts(SiteRendering):
         path = os.path.join(site.get_output_dir(), output_path)
         log_info += "output directory: %s" % path
         files.write_file(path, js_filename, js)
- 
+
         return (SiteFab.OK, plugin_name, log_info)

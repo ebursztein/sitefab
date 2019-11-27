@@ -1,7 +1,5 @@
 # coding: utf-8
-import logging
 import re
-import jinja2
 
 # syntax coloring
 from pygments import highlight
@@ -9,9 +7,10 @@ from pygments.lexers import get_lexer_by_name, guess_lexer
 
 
 from mistune import Renderer, escape
-from SiteFab import utils
+from sitefab import utils
 
 youtube_matcher = re.compile("v=([^&]+)")
+
 
 class HTMLRendererMixin(object):
     """Customized HTML renderer"""
@@ -20,23 +19,25 @@ class HTMLRendererMixin(object):
         src = link
 
         # Youtube
-        if ("https://youtu.be/" in link or "https://www.youtube.com/" in link) and "&no_embed=1" not in link:
+        if (("https://youtu.be/" in link or "https://www.youtube.com/" in link)
+                and ("&no_embed=1" not in link)):
             embed = True
             if "embed" in link:  # Already correct link
                 src = link
                 template = self.jinja2.get_template('youtube')
             else:
-                # need to convert url
+                # need to canonalize youtube url
                 if "https://youtu.be/" in link:
-                    src = "https://www.youtube.com/embed/" + link.replace("https://youtu.be/", "")
+                    src = "https://www.youtube.com/embed/"
+                    src += link.replace("https://youtu.be/", "")
                 else:
                     d = youtube_matcher.search(link)
                     if d:
                         vid = d.group(1)
                         src = "https://www.youtube.com/embed/" + vid
                     else:
-                        print "error can't detect video id for link: %s" % link
-                        print self.meta.title
+                        print("error can't detect videoid for link: %s" % link)
+                        print(self.meta.title)
                 template = self.jinja2.get_template('youtube')
                 self.info.videos.append(src)
 
@@ -46,25 +47,28 @@ class HTMLRendererMixin(object):
             template = self.jinja2.get_template('a')
             self.info.links.append(src)
 
-        rv = template.render(href=src, text=content, title=title, embed=embed, site=self.site, meta=self.meta)
+        rv = template.render(href=src, text=content, title=title, embed=embed,
+                             site=self.site, meta=self.meta)
         rv = rv.encode('utf-8')
         return rv
 
     def image(self, src, title, alt_text):
-        
+
         self.info.images.append(src)
-        
         template = self.jinja2.get_template('img')
-        rv = template.render(src=src, alt=alt_text, title=title, plugin_data=self.plugin_data, site=self.site, meta=self.meta)
+        rv = template.render(src=src, alt=alt_text, title=title,
+                             plugin_data=self.plugin_data, site=self.site,
+                             meta=self.meta)
         rv = rv.encode('utf-8')
         return rv
 
     def header(self, text, level, raw=None):
-        
+
         template = self.jinja2.get_template('h')
-        rv = template.render(level=level, text=text, id=self.toc_count, site=self.site, meta=self.meta)
+        rv = template.render(level=level, text=text, id=self.toc_count,
+                             site=self.site, meta=self.meta)
         rv = rv.encode('utf-8')
-        
+
         self.toc_tree.append((self.toc_count, text, level, raw))
         self.toc_count += 1
         return rv
@@ -83,42 +87,44 @@ class HTMLRendererMixin(object):
                 lexer = guess_lexer(code, stripall=True)
             else:
                 lexer = get_lexer_by_name(lang, stripall=True)
-            detected = True
             code = highlight(code, lexer, self.code_formatter)
-        except:
+        except:  # noqa
             code = escape(code)
             lang = None
-       
+
         self.info.code.append(code)
 
         template = self.jinja2.get_template('code')
-        rv = template.render(code=code, lang=lang, site=self.site, meta=self.meta)
+        rv = template.render(code=code, lang=lang, site=self.site,
+                             meta=self.meta)
         rv = rv.encode('utf-8')
         return rv
 
     def init(self, jinja2, code_formatter, site, meta):
         """Init function called before each parsing.
-        
+
         Args:
-            jinja2 (dict): jinja2 templates used for rendering 
+            jinja2 (dict): jinja2 templates used for rendering
             code_formatter (dict): code syntax highlight configuration
-            site (obj_dict): the full site context (instanciated SiteFab object)
+            site (obj_dict): the full site context (SiteFab object)
             meta (obj_dict): the meta associated with the post
         Return:
             None
-        Note
-            Used to ensure all the needed variables are reset between parsing execution        
+        Note:
+            Used to ensure all the needed variables are reset between parsing
+            executions.
         """
         # reset toc
         self.toc_tree = []
         self.toc_count = 0
         self.jinja2 = jinja2
         self.code_formatter = code_formatter
-        self.plugin_data  = site.plugin_data
+        self.plugin_data = site.plugin_data
         self.site = site
         self.meta = meta
-        # Various information collected during the parsing 
-        self.info = metas = utils.dict_to_objdict({
+
+        # Various information collected during the parsing
+        self.info = utils.dict_to_objdict({
             "links": [],
             "images": [],
             "videos": [],
@@ -132,10 +138,9 @@ class HTMLRendererMixin(object):
             "num_code": 0,
         })
 
-
     def get_info(self):
         return self.info
-    
+
     def get_stats(self):
         stats = self.stats
         stats['num_links'] = len(self.info['links'])
@@ -143,15 +148,13 @@ class HTMLRendererMixin(object):
         stats['num_images'] = len(self.info['images'])
         return stats
 
-    ### TOC code ###
-
+    # [TOC code] #
     def get_json_toc(self):
-        """Render the TOC in JSON
-        
-        :param level: render toc up to the given level
+        """Render the TOC in JSON.
+
+        Returns:
+            list: TOC as a list ready to be json.dumps().
         """
-        first_level = None
-        last_level = None
         lst = []
         for toc in self.toc_tree:
             index, text, l, raw = toc
@@ -159,9 +162,13 @@ class HTMLRendererMixin(object):
         return lst
 
     def get_html_toc(self, level=3):
-        """Render TOC to HTML.
+        """Render TOC as HTML table.
 
-        :param level: render toc up to the given level
+        Args:
+            level (int, optional): Max TOC level. Defaults to 3.
+
+        Returns:
+            str: HTML table containing the TOC.
         """
         return ''.join(self._iter_html_toc(level))
 

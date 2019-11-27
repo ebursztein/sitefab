@@ -1,7 +1,7 @@
 import shutil
 from tqdm import tqdm
-from SiteFab.Plugins import SitePreparsing
-from SiteFab.SiteFab import SiteFab
+from sitefab.Plugins import SitePreparsing
+from sitefab.SiteFab import SiteFab
 
 
 class CopyDir(SitePreparsing):
@@ -10,8 +10,8 @@ class CopyDir(SitePreparsing):
     """
 
     def process(self, unused, site, config):
-        """ Process the content of the site once  
-        :param FabSite site: the site object 
+        """ Process the content of the site once
+        :param FabSite site: the site object
         """
         log = ""
         errors = False
@@ -34,7 +34,7 @@ class CopyDir(SitePreparsing):
                 continue
             progress_bar.update(1)
             log += "[OK]copied: '%s' to '%s'<br>" % (src, dst)
-    
+
         if errors:
             return (SiteFab.ERROR, "CopyDir", log)
         else:

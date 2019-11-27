@@ -1,14 +1,9 @@
-import os
-import yaml
-import sys
-from tqdm import tqdm
-import time
 import json
 
-from SiteFab.Plugins import SitePreparsing
-from SiteFab.SiteFab import SiteFab
-from SiteFab import files
-from SiteFab import utils
+from sitefab.Plugins import SitePreparsing
+from sitefab.SiteFab import SiteFab
+from sitefab import files
+
 
 class Press(SitePreparsing):
     """
@@ -25,8 +20,8 @@ class Press(SitePreparsing):
             articles = files.load_config(article_list)
         except:
             errors = True
-            log += "can't open %s" % article_list 
-        
+            log += "can't open %s" % article_list
+
         # reading from the yaml it self does not work and crash the soft. forcing a serialization/deserialization
         site.plugin_data['press'] = json.loads(json.dumps(articles))
         log += "loaded %s press articles" % (len(articles))

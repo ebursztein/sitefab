@@ -12,15 +12,15 @@
         </ul>
 
     <h2>posts per categories</h2>
-    
-    {% for category, data in categories.iteritems() %}
+
+    {% for category, data in categories.items() %}
         <h3>{{ category }} </h3>
         <ul>
             {% for post in data.posts %}
                 {# the if is used to filter out pages which are not blog articles #}
                 {% if post.meta.template == "blog_post" %}
                     <li><a href="{{ post.meta.permanent_url }}">{{ post.meta.title }}</a></li>
-                {% endif %}           
+                {% endif %}
             {% endfor %}
         </ul>
     {% endfor %}

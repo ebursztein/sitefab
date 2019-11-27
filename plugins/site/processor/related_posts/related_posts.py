@@ -1,8 +1,9 @@
-from SiteFab.Plugins import SiteProcessor
-from SiteFab.SiteFab import SiteFab
-from SiteFab import utils
 import gensim
 from gensim import corpora, models, similarities
+
+from sitefab.Plugins import SiteProcessor
+from sitefab.SiteFab import SiteFab
+from sitefab import utils
 
 
 class RelatedPosts(SiteProcessor):
@@ -10,7 +11,7 @@ class RelatedPosts(SiteProcessor):
     VALID_FORMAT = ['ScholarlyArticle', 'BlogPosting', 'PublicationEvent']
 
     def process(self, unused, site, config):
-        
+
         try:
             num_related_posts = config.num_related_posts
             # Tokenize
@@ -23,7 +24,7 @@ class RelatedPosts(SiteProcessor):
                 docs.append(gensim.utils.simple_preprocess(txt, deacc=True, min_len=3, max_len=15))
                 valid_posts.append(post)
                 # Fixme stemming
-            
+
             # build model
             dictionary = corpora.Dictionary(docs)
             corpus = [dictionary.doc2bow(doc) for doc in docs]
@@ -32,7 +33,7 @@ class RelatedPosts(SiteProcessor):
             num_topics = len(site.posts) / 5  # use the number of post as proxy for number of topics
             topic_model = models.LsiModel(tfidf[corpus], id2word=dictionary, num_topics=num_topics)
             index = similarities.MatrixSimilarity(topic_model[tfidf[corpus]], num_best=num_related_posts + 1) #+1 because the best one is itself
-            
+
             # find simlar posts and store them
             log_details = ""
             for post, sims in zip(valid_posts, index):

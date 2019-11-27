@@ -1,11 +1,9 @@
 import datetime
 import json
-
 import pytz
-from PIL import Image
 
-from SiteFab.Plugins import PostProcessor
-from SiteFab.SiteFab import SiteFab
+from sitefab.Plugins import PostProcessor
+from sitefab.SiteFab import SiteFab
 
 
 class Jsonld(PostProcessor):
@@ -80,11 +78,17 @@ class Jsonld(PostProcessor):
                 correct_category = post.meta.category.replace(" ", "_")
                 # banner
                 if post.meta.banner:
-                    jsonld_data["image"] = str("%s%s" % (site.config.url, post.meta.banner))
+                    jsonld_data["image"] = str("%s%s" % (site.config.url,
+                                                         post.meta.banner))
 
                 # about
-                jsonld_data["about"] = [{"name": str(post.meta.category), "url": str("%s/%s%s" % (
-                    site.config.url, site.config.collections.output_dir, correct_category))}]
+                url = str("%s/%s%s" % (site.config.url,
+                                       site.config.collections.output_dir,
+                                       correct_category))
+                jsonld_data["about"] = [{
+                                            "name": str(post.meta.category),
+                                            "url": url
+                                        }]
 
                 # microdata specific to PublicationEvent (talk)
                 if post.meta.microdata_type == "PublicationEvent":

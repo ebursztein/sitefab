@@ -1,15 +1,13 @@
 import os
-from PIL import Image, ImageFilter
+from PIL import Image
 from tqdm import tqdm
 import time
-import base64
 from diskcache import Cache as dc
 from StringIO import StringIO
 
-from SiteFab.Plugins import SitePreparsing
-from SiteFab.SiteFab import SiteFab
-from SiteFab import files
-from SiteFab import utils
+from sitefab.Plugins import SitePreparsing
+from sitefab.SiteFab import SiteFab
+
 
 class ImageResizer(SitePreparsing):
     "Resize images"
@@ -20,10 +18,10 @@ class ImageResizer(SitePreparsing):
         plugin_name = "image_resizer"
         input_dir = config.input_dir
         max_width = config.max_width
-        quality = config.quality      
+        quality = config.quality
         cache_file = os.path.join(site.config.dir.cache, plugin_name)
         site_output_dir = site.config.dir.output
-        
+
         # opening cache
         start = time.time()
         cache = dc(cache_file)
@@ -41,7 +39,7 @@ class ImageResizer(SitePreparsing):
         for img_info in images:
             thumb = {}
             log += "<br><br><h2>%s</h2>" % (img_info['full_path'])
-            
+
             if img_info['width'] < max_width:
                 log += "Image width %s < max_width: %s skipping" % (img_info['width'], max_width)
                 continue
@@ -59,14 +57,14 @@ class ImageResizer(SitePreparsing):
                 f = open(img_info['full_path'], 'rb')
                 raw_image = f.read()
                 f.close()
-                
+
                 log += "Image loading time:<i>%s</i><br>" % (round(time.time() - start, 5))
                 cached_version = {}
                 cached_version['raw_image'] = raw_image
                 cached_version['max_width'] = -1
 
             # Is the cached version have the right size?
-            if cached_version['max_width'] == max_width: 
+            if cached_version['max_width'] == max_width:
                 log += "Cache status: HIT<br>"
                 stringio = cached_version['resized_img']
                 resized_img = Image.open(stringio)
@@ -102,7 +100,7 @@ class ImageResizer(SitePreparsing):
 
 
             # writing to disk
-            start = time.time() 
+            start = time.time()
             f = open(img_info['full_path'], "wb+")
             f.write(stringio.getvalue())
             f.close()

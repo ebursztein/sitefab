@@ -6,13 +6,13 @@ from collections import defaultdict
 from jinja2 import Environment, FileSystemLoader
 from termcolor import cprint
 
-from . import files
-from parser.parser import Parser
-from Logger import Logger
-from Plugins import Plugins
-from PostCollections import PostCollections
-from linter.linter import Linter
-import utils
+from sitefab import files
+from sitefab.parser import Parser
+from sitefab.Logger import Logger
+from sitefab.Plugins import Plugins
+from sitefab.PostCollections import PostCollections
+from sitefab.linter.linter import Linter
+from sitefab import utils
 
 
 class SiteFab(object):
@@ -49,8 +49,8 @@ class SiteFab(object):
             if os.path.isfile(cfg):
                 self.config = files.load_config(cfg)
             else:
-                raise Exception("Configuration file not found: %s" %
-                                config_filename)
+                utils.error("Configuration file not found: %s" %
+                            config_filename)
 
         self.config.build = utils.create_objdict()
         # expose sitefab version to the templates
@@ -77,7 +77,7 @@ class SiteFab(object):
         self.jinja2 = Environment(loader=FileSystemLoader(
             self.get_template_dir()), extensions=['jinja2.ext.do'])
         custom_filters = self.plugins.get_template_filters()
-        for flt_name, flt_fct in custom_filters.iteritems():
+        for flt_name, flt_fct in custom_filters.items():
             self.jinja2.filters[flt_name] = flt_fct
 
         # [logger] #
@@ -344,7 +344,7 @@ class SiteFab(object):
         # sum all plugins data for recap
         for result in results:
             plugin, values = result
-            for k, v in values.iteritems():
+            for k, v in values.items():
                 self.plugin_results[k] += v
 
     # Files and directories #

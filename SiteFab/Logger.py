@@ -1,35 +1,34 @@
 """ Handle SiteFab log output
 """
 import time
-import jinja2
 from collections import defaultdict
 from collections import Counter
 from jinja2 import Environment, FileSystemLoader
 
-import utils
-import files
-import SiteFab
+from . import utils
+from . import files
+
 
 class Logger():
     """ SiteFab logging system
 
-        :note: while the logging system render log in html using jinja2 it use a completly 
+        :note: while the logging system render log in html using jinja2 it use a completly
         separated system to avoid interferring with user configuration. Templates are located
         in the config directory under internal_template/
     """
     def __init__(self, config, site):
-        
+
         self.config = config
         self.site = site # reference to the main object
         self.logs = {}
         self.jinja2 = Environment(loader=FileSystemLoader(self.config.template_dir))
         files.clean_dir(self.config.output_dir)
-    
+
 
     ### statistics ###
     def write_stats(self):
         "Output statistics about the execution"
-        
+
         # post per category
         cat_stats = Counter()
         cats = self.site.posts_by_category.get_as_dict()
@@ -41,7 +40,7 @@ class Logger():
         tags = self.site.posts_by_tag.get_as_dict()
         for tag, data in tags.items():
             tag_stats[tag] = data.meta.num_posts
-        
+
         template = self.jinja2.get_template(self.config.stats_template)
         rv = template.render(cats=cat_stats.most_common(), tags=tag_stats.most_common())
         files.write_file(self.config.output_dir, "stats.html", rv)
@@ -72,7 +71,7 @@ class Logger():
         """
         if log_id not in self.logs:
             return False
-        
+
         # recording event
         event = utils.dict_to_objdict()
         event.time = time.time()
@@ -93,7 +92,7 @@ class Logger():
             event.severity = "ERROR"
             self.logs[log_id].meta.errors += 1
 
-        
+
         self.logs[log_id].events.append(event)
         return True
 
@@ -112,7 +111,7 @@ class Logger():
 
     def write_log_index(self):
         " Generate the index.html file that list all generated logs"
-        
+
         # allows to output by group
         logs = defaultdict(list)
         for l in self.logs.values():

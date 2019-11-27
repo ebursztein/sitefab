@@ -1,11 +1,9 @@
-import copy
 from datetime import datetime
 
-from SiteFab.Plugins import SiteRendering
-from SiteFab.SiteFab import SiteFab
-from SiteFab import files
-from SiteFab import utils
-from SiteFab.parser.parser import Parser
+from sitefab.Plugins import SiteRendering
+from sitefab.SiteFab import SiteFab
+from sitefab import files
+from sitefab.parser.parser import Parser
 
 
 class Rss(SiteRendering):
@@ -26,7 +24,7 @@ class Rss(SiteRendering):
 
         cfg = Parser.make_config(parser_config) # initialize the parser config
         parser = Parser(cfg, site)
-   
+
         rss_items = []
         count = 0
         posts = []
@@ -40,7 +38,7 @@ class Rss(SiteRendering):
         for post in posts:
             if post.meta.hidden or (post.meta.microdata_type != "BlogPosting" and post.meta.microdata_type != "ScholarlyArticle" and post.meta.microdata_type != "PublicationEvent"):
                 continue
-            
+
             # parse the post with a customized parser
             file_content = files.read_file(post.filename)
             parsed_post = parser.parse(file_content)

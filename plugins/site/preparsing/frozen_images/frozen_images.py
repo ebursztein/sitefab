@@ -6,10 +6,10 @@ import base64
 from diskcache import Cache as dc
 from StringIO import StringIO
 
-from SiteFab.Plugins import SitePreparsing
-from SiteFab.SiteFab import SiteFab
-from SiteFab import files
-from SiteFab import utils
+from sitefab.Plugins import SitePreparsing
+from sitefab.SiteFab import SiteFab
+from sitefab import files
+from sitefab import utils
 
 class FrozenImages(SitePreparsing):
     """
@@ -22,7 +22,7 @@ class FrozenImages(SitePreparsing):
         plugin_name = "frozen_images"
         frozen_width = 42
         input_dir = config.input_dir
-        output_dir = config.output_dir        
+        output_dir = config.output_dir
         cache_file = os.path.join(site.config.dir.cache, plugin_name)
         site_output_dir = site.config.dir.output
         blur_value = 2
@@ -32,7 +32,7 @@ class FrozenImages(SitePreparsing):
             return (SiteFab.ERROR, plugin_name, "no output_dir specified")
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-        
+
         # opening cache
         start = time.time()
         cache = dc(cache_file)
@@ -55,17 +55,17 @@ class FrozenImages(SitePreparsing):
             img_output_path = os.path.join(output_dir, sub_path)
             if not os.path.exists(img_output_path):
                 os.makedirs(img_output_path)
-            
+
             img_output_path = os.path.join(output_dir, sub_path)
             output_filename = "%s.frozen%s" % (img_info['name'], img_info['extension'])
             output_full_path = os.path.join(img_output_path, output_filename)
-            output_web_path = output_full_path.replace("\\", "/").replace(site_output_dir, "/") #frozen 
-            
+            output_web_path = output_full_path.replace("\\", "/").replace(site_output_dir, "/") #frozen
+
             # cache fetch
             start = time.time()
             cached_value = cache.get(img_info['hash'])
             cache_timing['fetching'] += time.time() - start
-        
+
             # generating image
             start = time.time()
             if cached_value:
@@ -76,11 +76,11 @@ class FrozenImages(SitePreparsing):
                 # loading
                 start = time.time()
                 f = open(img_info['full_path'], 'rb')
-                raw_image = f.read() 
+                raw_image = f.read()
                 f.close()
                 log += "Image loading time:<i>%s</i><br>" % (round(time.time() - start, 3))
                 img = Image.open(StringIO(raw_image))
-                
+
                 # width and height
                 width, height = img.size
                 ratio = float(frozen_width) / width
@@ -104,7 +104,7 @@ class FrozenImages(SitePreparsing):
 
 
             #writing to disk
-            start = time.time() 
+            start = time.time()
             f = open(output_full_path, "wb+")
             f.write(stringio_file.getvalue())
             f.close()
@@ -116,12 +116,12 @@ class FrozenImages(SitePreparsing):
 
             frozen_images[img_info['web_path']] = {
                 "url": output_web_path,
-                "base64": img_base64, 
+                "base64": img_base64,
             }
             log += 'Img result (from base64): <img src="%s">' % img_base64
             progress_bar.update(1)
 
-    
+
         # reporting data
         site.plugin_data['frozen_images'] = frozen_images # expose the list of resized images
         cache.close()
