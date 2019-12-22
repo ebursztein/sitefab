@@ -1,4 +1,5 @@
-from SiteFab.Plugins import TemplateFilter
+from sitefab.Plugins import TemplateFilter
+
 
 class format_ts(TemplateFilter):
     """format_ts custom filter"""
@@ -6,7 +7,7 @@ class format_ts(TemplateFilter):
     @staticmethod
     def myfilter(filter_input, filter_arg="%d %B %Y"):
         """ ts to formated date
-    
+
         Args:
             input (str): timestamp to format
             arg(str): date format in strftimne format

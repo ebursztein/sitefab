@@ -1,4 +1,5 @@
-from SiteFab.Plugins import TemplateFilter
+from sitefab.Plugins import TemplateFilter
+
 
 class str_to_list(TemplateFilter):
     """Transform a string into a list of characters"""

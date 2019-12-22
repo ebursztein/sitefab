@@ -6,3 +6,4 @@ demo_site/cache
 .cache
 sitefab.py.lprof
 *.pyc
+sitefab.egg-info/

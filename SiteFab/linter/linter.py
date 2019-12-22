@@ -15,11 +15,11 @@ class Linter:
         if self.test_info == None:
             utils.error("Can't load linter tests")
 
-        #FIXME: add/use config
+        # FIXME: add/use config
         self.config = config
         self.results = {}
         template_content = files.read_file(self.config.report_template_file)
-        self.jinja2_template = Template(template_content)
+        self.jinja2_template = Template(str(template_content))
 
     def render_report(self):
         "Create a linting report for all posts"

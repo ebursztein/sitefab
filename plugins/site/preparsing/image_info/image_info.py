@@ -2,7 +2,7 @@ import os
 from PIL import Image
 from tqdm import tqdm
 import time
-from StringIO import StringIO
+from io import StringIO
 
 from sitefab.Plugins import SitePreparsing
 from sitefab.SiteFab import SiteFab

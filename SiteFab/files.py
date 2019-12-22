@@ -1,20 +1,26 @@
+"files manipulation utilities"
 import yaml
-import fnmatch
 import codecs
-import os
 import shutil
+from pathlib import Path
 
 from . import utils as utils
 
 
 def get_code_path():
-    "Get SiteFab base directory path"
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+    """Get SiteFab base directory path
+
+    Note:
+        code path is the dir where we have: sitefab, plugins... it's not
+        the package root
+    """
+    path = Path(__file__)
+    return(path.parents[1])
 
 
 def get_site_path():
     "Get website base path"
-    return os.getcwd()
+    return Path.cwd()
 
 
 def load_config(config_file):
@@ -28,7 +34,8 @@ def load_config(config_file):
     """
 
     # open file
-    if not os.path.exists(config_file):
+    config_file = Path(config_file)
+    if not config_file.exists:
         st = "%s does not exist" % config_file
         utils.warning(st)
         return None
@@ -56,7 +63,8 @@ def read_file(filename):
         str: the content of the file
     """
 
-    if os.path.isfile(filename):
+    filename = Path(filename)
+    if filename.is_file():
         f = codecs.open(filename, "r", "utf-8-sig")
         content = f.read().encode("utf-8")
         f.close()
@@ -66,7 +74,7 @@ def read_file(filename):
         return ""
 
 
-def write_file(path, filename, content, binary=False):
+def write_file(target_path, filename, content, binary=False):
     """ Write a file at a given path. Create directory if necessary
 
     Args:
@@ -75,9 +83,12 @@ def write_file(path, filename, content, binary=False):
     Returns:
         None: no returns
     """
-    if not os.path.exists(path):
-        os.makedirs(path)
-    file_path = os.path.join(path, filename)
+    target_path = Path(target_path)
+
+    if not target_path.exists(target_path):
+        target_path.mkdir(parents=True)
+
+    file_path = target_path / filename
     if not binary:
         f = codecs.open(file_path, "w", "utf-8-sig")
         f.write(content)
@@ -108,22 +119,25 @@ def get_files_list(content_dir, extensions="*.md"):
     if type(extensions) == str:
         extensions = [extensions]
 
-    for ext in extensions:
-        if "*." not in ext:
-            utils.warning("extension: %s will not match as it is missing .*\
-                          somewhere" % ext)
-
     matches = []
-    for root, unused, filenames in os.walk(content_dir):
-        for extension in extensions:
-            for filename in fnmatch.filter(filenames, extension):
-                matches.append(os.path.join(root, filename))
+    content_dir = Path(content_dir)
+    for extension in extensions:
+        if "*." not in extension:
+            utils.warning("extension: %s won't match missing '*.'" % extension)
+            continue
+        matches.extend(list(content_dir.glob(extension)))
     return matches
 
 
 def clean_dir(directory):
-    if os.path.exists(directory):
+    """Clean by deleting and recreating the directory
+
+    Args:
+        directory (str): Directory to clean.
+    """
+    directory = Path(directory)
+    if directory.exists:
         shutil.rmtree(directory, ignore_errors=True)
-    if os.path.exists(directory):
+    if directory.exists():
         utils.error("%s not deleted." % directory)
-    os.mkdir(directory)
+    directory.mkdir()

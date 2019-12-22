@@ -19,13 +19,13 @@ class Logger():
     def __init__(self, config, site):
 
         self.config = config
-        self.site = site # reference to the main object
+        self.site = site  # reference to the main object
         self.logs = {}
-        self.jinja2 = Environment(loader=FileSystemLoader(self.config.template_dir))
+        self.jinja2 = Environment(loader=FileSystemLoader(
+            str(self.config.template_dir)))
         files.clean_dir(self.config.output_dir)
 
-
-    ### statistics ###
+    # statistics #
     def write_stats(self):
         "Output statistics about the execution"
 
@@ -44,7 +44,6 @@ class Logger():
         template = self.jinja2.get_template(self.config.stats_template)
         rv = template.render(cats=cat_stats.most_common(), tags=tag_stats.most_common())
         files.write_file(self.config.output_dir, "stats.html", rv)
-
 
     def create_log(self, category, name, filename):
         """ Create a new log

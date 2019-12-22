@@ -1,6 +1,5 @@
 import sys
 import xxhash
-from stop_words import get_stop_words
 
 from .objdict import objdict
 from termcolor import cprint
