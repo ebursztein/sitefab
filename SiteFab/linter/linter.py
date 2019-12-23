@@ -51,7 +51,6 @@ class Linter:
         Return:
             dict: linting results
         """
-
         results = utils.create_objdict()
         results.has_errors = 0
         results.has_warnings = 0

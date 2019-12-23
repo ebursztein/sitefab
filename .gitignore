@@ -8,3 +8,4 @@ sitefab.py.lprof
 *.pyc
 sitefab.egg-info/
 cache.db
+tmp.py
