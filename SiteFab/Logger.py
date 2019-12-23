@@ -93,7 +93,6 @@ class Logger():
         elif severity == self.site.ERROR:
             event.severity = "ERROR"
             self.logs[log_id].meta.errors += 1
-
         self.logs[log_id].events.append(event)
         return True
 

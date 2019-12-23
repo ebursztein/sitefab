@@ -26,7 +26,8 @@ setup(name='sitefab',
                         'stop-words',
                         'xxhash',
                         'pillow',
-                        'perfcounters'
+                        'perfcounters',
+                        'terminaltables'
                         ],
       classifiers=[
           'Development Status :: 5 - Production/Stable',

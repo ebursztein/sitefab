@@ -3,11 +3,13 @@ SiteFab Plugin system
 """
 
 import os
+from pathlib import Path
 from termcolor import colored, cprint
 from tqdm import tqdm
 from yapsy.PluginManager import PluginManager
 import logging
 from toposort import toposort_flatten
+from terminaltables import SingleTable
 
 from . import utils
 
@@ -24,8 +26,9 @@ class PostProcessor():
             :param dict config: plugin configuration
         """
 
+
 class CollectionProcessor():
-    "Plugins that process each collection between the parsing and the rendering"
+    "Plugins that process each collection between parsing and rendering"
 
     def process(self, post, site, config):
         """ Process a parsed post to add extra meta or change its HTML
@@ -34,14 +37,17 @@ class CollectionProcessor():
             :param dict config: plugin configuration
         """
 
-class  SitePreparsing():
-    "Site wide plugins that execute before the parsing start. Plugin are called only once."
+
+class SitePreparsing():
+    """Site wide plugins that execute before the parsing start.
+    Plugin are called only once."""
 
     def process(self, unused, site, config):
         """ Process the content of the site once
         :param FabSite site: the site object
         :param dict config: plugin configuration
         """
+
 
 class SiteProcessor():
     "Plugins that process the whole site once"
@@ -52,6 +58,7 @@ class SiteProcessor():
             :param dict config: plugin configuration
         """
 
+
 class SiteRendering():
     "Plugins that render additional pages. Plugin only called once"
 
@@ -60,6 +67,7 @@ class SiteRendering():
             :param FabSite site: the site object
             :param dict config: plugin configuration
         """
+
 
 class TemplateFilter():
     "Plugins that define jinja2 filters to be used in templates"
@@ -76,7 +84,7 @@ class TemplateFilter():
         """
 
 
-### Plugin management ###
+# [Plugin management]
 class Plugins():
     """
     Class responsible to manage the plugins
@@ -87,13 +95,9 @@ class Plugins():
         ["SitePreparsing", SitePreparsing, "Site wide plugins that execute before the parsing start."],
         ["SiteProcessor", SiteProcessor, "Plugins that process the whole site once after parsing."],
         ["SiteRendering", SiteRendering,  "Plugins that render additional pages after the rendering."],
-
-        ["PostProcessor", PostProcessor,"Plugins that process each post after they are parsed"],
-
+        ["PostProcessor", PostProcessor, "Plugins that process each post after they are parsed"],
         ["CollectionProcessor", CollectionProcessor, "Plugins that process each collection after posts are parsed"],
-
         ["TemplateFilter", TemplateFilter, "Plugins that define jinja2 filters to be used in templates"],
-
     ]
 
     # for plugin info structure
@@ -104,7 +108,6 @@ class Plugins():
     PLUGIN_MODULE_NAME = 4
     PLUGIN_VERSION = 5
 
-
     def __init__(self, plugin_directory, debug_log_fname, plugins_config):
         "Load plugins"
 
@@ -112,7 +115,8 @@ class Plugins():
         for cat in self.categories:
             categories_filter[cat[0]] = cat[1]
 
-        self.plugins = PluginManager(plugin_info_ext='sitefab-plugin', categories_filter=categories_filter)
+        self.plugins = PluginManager(plugin_info_ext='sitefab-plugin',
+                                     categories_filter=categories_filter)
         self.plugins.setPluginPlaces([plugin_directory])
         self.plugins.locatePlugins()
         self.plugins.loadPlugins()
@@ -124,16 +128,17 @@ class Plugins():
             if pl[self.PLUGIN_ENABLE]:
                 self.plugins_enabled[pl[self.PLUGIN_MODULE_NAME]] = 1
 
-        # list of plugins already executed. Used for dependencies checking accoss stage
+        # list of plugins already executed. Used for dependencies tracking
+        # across stages
         self.plugins_executed = {}
 
         # FIXME: make sure it is working
-        #logging.basicConfig(filename=debug_log_fname, level=logging.DEBUG)
+        # logging.basicConfig(filename=debug_log_fname, level=logging.DEBUG)
 
     def get_plugins(self, category=None):
         """Return the list of plugins
 
-        :param str category: restrict to plugins that belong to a given category
+        :param str category: restrict to plugins of a given category
 
         :rtype: list(iPlugin)
         :return: list of plugins
@@ -146,7 +151,7 @@ class Plugins():
     def get_num_plugins(self, category=None):
         """ Return the number of plugins available.
 
-        :param str category: restrict to plugins that belong to a given category
+        :param str category: restrict to plugins of given category
 
         :rtype: int
         :return: number of plugins
@@ -163,9 +168,8 @@ class Plugins():
         :return: the module name
         """
 
-        module_path = plugin.details.get("Core", "module")
-        path, filename = os.path.split(module_path)
-        return path
+        module_path = Path(plugin.details.get("Core", "module"))
+        return module_path.parents(1)
 
     def get_plugin_default_configuration_filename(self, plugin):
         """ Return the path to the plugin default configuration filename
@@ -174,9 +178,9 @@ class Plugins():
             fname = plugin.details.get("Configuration", "Filename")
         except:
             return ""
-        fname  = fname.replace('"', '')
+        fname = fname.replace('"', '')
         path = self.get_plugin_dir(plugin)
-        return os.path.join(path, fname)
+        return path / fname
 
     def get_plugin_documentation_filename(self, plugin):
         """ Return the path to the plugin documentation
@@ -186,7 +190,7 @@ class Plugins():
         except:
             return ""
         path = self.get_plugin_dir(plugin)
-        return os.path.join(path, fname)
+        return path / fname
 
     def get_plugin_class_name(self, plugin):
         """ Return the class of a given plugin
@@ -256,7 +260,6 @@ class Plugins():
         else:
             return False
 
-
     def get_plugins_info(self, category=None):
         """Return the list of plugins available with their type
 
@@ -279,7 +282,8 @@ class Plugins():
                 except:
                     version = "NA"
 
-                s = [cat, plugin.name, plugin.description, enabled, module_name, version]
+                s = [cat, plugin.name, plugin.description, enabled,
+                     module_name, version]
                 pl.append(s)
         return pl
 
@@ -287,19 +291,37 @@ class Plugins():
         """ Display execution summary
         """
         cprint("|-Execution result", "magenta")
+        table_data = [['name', 'ok', 'skipped', 'errors']]
         count = 0
         for result in results:
+            row = []
             plugin_name, stats = result
+
+            # plugin name
             c = "cyan"
             if count % 2:
                 c = "blue"
+            row.append(colored(plugin_name, c))
 
-            name = colored("  |-%15s" % plugin_name, c)
-            ok = colored("ok:%s"% stats[site.OK], "green")
-            skip = colored("skip:%s" % stats[site.SKIPPED], "yellow")
-            err = colored("error:%s" % stats[site.ERROR], "red")
-            print("%s\t%s\t%s\t%s" % (name, ok, skip, err))
+            if stats[site.OK]:
+                row.append(colored(stats[site.OK], "green"))
+            else:
+                row.append('')
+
+            if stats[site.SKIPPED]:
+                row.append(colored(stats[site.SKIPPED], "yellow"))
+            else:
+                row.append('')
+
+            if stats[site.ERROR]:
+                row.append(colored(stats[site.ERROR], "red"))
+            else:
+                row.append('')
+
+            table_data.append(row)
             count += 1
+
+        print(SingleTable(table_data).table)
 
     def run_plugins(self, items, plugin_class, unit, site):
         """Execute a set of plugins on a given list of items

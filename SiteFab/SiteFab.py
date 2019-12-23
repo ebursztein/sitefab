@@ -264,9 +264,9 @@ class SiteFab(object):
 
         cprint("\nPerformance", 'magenta')
         self.cnts.stop_all()
-        self.cnts.report(sort_by='name', reverse=False)
+        self.cnts.report()
 
-        cprint("\nContent", 'magenta')
+        cprint("Content", 'magenta')
         cprint("|-Num posts: %s" % len(self.posts), "cyan")
         cprint("|-Num categories: %s" %
                self.posts_by_category.get_num_collections(), "cyan")
