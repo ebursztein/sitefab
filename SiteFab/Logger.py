@@ -12,9 +12,11 @@ from . import files
 class Logger():
     """ SiteFab logging system
 
-        :note: while the logging system render log in html using jinja2 it use a completly
-        separated system to avoid interferring with user configuration. Templates are located
-        in the config directory under internal_template/
+        Note:
+            while the logging system render log in html using jinja2 it use
+            a completly separated on to avoid interferring with user
+            configuration. Templates are located in the config directory
+            under internal_template/
     """
     def __init__(self, config, site):
 
@@ -42,7 +44,8 @@ class Logger():
             tag_stats[tag] = data.meta.num_posts
 
         template = self.jinja2.get_template(self.config.stats_template)
-        rv = template.render(cats=cat_stats.most_common(), tags=tag_stats.most_common())
+        rv = template.render(cats=cat_stats.most_common(),
+                             tags=tag_stats.most_common())
         files.write_file(self.config.output_dir, "stats.html", rv)
 
     def create_log(self, category, name, filename):
@@ -91,7 +94,6 @@ class Logger():
             event.severity = "ERROR"
             self.logs[log_id].meta.errors += 1
 
-
         self.logs[log_id].events.append(event)
         return True
 
@@ -102,8 +104,7 @@ class Logger():
             return False
         lg = self.logs[log_id]
         lg.meta.exec_time = round(time.time() - lg.meta.start_time, 2)
-
-        template = self.jinja2.get_template(self.config.log_template)
+        template = self.jinja2.get_template(str(self.config.log_template))
         rv = template.render(events=lg.events, meta=lg.meta)
         files.write_file(self.config.output_dir, lg.meta.filename, rv)
         return True

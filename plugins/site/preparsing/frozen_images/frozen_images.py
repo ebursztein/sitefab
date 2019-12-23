@@ -43,15 +43,20 @@ class FrozenImages(SitePreparsing):
         }
 
         # using the list of images from image_info
+        if 'image_info' not in site.plugin_data:
+            log += 'image_info not found in plugin_data. No images?'
+            return (SiteFab.ERROR, plugin_name, log)
         images = site.plugin_data['image_info'].values()
 
         # processing images
         frozen_images = {}
-        progress_bar = tqdm(total=len(images), unit=' frozen thumb', desc="Generating frozen images", leave=False)
+        progress_bar = tqdm(total=len(images), unit=' frozen thumb',
+                            desc="Generating frozen images", leave=False)
         for img_info in images:
             log += "<br><br><h2>%s</h2>" % (img_info['full_path'])
             # Creating needed directories
-            sub_path = img_info['path'].replace(input_dir, "") # preserve the directory structure under the input dir
+            # preserve the directory structure under the input dir
+            sub_path = img_info['path'].replace(input_dir, "")
             img_output_path = os.path.join(output_dir, sub_path)
             if not os.path.exists(img_output_path):
                 os.makedirs(img_output_path)
@@ -95,21 +100,20 @@ class FrozenImages(SitePreparsing):
                 stringio_file = StringIO()
                 resized_img.save(stringio_file, 'JPEG', optimize=True)
 
-            #cache storing
+            # cache storing
             start_set = time.time()
             cache.set(img_info['hash'], stringio_file)
             cache_timing["writing"] += time.time() - start_set
 
             "IMG manipulation:%ss<br>" % (time.time() - start)
 
-
-            #writing to disk
+            # writing to disk
             start = time.time()
             f = open(output_full_path, "wb+")
             f.write(stringio_file.getvalue())
             f.close()
 
-            s =  base64.b64encode(stringio_file.getvalue())
+            s = base64.b64encode(stringio_file.getvalue())
             img_base64 = "data:image/jpg;base64,%s" % s
 
             "Write to disk:%ss<br>" % (time.time() - start)

@@ -92,10 +92,13 @@ class SiteFab(object):
         cfg = utils.create_objdict()
         cfg.output_dir = self.get_logs_dir()
         # log template not the one from the users.
-        cfg.template_dir = (files.get_site_path() /
+        cfg.template_dir = (self.config.root_dir /
                             self.config.logger.template_dir)
+
+        tpl_dir = self.config.root_dir / Path(self.config.logger.template_dir)
+        self.config.logger.template_dir = tpl_dir
         cfg.log_template = "log.html"
-        cfg.log_index_template = "log_index.html"
+        cfg.log_index_template = "log_index.html"  # noqa
         cfg.stats_template = "stats.html"
         self.logger = Logger(cfg, self)
 
@@ -394,7 +397,7 @@ class SiteFab(object):
         return self.config.root_dir / self.config.dir.templates
 
     def get_logs_dir(self):
-        "return the absolute path of the template dir"
+        "return the absolute path of the log dir"
         return self.config.root_dir / self.config.dir.logs
 
     def get_cache_dir(self):

@@ -58,6 +58,9 @@ class Rss(SiteRendering):
             count += 1
             if count == config.num_posts:
                 break
+        if not len(rss_items):
+            return (SiteFab.ERROR, "rss", 'no RSS items')
+
         config.formatted_update = rss_items[0].meta.formatted_update
 
         try:

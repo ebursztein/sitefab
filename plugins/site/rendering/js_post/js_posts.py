@@ -20,7 +20,8 @@ class JSPosts(SiteRendering):
 
         log_info = "base javascript: %s<br>ouput:%s%s<br>" % (js_filename, output_path, js_filename)
         log_info = "meta fields to outputs:%s" % (", ".join(meta_fields_to_output))
-        #Reading the base JS
+
+        # Reading the base JS
         plugin_dir = os.path.dirname(__file__)
         js_file = os.path.join(plugin_dir, js_filename)
         js = files.read_file(js_file)
@@ -43,9 +44,10 @@ class JSPosts(SiteRendering):
 
             js_posts[post.id] = js_post
 
-        # replacing placeholder with computation result
+        # replacing placeholder with post data
         output_string = json.dumps(js_posts)
         log_info += "output string:<br>%s" % output_string
+        js = str(js)
         js = js.replace("JS_POSTS_PLUGIN_REPLACE", output_string)
 
         # output

@@ -51,7 +51,8 @@ class Search(SiteRendering):
 
         log_info += "</table>"
 
-        ##output
+        # output
+        js = str(js)
         output_string = json.dumps(js_posts)
         js = js.replace("SEARCH_DOC_PLUGIN_REPLACE", output_string)
         path = os.path.join(site.get_output_dir(), output_path)

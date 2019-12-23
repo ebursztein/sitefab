@@ -37,10 +37,13 @@ class Thumbnails(SitePreparsing):
         cache_timing = {
             'opening': time.time() - start,
             'fetching': 0,
-             'writing': 0
+            'writing': 0
         }
 
         # using the list of images from image_info
+        if 'image_info' not in site.plugin_data:
+            log += 'image_info not found in plugin_data. No images?'
+            return (SiteFab.ERROR, plugin_name, log)
         images = site.plugin_data['image_info'].values()
 
         # processing images

@@ -85,7 +85,7 @@ def write_file(target_path, filename, content, binary=False):
     """
     target_path = Path(target_path)
 
-    if not target_path.exists(target_path):
+    if not target_path.exists():
         target_path.mkdir(parents=True)
 
     file_path = target_path / filename

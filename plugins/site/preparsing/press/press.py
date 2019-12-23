@@ -21,11 +21,10 @@ class Press(SitePreparsing):
         except:
             errors = True
             log += "can't open %s" % article_list
+            return (SiteFab.ERROR, plugin_name, log)
 
-        # reading from the yaml it self does not work and crash the soft. forcing a serialization/deserialization
+        # reading from the yaml it self does not work and crash the soft.
+        # forcing a serialization/deserialization
         site.plugin_data['press'] = json.loads(json.dumps(articles))
         log += "loaded %s press articles" % (len(articles))
-        if errors:
-            return (SiteFab.ERROR, plugin_name, log)
-        else:
-            return (SiteFab.OK, plugin_name, log)
+        return (SiteFab.OK, plugin_name, log)
