@@ -25,7 +25,8 @@ setup(name='sitefab',
                         'diskcache',
                         'stop-words',
                         'xxhash',
-                        'pillow'
+                        'pillow',
+                        'perfcounters'
                         ],
       classifiers=[
           'Development Status :: 5 - Production/Stable',

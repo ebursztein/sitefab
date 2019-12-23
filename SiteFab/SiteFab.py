@@ -6,6 +6,7 @@ from tqdm import tqdm
 from collections import defaultdict
 from jinja2 import Environment, FileSystemLoader
 from termcolor import cprint
+from perfcounters import PerfCounters
 
 from sitefab import files
 from sitefab.parser import Parser
@@ -34,12 +35,12 @@ class SiteFab(object):
     def __init__(self, config_filename, version='1.0'):
 
         # Timers
-        self.timings = utils.create_objdict()
-        self.timings.start = time.time()
-        self.timings.init_start = time.time()
-        self.current_dir = Path.cwd()
+        self.cnts = PerfCounters()
+        self.cnts.start('Overall')
+        self.cnts.start('Init')
 
-        # [configuration] #
+        # [configuration]
+        self.current_dir = Path.cwd()
         config_filename = Path(config_filename)
         if not config_filename:
             raise Exception("Supply a configuration filename")
@@ -121,17 +122,17 @@ class SiteFab(object):
 
         # Cleanup the output directories.
         files.clean_dir(self.get_output_dir())
-        self.timings.init_stop = time.time()
+        self.cnts.stop('Init')
 
     def preprocessing(self):
         "Perform pre-processing tasks"
-        self.timings.preprocessing_start = time.time()
+        self.cnts.start('Preprocessing')
         self.execute_plugins([1], "SitePreparsing", " plugin")
-        self.timings.preprocessing_stop = time.time()
+        self.cnts.stop('Preprocessing')
 
     def parse(self):
         "parse md content into post objects"
-        self.timings.parse_start = time.time()
+        self.cnts.start('Parsing')
         filenames = self.filenames.posts
         self.posts = []
 
@@ -210,12 +211,13 @@ class SiteFab(object):
         if len(errors):
             utils.error("\n".join(errors))
 
-        self.timings.parse_stop = time.time()
+        self.cnts.stop('Parsing')
 
     def process(self):
         "Processing stage"
 
-        self.timings.process_start = time.time()
+        self.cnts.start('Processing')
+
         # Posts processing
         print("\nPosts plugins")
         self.execute_plugins(self.posts, "PostProcessor", " posts")
@@ -234,12 +236,12 @@ class SiteFab(object):
         # site wide processing
         print("\nSite wide plugins")
         self.execute_plugins([1], "SiteProcessor", " site")
-        self.timings.process_stop = time.time()
+        self.cnts.stop('Processing')
 
     def render(self):
         "Rendering stage"
 
-        self.timings.render_start = time.time()
+        self.cnts.start('Rendering')
         print("\nRendering posts")
         self.render_posts()
 
@@ -248,7 +250,7 @@ class SiteFab(object):
 
         print("\nAdditional Rendering")
         self.execute_plugins([1], "SiteRendering", " pages")
-        self.timings.render_stop = time.time()
+        self.cnts.stop('Rendering')
 
     def finale(self):
         "Last stage"
@@ -260,30 +262,9 @@ class SiteFab(object):
         # Terminal recap
         cprint("Thread used:%s" % self.config.threads, "cyan")
 
-        # FIXME: move to PerfCounters
-        total_ts = round(time.time() - self.timings.start, 2)
-
-        init_ts = round(self.timings.init_stop - self.timings.init_start, 2)
-
-        preprocessing_ts = round(self.timings.preprocessing_stop -
-                                 self.timings.preprocessing_start, 2)
-
-        parsing_ts = round(self.timings.parse_stop -
-                           self.timings.parse_start, 2)
-
-        processing_ts = round(self.timings.process_stop -
-                              self.timings.process_start, 2)
-
-        rendering_ts = round(self.timings.render_stop -
-                             self.timings.render_start, 2)
-
         cprint("\nPerformance", 'magenta')
-        cprint("|-Total Generation time: %s sec" % (total_ts,), "cyan")
-        cprint("|--Init time: %s sec" % (init_ts), "blue")
-        cprint("|--Preprocessing time: %s sec" % (preprocessing_ts), "blue")
-        cprint("|--Parsing time: %s sec" % (parsing_ts), "blue")
-        cprint("|--Processing time: %s sec" % (processing_ts), "blue")
-        cprint("|--Rendering time: %s sec" % (rendering_ts), "blue")
+        self.cnts.stop_all()
+        self.cnts.report(sort_by='name', reverse=False)
 
         cprint("\nContent", 'magenta')
         cprint("|-Num posts: %s" % len(self.posts), "cyan")
