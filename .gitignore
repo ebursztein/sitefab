@@ -9,3 +9,4 @@ sitefab.py.lprof
 sitefab.egg-info/
 cache.db
 tmp.py
+.pytest_cache/
