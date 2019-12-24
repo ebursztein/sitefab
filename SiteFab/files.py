@@ -18,11 +18,6 @@ def get_code_path():
     return(path.parents[1])
 
 
-def get_site_path():
-    "Get website base path"
-    return Path.cwd()
-
-
 def load_config(config_file):
     """ Load yaml configuration
 
