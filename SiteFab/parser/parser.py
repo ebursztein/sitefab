@@ -72,15 +72,13 @@ class Parser():
             utils.detailed_error("Parser", 'make_config',
                                  'template_dir not found')
 
-        config.templates_path = os.path.join(files.get_site_path(),
-                                             config.template_dir)
-
         config.templates = {}
+        print('\n=-----\n')
+        print(config.templates_path)
+        print(files.get_files_list(config.templates_path, "*.html"))
         for fname in files.get_files_list(config.templates_path, "*.html"):
-            template_name = os.path.basename(fname).replace(".html", "")
             template = files.read_file(fname)
-            config.templates[template_name] = template
-
+            config.templates[fname.stem] = template
         return config
 
     def list_templates(self):

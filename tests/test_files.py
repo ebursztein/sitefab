@@ -93,3 +93,10 @@ def test_filelist_filter(tmp_path):
     assert len(files_list) == 1
 
     clean_dir(tmp_path)
+
+
+def test_filelist_filter_empty(tmp_path):
+    "ensure no matches return an empty array"
+    clean_dir(tmp_path)
+    assert get_files_list(tmp_path) == []
+    assert get_files_list('thisisnotthedirectoryyoulookfor') == []

@@ -41,9 +41,11 @@ class SiteFab(object):
 
         # [configuration]
         self.current_dir = Path.cwd()
-        config_filename = Path(config_filename)
+        # make the configuration path absolute to avoid weird cases
+        config_filename = Path(config_filename).resolve()
         if not config_filename:
             raise Exception("Supply a configuration filename")
+
         # FIXME: its a mess -- refactor and test the config is logged.
         if config_filename.is_file():  # absolute path
             self.config = files.load_config(config_filename)
@@ -55,7 +57,8 @@ class SiteFab(object):
                 utils.error("Configuration file not found: %s" %
                             config_filename)
 
-        self.config.root_dir = Path(self.config.root_dir)  # converting to Path
+        # site root dir is -1 from where the config is
+        self.config.root_dir = config_filename.parents[1]
         self.config.build = utils.create_objdict()
 
         # expose sitefab version to the templates
@@ -64,6 +67,9 @@ class SiteFab(object):
         # [parser] #
 
         # initialize the parser config
+        self.config.parser.templates_path = (self.config.root_dir /
+                                             self.config.dir.templates)
+
         self.config.parser = Parser.make_config(self.config.parser)
 
         # [plugins] #

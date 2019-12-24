@@ -1,5 +1,0 @@
-{% if "http" in href[0:4] %}
-<a href="{{ href }}">{{ text }}</a>
-{% else %}
-<a src="{{ site.config.url }}{{ href }}">{{ text }}</a>
-{% endif %}

@@ -1,5 +1,0 @@
-{% if "http" in src[0:4] %}
-<img src="{{ src }}" alt="{{ alt }}"/>
-{% else %}
-<img src="{{ site.config.url }}{{ src }}" alt="{{ alt }}"/>
-{% endif %}
