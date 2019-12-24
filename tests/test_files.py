@@ -100,3 +100,24 @@ def test_filelist_filter_empty(tmp_path):
     clean_dir(tmp_path)
     assert get_files_list(tmp_path) == []
     assert get_files_list('thisisnotthedirectoryyoulookfor') == []
+
+
+def test_filelist_recursive(tmp_path):
+    clean_dir(tmp_path)
+    sub_path = tmp_path / 'newdir'
+    fname = 'test.md'
+
+    txt = 'hello'
+    write_file(sub_path, 'test.md', txt)
+
+    # ensure we have a sub dir and the file in it
+    assert sub_path.exists()
+    assert sub_path.is_dir()
+    read_text = read_file(sub_path / fname)
+    assert read_text == txt
+
+    # test we get a recursive listing
+    assert len(get_files_list(tmp_path)) == 1
+
+    # test that non recursive returns nothing
+    assert get_files_list(tmp_path, recursive=False)  == []

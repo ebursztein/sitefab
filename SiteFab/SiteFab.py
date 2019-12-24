@@ -125,7 +125,9 @@ class SiteFab(object):
         self.filenames = utils.create_objdict()
         self.filenames.posts = files.get_files_list(self.get_content_dir(),
                                                     "*.md")
-
+        print(self.get_content_dir())
+        print(self.filenames.posts)
+        quit()
         # Cleanup the output directories.
         files.clean_dir(self.get_output_dir())
         self.cnts.stop('Init')

@@ -96,7 +96,7 @@ def write_file(target_path, filename, content, binary=False):
         f.close()
 
 
-def get_files_list(content_dir, extensions="*.md"):
+def get_files_list(content_dir, extensions="*.md", recursive=True):
     """ Return the list of files in a directory and its sub directories that
     match a set of extensions.
 
@@ -104,6 +104,7 @@ def get_files_list(content_dir, extensions="*.md"):
         content_dir (str): file path where content is located.
         extensions(str or list): single extension like "*.md" or array of
         extensions ["*.jpg", "*.png"]
+        rescursive (bool): perform recursive listing
 
     Returns:
         list: list of content filename.
@@ -122,7 +123,12 @@ def get_files_list(content_dir, extensions="*.md"):
         if "*." not in extension:
             utils.warning("extension: %s won't match missing '*.'" % extension)
             continue
-        matches.extend(list(content_dir.glob(extension)))
+        if recursive:
+            flist = list(content_dir.rglob(extension))
+        else:
+            flist = list(content_dir.glob(extension))
+        matches.extend(flist)
+
     return matches
 
 
