@@ -66,8 +66,7 @@ def read_file(filename):
     filename = Path(filename)
     if filename.is_file():
         f = codecs.open(filename, "r", "utf-8-sig")
-        content = f.read().encode("utf-8")
-        f.close()
+        content = f.read()
         return content
     else:
         utils.warning("file:%s don't exist" % filename)
@@ -78,7 +77,10 @@ def write_file(target_path, filename, content, binary=False):
     """ Write a file at a given path. Create directory if necessary
 
     Args:
-        binary (bool): write a binary file? default False.
+        target_path (str): path where to write.
+        filename (str): filename to write to.
+        content (str or bytes): Content to write
+        binary (bool, optional): Write as binary?. Defaults to False.
 
     Returns:
         None: no returns
