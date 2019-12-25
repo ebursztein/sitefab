@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 from jinja2 import Template
 
 from sitefab import utils
@@ -9,13 +9,12 @@ from . import frontmatter, images, structure
 class Linter:
 
     def __init__(self, config):
-        current_dir = os.path.dirname(__file__)
-        test_file = os.path.join(current_dir, 'tests.yaml')
+        current_dir = Path(__file__).parent
+        test_file = current_dir / 'tests.yaml'
         self.test_info = files.load_config(test_file)
-        if self.test_info == None:
+        if not self.test_info:
             utils.error("Can't load linter tests")
 
-        # FIXME: add/use config
         self.config = config
         self.results = {}
         template_content = files.read_file(self.config.report_template_file)
@@ -47,7 +46,8 @@ class Linter:
         Args:
             post (Post): the post to analyze
             rendered_post (str): the html version of the post
-            site (Sitefab): the site object mainly used to get access to plugin data
+            site (Sitefab): the site object mainly used to get access
+            to plugin data
         Return:
             dict: linting results
         """
@@ -64,7 +64,8 @@ class Linter:
         else:
             image_info = None
 
-        img_results = images.lint(post, self.test_info, self.config, image_info)
+        img_results = images.lint(post, self.test_info, self.config,
+                                  image_info)
         results.info.extend(img_results)
         stucture_results = structure.lint(post, self.test_info, self.config)
         results.info.extend(stucture_results)

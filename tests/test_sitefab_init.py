@@ -1,9 +1,6 @@
 import pytest
-from pathlib import Path
 from sitefab.SiteFab import SiteFab
-from sitefab.files import get_files_list
-
-TEST_ROOT_DIR = Path(__file__).parent
+from.conftest import TEMPLATE_DATA_CONFIG_FILE_PATH
 
 
 def test_empty_config():
@@ -22,7 +19,7 @@ def test_non_existing_config():
 
 def test_valid_config():
     # is SiteFab raise the correct exception
-    fname = TEST_ROOT_DIR / "data" / "config" / "valid_config.yaml"
+    fname = TEMPLATE_DATA_CONFIG_FILE_PATH
     site = SiteFab(fname)
     assert site.config
     # FIXME add more test for the correctness here.
@@ -33,22 +30,6 @@ def test_template_filters(sitefab):
     assert 'str_to_list' in sitefab.jinja2.filters
 
 
-def test_log_template_paths(sitefab):
-    correct_path = Path('tests/data/config/generator_templates/logs')
-    assert str(correct_path) in str(sitefab.config.logger.template_dir)
-
-
-def test_parser_template_path(sitefab):
-    "making sure we have the right templates in the parser"
-    assert 'a' in sitefab.config.parser.templates
-    assert 'img' in sitefab.config.parser.templates
-    assert 'youtube' in sitefab.config.parser.templates
-
-
 def test_get_config(sitefab):
     assert sitefab.get_config() == sitefab.config
 
-
-def test_parser_templates_loaded(sitefab):
-    print(sitefab.config.parser.templates_path)
-    assert len(get_files_list(sitefab.config.parser.templates_path, "*.html"))

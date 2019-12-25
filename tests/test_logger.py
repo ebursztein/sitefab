@@ -3,8 +3,8 @@ from pathlib import Path
 
 def test_config_paths(sitefab):
     # path
-    correct_path = Path('tests/data/config/generator_templates/logs')
-    assert str(correct_path) in str(sitefab.logger.config.template_dir)
+    partial_correct_path = Path('config/generator_templates/logs')
+    assert str(partial_correct_path) in str(sitefab.logger.config.template_dir)
 
     # templates
     assert sitefab.logger.config.log_template == 'log.html'

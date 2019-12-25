@@ -41,21 +41,17 @@ class SiteFab(object):
 
         # [configuration]
         self.current_dir = Path.cwd()
-        # make the configuration path absolute to avoid weird cases
+
+        # make the config file path absolute to avoid weird cases
         config_filename = Path(config_filename).resolve()
         if not config_filename:
             raise Exception("Supply a configuration filename")
 
-        # FIXME: its a mess -- refactor and test the config is logged.
+        # exist?
         if config_filename.is_file():  # absolute path
             self.config = files.load_config(config_filename)
         else:
-            cfg = files.get_site_path() / config_filename
-            if os.path.isfile(cfg):
-                self.config = files.load_config(cfg)
-            else:
-                utils.error("Configuration file not found: %s" %
-                            config_filename)
+            utils.error("Config file %s not found" % config_filename)
 
         # site root dir is -1 from where the config is
         self.config.root_dir = config_filename.parents[1]

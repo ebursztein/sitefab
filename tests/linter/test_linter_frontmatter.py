@@ -276,17 +276,19 @@ def test_e119_not_triggered(sitefab, empty_post):
 
 
 def test_e120_triggered(sitefab, empty_post):
-    empty_post.meta.template = "blog"
+    import pprint
+    empty_post.meta.template = "blog_post"
     values = ["wrong", "wrong/again"]
     for value in values:
         empty_post.meta.permanent_url = value
+        pprint.pprint(empty_post)
         results = sitefab.linter.lint(empty_post, "", sitefab)
         error_list = get_linter_errors_list(results)
         assert "E120" in error_list
 
 
 def test_e120_not_triggered(sitefab, empty_post):
-    empty_post.meta.template = "blog"
+    empty_post.meta.template = "blog_post"
     values = ["/blog/ok", "/blog/ok/as", "/blog/ok/as.well"]
     for value in values:
         empty_post.meta.permanent_url = value
