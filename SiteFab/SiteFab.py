@@ -251,7 +251,7 @@ class SiteFab(object):
         self.cnts.start('Rendering')
         print("\nRendering posts")
         self.render_posts()
-
+        quit()
         print("\nRendering collections")
         self.posts_by_tag.render()
 
@@ -327,8 +327,7 @@ class SiteFab(object):
                     print("\t-%s:%s" % (err[0], err[1]))
                 sys.exit(-1)
 
-            path = "%s%s/" % (self.get_output_dir(), post.meta.permanent_url)
-            path = path.replace('//', '/')
+            path = self.get_output_dir() / post.meta.permanent_url
             files.write_file(path, 'index.html', rv)
 
     # Templates functions #
