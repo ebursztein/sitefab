@@ -308,8 +308,7 @@ class SiteFab(object):
         for post in tqdm(self.posts, unit=' pages', miniters=1, desc="Posts"):
             template_name = "%s.html" % post.meta.template
             template = self.jinja2.get_template(template_name)
-            html = post.html.decode("utf-8", 'ignore')
-            rv = template.render(content=html, meta=post.meta,
+            rv = template.render(content=post.html, meta=post.meta,
                                  posts=self.posts,
                                  plugin_data=self.plugin_data,
                                  config=self.config,

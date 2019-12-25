@@ -49,7 +49,7 @@ class HTMLRendererMixin(object):
 
         rv = template.render(href=src, text=content, title=title, embed=embed,
                              site=self.site, meta=self.meta)
-        rv = rv.encode('utf-8')
+        # rv = rv.encode('utf-8')
         return rv
 
     def image(self, src, title, alt_text):
@@ -59,7 +59,7 @@ class HTMLRendererMixin(object):
         rv = template.render(src=src, alt=alt_text, title=title,
                              plugin_data=self.plugin_data, site=self.site,
                              meta=self.meta)
-        rv = rv.encode('utf-8')
+        # rv = rv.encode('utf-8')
         return rv
 
     def header(self, text, level, raw=None):
@@ -67,7 +67,7 @@ class HTMLRendererMixin(object):
         template = self.jinja2.get_template('h')
         rv = template.render(level=level, text=text, id=self.toc_count,
                              site=self.site, meta=self.meta)
-        rv = rv.encode('utf-8')
+        # rv = rv.encode('utf-8')
 
         self.toc_tree.append((self.toc_count, text, level, raw))
         self.toc_count += 1
@@ -77,7 +77,7 @@ class HTMLRendererMixin(object):
         "Block quote highlighter"
         template = self.jinja2.get_template('blockquote')
         rv = template.render(text=text, site=self.site, meta=self.meta)
-        rv = rv.encode('utf-8')
+        # rv = rv.encode('utf-8')
         return rv
 
     def block_code(self, code, lang):
@@ -97,7 +97,7 @@ class HTMLRendererMixin(object):
         template = self.jinja2.get_template('code')
         rv = template.render(code=code, lang=lang, site=self.site,
                              meta=self.meta)
-        rv = rv.encode('utf-8')
+        # rv = rv.encode('utf-8')
         return rv
 
     def init(self, jinja2, code_formatter, site, meta):

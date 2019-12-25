@@ -13,9 +13,9 @@ def get_normalized_list_of_words(txt, stop_words, word_min_letters=3, word_max_l
         word_max_letters (int): How many letter a word should have at most (usually 16 to 18)
     Returns:
         list: normalized list of words
-    
+
     """
-    
+
     txt = clean_text(txt)
     words = txt.split(" ")
     words = remove_stop_words(words,stop_words)
@@ -54,10 +54,10 @@ def remove_stop_words(slug, stop_words):
     Args:
         words (str or list): text or array of word
         stop_words (set): set of stop words to remove
-    
+
     Returns:
         str or list: cleaned up data
-    
+
     Sanitize using intersection and list.remove()
     Pro:
         Fastest method
@@ -66,7 +66,7 @@ def remove_stop_words(slug, stop_words):
     """
 
     return_str = False
-    if isinstance(slug, str) or isinstance(slug, unicode):
+    if isinstance(slug, str):
         words = slug.split(" ")
         return_str = True
     else:
@@ -75,7 +75,7 @@ def remove_stop_words(slug, stop_words):
     for sw in stop_words.intersection(words):
         while sw in words:
             words.remove(sw)
-    
+
     if return_str:
         return " ".join(words)
     return words

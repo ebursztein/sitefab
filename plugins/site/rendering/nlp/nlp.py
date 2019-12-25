@@ -49,10 +49,10 @@ class NLP(SiteRendering):
 
             num_words = len(words)
 
-            for i in xrange(num_words):
+            for i in range(num_words):
                 start = i + min_gram_len
-                stop = min(num_words, i +  max_gram_len) + 1
-                for j in xrange(start, stop):
+                stop = min(num_words, i + max_gram_len) + 1
+                for j in range(start, stop):
                     skip = False
                     gram = words[i:j]
 
@@ -94,7 +94,7 @@ class NLP(SiteRendering):
             post_nlp = utils.create_objdict()
 
             post_nlp.grams = {}
-            for gram_len in xrange(min_gram_len, max_gram_len + 1):
+            for gram_len in range(min_gram_len, max_gram_len + 1):
                 post_nlp.grams[gram_len] = ngram_frequencies[gram_len][post.filename]
 
             post_nlp.title = ""

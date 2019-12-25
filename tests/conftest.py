@@ -10,6 +10,12 @@ from sitefab import utils
 TEST_ROOT_DIR = Path(__file__).parent
 
 
+@pytest.fixture()
+def myobjdict():
+    d = {'a': 'test', 'b': {"c": '2nd'}}
+    return utils.dict_to_objdict(d)
+
+
 @pytest.fixture(scope="session")
 def sitefab():
     "load a valid instance of sitefab"

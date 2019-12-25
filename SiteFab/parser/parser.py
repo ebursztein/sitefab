@@ -1,9 +1,8 @@
 "Post parser"
-import os
 import jinja2
 from pygments.formatters import html
+import mistune
 
-from sitefab.parser import mistune
 from sitefab.parser import frontmatter
 from sitefab import utils
 from sitefab import files
