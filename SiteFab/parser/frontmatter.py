@@ -20,19 +20,21 @@ def parse_fields(fields=None):
     Returns:
         objdict: the fields with the additional properties
     """
+    new_fields = {}
     if fields:
-        for field_name, field_value in fields.items():
-            if type(field_value) == dict:
-                fields[field_name] = parse_fields(field_value)
+        for name, value in fields.items():
+            if isinstance(value, dict):
+                new_fields[name] = parse_fields(value)
             else:
+                new_fields[name] = value
                 # adding timestamp
-                if field_value and "_date" in field_name:
-                    ts = parse_date_to_ts(field_value)
+                if value and "_date" in name:
+                    ts = parse_date_to_ts(value)
                     if ts:
-                        fts = field_name + "_ts"
-                        fields[fts] = ts
+                        fts = name + "_ts"
+                        new_fields[fts] = ts
 
-    return fields
+    return new_fields
 
 
 def parse_date_to_ts(date_str):
