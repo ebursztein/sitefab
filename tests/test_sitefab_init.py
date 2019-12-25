@@ -32,4 +32,3 @@ def test_template_filters(sitefab):
 
 def test_get_config(sitefab):
     assert sitefab.get_config() == sitefab.config
-
