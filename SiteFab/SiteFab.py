@@ -67,8 +67,9 @@ class SiteFab(object):
         # [parser] #
 
         # initialize the parser config
+        parser_tpl_path = Path(self.config.parser.template_dir)
         self.config.parser.templates_path = (self.config.root_dir /
-                                             self.config.dir.templates)
+                                             parser_tpl_path)
 
         self.config.parser = Parser.make_config(self.config.parser)
 
@@ -125,9 +126,7 @@ class SiteFab(object):
         self.filenames = utils.create_objdict()
         self.filenames.posts = files.get_files_list(self.get_content_dir(),
                                                     "*.md")
-        print(self.get_content_dir())
-        print(self.filenames.posts)
-        quit()
+
         # Cleanup the output directories.
         files.clean_dir(self.get_output_dir())
         self.cnts.stop('Init')

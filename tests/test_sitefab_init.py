@@ -35,7 +35,14 @@ def test_template_filters(sitefab):
 
 def test_log_template_paths(sitefab):
     correct_path = Path('tests/data/config/generator_templates/logs')
-    assert sitefab.config.logger.template_dir == correct_path
+    assert str(correct_path) in str(sitefab.config.logger.template_dir)
+
+
+def test_parser_template_path(sitefab):
+    "making sure we have the right templates in the parser"
+    assert 'a' in sitefab.config.parser.templates
+    assert 'img' in sitefab.config.parser.templates
+    assert 'youtube' in sitefab.config.parser.templates
 
 
 def test_get_config(sitefab):

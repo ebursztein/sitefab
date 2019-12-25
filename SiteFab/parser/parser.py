@@ -73,9 +73,6 @@ class Parser():
                                  'template_dir not found')
 
         config.templates = {}
-        print('\n=-----\n')
-        print(config.templates_path)
-        print(files.get_files_list(config.templates_path, "*.html"))
         for fname in files.get_files_list(config.templates_path, "*.html"):
             template = files.read_file(fname)
             config.templates[fname.stem] = template

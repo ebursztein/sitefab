@@ -4,7 +4,7 @@ from pathlib import Path
 def test_config_paths(sitefab):
     # path
     correct_path = Path('tests/data/config/generator_templates/logs')
-    assert sitefab.logger.config.template_dir == correct_path
+    assert str(correct_path) in str(sitefab.logger.config.template_dir)
 
     # templates
     assert sitefab.logger.config.log_template == 'log.html'
