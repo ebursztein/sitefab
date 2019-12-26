@@ -1,4 +1,3 @@
-import os
 import sys
 import time
 from pathlib import Path
@@ -247,7 +246,7 @@ class SiteFab(object):
         self.cnts.start('Rendering')
         print("\nRendering posts")
         self.render_posts()
-        quit()
+
         print("\nRendering collections")
         self.posts_by_tag.render()
 

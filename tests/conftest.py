@@ -16,6 +16,7 @@ TEMPLATE_DATA_PATH = TEST_ROOT_DIR / 'sitefab_template'
 TEMPLATE_GIT_URL = 'https://github.com/ebursztein/sitefab-template'
 TEMPLATE_DATA_CONFIG_FILE_PATH = TEMPLATE_DATA_PATH / 'config' / 'sitefab.yaml'
 
+
 @pytest.fixture()
 def myobjdict():
     d = {'a': 'test', 'b': {"c": '2nd'}}
