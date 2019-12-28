@@ -49,6 +49,13 @@ def extract_key_terms(doc, num_terms=50, ngrams=(1, 2, 3), algo='yake'):
         ngrams (int, optional): which size of ngrams to consider
         algo (str, optional): which algorithm to use to find key terms
     """
+    if not len(doc):
+        return []
+
+    # special case
+    if len(doc) == 1:
+        return [str(doc[0])]
+
     if algo == 'textrank':
         return softmax(keyterms.textrank(doc, n_keyterms=NUM_TERMS))
     elif algo == 'yake':

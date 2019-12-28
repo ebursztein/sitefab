@@ -23,6 +23,14 @@ def test_stats():
     assert stats.counts.words == 11
 
 
+def test_empyty_stats():
+    text = ""
+    doc = make_spacy_doc(text, lang=SPACY_MODEL)
+    stats = nlp.compute_stats(doc)
+    assert stats.counts.sentences == 0
+    assert stats.counts.words == 0
+
+
 def test_terms():
     text = "the quick fox and the cat. The turtle and the rabbit."
     doc = make_spacy_doc(text, lang=SPACY_MODEL)
@@ -32,6 +40,20 @@ def test_terms():
     assert 'cat' in terms
     assert 'turtle' in terms
     assert 'rabbit' in terms
+
+
+def test_empty_terms():
+    text = ""
+    doc = make_spacy_doc(text, lang=SPACY_MODEL)
+    terms = nlp.extract_key_terms(doc, num_terms=5)
+    assert terms == []
+
+
+def test_on_term():
+    text = "elie"
+    doc = make_spacy_doc(text, lang=SPACY_MODEL)
+    terms = nlp.extract_key_terms(doc, num_terms=5)
+    assert terms == ['elie']
 
 
 def test_analyze_post(empty_post):
