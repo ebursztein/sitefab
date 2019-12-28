@@ -4,8 +4,8 @@ Module = read_time
 
 [Documentation]
 Filename = README.md
-Description = Compute how long it will take to read a given post
-Version = 1
+Description = Compute how long it will take to read a given post.
+Version = 1.1
 
 [Configuration]
 Filename = "config.yaml"
