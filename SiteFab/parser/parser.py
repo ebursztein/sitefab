@@ -1,11 +1,11 @@
 "Post parser"
 import jinja2
-from pygments.formatters import html
 import mistune
+from pygments.formatters import html
 
+from sitefab import files, utils
 from sitefab.parser import frontmatter
-from sitefab import utils
-from sitefab import files
+from sitefab.parser.html2text import html2text
 from sitefab.parser.markdown import HTMLRenderer
 
 
@@ -103,6 +103,7 @@ class Parser():
                            parsed_post.meta)
 
         parsed_post.html = self.md_parser.parse(parsed_post.md)
+        parsed_post.text = html2text(parsed_post.html)  # used by NLP
         parsed_post.meta.statistics = self.renderer.get_stats()
         parsed_post.meta.toc = self.renderer.get_json_toc()
         parsed_post.elements = self.renderer.get_info()
