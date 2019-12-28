@@ -69,7 +69,7 @@ Here is a simple search page that show the autocompletion via an inputbox:
 
 ## Scoring
 
-Score are computed server side. Basically the fomula is 
+Score are computed server side. Basically the fomula is
 
 ```math
 frequency * num_document * document_coeff
@@ -84,6 +84,8 @@ Note you most likely want to use glup to preload the trie data.
 FIXME glup example.
 
 ## Changelog
+- 12/28/19
+ - Moved to the new nlp stack and simplified the code
 - 05/29/17
  - Fixed speed issue
  - Added better scoring to ensure autocompletion include all the needed term

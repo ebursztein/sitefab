@@ -1,11 +1,11 @@
 [Core]
 Name = Autocomplete
 Module = autocomplete
-dependencies = nlp
+
 [Documentation]
 Filename = README.md
-Description = Generate a trie that is used to add autocomplete in search box
-Version = 1.3
+Description = Generate a trie that is used to add autocomplete in search box.
+Version = 1.5
 
 [Configuration]
 Filename = config.yaml
