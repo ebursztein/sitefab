@@ -1,7 +1,7 @@
 [Core]
 Name = Search
 Module = search
-Dependencies =  nlp, js_posts
+Dependencies = js_posts
 [Documentation]
 Filename = README.md
 Description = Generate the javascript needed to implement a local search

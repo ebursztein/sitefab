@@ -12,42 +12,33 @@ class Search(SiteRendering):
         plugin_name = "search"
         js_filename = "search.js"
         output_path = config.output_path
-        num_tfidf_keywords = config.num_tfidf_keywords
+        num_terms = config.num_terms
 
+        log_info = "base javascript: %s<br>ouput:%s%s<br>" % (
+            js_filename, output_path, js_filename)
 
-        log_info = "base javascript: %s<br>ouput:%s%s<br>" % (js_filename, output_path, js_filename)
-
-        #Reading the base JS
+        # Reading the base JS
         plugin_dir = os.path.dirname(__file__)
         js_file = os.path.join(plugin_dir, js_filename)
         js = files.read_file(js_file)
         if not js or len(js) < 10:
-            return (SiteFab.ERROR, plugin_name, "Base Javascript:%s not found or too small." % js_file)
+            err = "Base Javascript:%s not found or too small." % js_file
+            return (SiteFab.ERROR, plugin_name, err)
 
-
-        ## TF-IDF to select the most important words in the text of the page
-
-        docs_string = "{"
         js_posts = {}
-        log_info += "<table><tr><th>Title</th><th>Keywords</th><th>Keywords TF-IDF</th><th>Abstract</th></tr>"
+        log_info += "<table><tr><th>Title</th><th>Terms</th></tr>"
         for post in site.posts:
-            nlp = site.plugin_data['nlp'][post.filename]
-            terms = []
-            terms.append(nlp.category)
-            terms.extend(nlp.tags)
-            terms.extend(sorted(nlp.grams[1], key=nlp.grams[1].get, reverse=True)[:num_tfidf_keywords])
-            terms = " ".join(set(terms))
-            terms = terms.replace('"', '')
-
             js_post = {
                 "id": post.id,
-                "title": nlp.title,
-                "authors": " ".join(nlp.authors),
-                "conference": "%s %s" % (nlp.conference_short_name, nlp.conference_name),
-                "terms": terms
+                "title": post.nlp.clean_fields.title,
+                "authors": post.nlp.clean_fields.authors,
+                "conference": "%s %s" % (post.nlp.clean_fields.conference_short_name, # noqa
+                                         post.nlp.clean_fields.conference_name),  # noqa
+                "terms": post.nlp.terms[:num_terms]
             }
             js_posts[post.id] = js_post
-            log_info += "<tr><td>%s</td><td>%s</td></tr>" % (nlp.title, terms)
+            log_info += "<tr><td>%s</td><td>%s</td></tr>" % (js_post['title'],
+                                                             js_posts['terms'])
 
         log_info += "</table>"
 
