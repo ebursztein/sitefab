@@ -32,3 +32,34 @@ def test_terms():
     assert 'cat' in terms
     assert 'turtle' in terms
     assert 'rabbit' in terms
+
+
+def test_analyze_post(empty_post):
+    empty_post.text = """
+    Protecting accounts from credential stuffing attacks remains burdensome
+    due to an asymmetry of knowledge: attackers have wide-scale access to
+    billions of stolen usernames and passwords, while users and identity
+    providers remain in the dark as to which accounts require remediation.
+    In this paper, we propose a privacy-preserving protocol whereby a
+    client can query a centralized breach repository to determine whether
+    a specific username and password combination is publicly exposed,
+    but without revealing the information queried. Here, a client can be an
+    end user, a password manager, or an identity provider. To demonstrate the
+    feasibility of our protocol, we implement a cloud service that mediates
+    access to over 4 billion credentials found in breaches and a Chrome
+    extension serving as an initial client. Based on anonymous telemetry
+    from nearly 670,000 users and 21 million logins, we find that 1.5% of
+    logins on the web involve breached credentials. By alerting users to this
+    breach status, 26% of our warnings result in users migrating to a new
+    password, at least as strong as the original. Our study illustrates how
+    secure, democratized access to password breach alerting can help
+    mitigate one dimension of account hijacking."""
+
+    empty_post.meta.title = 'Protecting accounts from credential stuffing with\
+                             password breach alerting'
+
+    post_nlp = nlp.analyze_post(empty_post)
+    assert post_nlp.stats.counts.words > 0
+    assert post_nlp.stats.readability.flesch_kincaid_grade_level > 0
+    assert 'password' in [t[0] for t in post_nlp.title_terms]
+    assert 'password' in [t[0] for t in post_nlp.terms]

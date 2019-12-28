@@ -3,6 +3,7 @@ from perfcounters import PerfCounters
 from tabulate import tabulate
 from textacy import TextStats, keyterms, make_spacy_doc, preprocessing
 from textacy.ke.yake import yake
+from textacy.ke.scake import scake
 
 from sitefab.utils import create_objdict
 
@@ -10,6 +11,7 @@ from sitefab.utils import create_objdict
 NUM_TERMS = 50
 SPACY_MODEL = 'en_core_web_sm'  # 'en_core_web_lg'
 TERM_EXTRACTOR_ALGO = 'yake'  # yake, sgrank, textrank
+NGRAMS = (1, 2, 3)  # default
 
 
 def softmax(results, reverse=False):
@@ -36,24 +38,27 @@ def softmax(results, reverse=False):
     return normalized_terms
 
 
-def extract_key_terms(doc, num_terms=50, algo='yake'):
+def extract_key_terms(doc, num_terms=50, ngrams=(1, 2, 3), algo='yake'):
     """Compute post most important terms
 
     This is particularly useful for the search and related posts
 
     Args:
+        doc (Spacy.doc): Doc to extract terms from.
         num_terms (int, optional): How many terms to return. Defaults to 100.
+        ngrams (int, optional): which size of ngrams to consider
         algo (str, optional): which algorithm to use to find key terms
     """
     if algo == 'textrank':
         return softmax(keyterms.textrank(doc, n_keyterms=NUM_TERMS))
     elif algo == 'yake':
-        return softmax(yake(doc, ngrams=(1), topn=NUM_TERMS, window_size=3),
+        return softmax(yake(doc, ngrams=ngrams, topn=NUM_TERMS),
                        reverse=True)
-    # elif algo == 'scake':
-    #    results = scake(doc, topn=NUM_TERMS)
+    elif algo == 'scake':
+        return softmax(scake(doc, topn=NUM_TERMS))
     elif algo == 'sgrank':
-        return softmax(keyterms.sgrank(doc, ngrams=(1), n_keyterms=NUM_TERMS))
+        return softmax(keyterms.sgrank(doc, ngrams=ngrams,
+                                       n_keyterms=NUM_TERMS))
     else:
         err = 'Unknown key term extraction method:%s' % algo
         raise Exception(err)
@@ -131,7 +136,7 @@ def generate_clean_fields(post):
 def benchmark_term_extractor(doc, counters):
     "benchmark various term extractor algorithms"
     # TL;DR: yake is probably the best. Feel free to experiment
-    # scake is not usable as is
+    # see https://github.com/LIAAD/yake
     # sgrank is really really slow
     results = []
     methods = ['textrank', 'yake', 'sgrank']  # 'cake',     results = []
@@ -190,24 +195,30 @@ def analyze_post(post, debug=False):
     counters.stop('cleanup')
 
     # creating spacy docs
-    counters.start('spacy_cleaned_doc')
+    counters.start('make_spacy_docs')
     all_cleaned_content = ' '.join([clean_fields.title, clean_fields.category,
                                     " ".join(clean_fields.tags),
                                     clean_fields.abstract, clean_fields.text])
 
-    # for term extraction
+    # overall terms
     cleaned_doc = make_spacy_doc(all_cleaned_content, lang=SPACY_MODEL)
-    counters.stop('spacy_cleaned_doc')
 
-    counters.start('spacy_text_doc')
+    # title terms
+    title_doc = make_spacy_doc(clean_fields.title, lang=SPACY_MODEL)
+
     # for statistics
     text_doc = make_spacy_doc(post.text, lang=SPACY_MODEL)
-    counters.stop('spacy_text_doc')
+
+    counters.stop('make_spacy_docs')
 
     # terms extraction
     counters.start('extract_key_terms')
     nlp.terms = extract_key_terms(cleaned_doc, num_terms=NUM_TERMS,
-                                  algo=TERM_EXTRACTOR_ALGO)
+                                  algo=TERM_EXTRACTOR_ALGO, ngrams=NGRAMS)
+
+    # !note we restrict ngram to one as we only want the lemmized top terms.
+    nlp.title_terms = extract_key_terms(title_doc, num_terms=NUM_TERMS,
+                                        algo=TERM_EXTRACTOR_ALGO, ngrams=1)
     counters.stop('extract_key_terms')
 
     # text stats
