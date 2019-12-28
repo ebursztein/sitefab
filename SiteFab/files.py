@@ -1,8 +1,10 @@
 "files manipulation utilities"
-import yaml
 import codecs
 import shutil
 from pathlib import Path
+from time import sleep
+
+import yaml
 
 from . import utils as utils
 
@@ -141,6 +143,7 @@ def clean_dir(directory):
     directory = Path(directory)
     if directory.exists:
         shutil.rmtree(directory, ignore_errors=True)
+        sleep(0.2)  # need time for the filesystem to register deletion
     if directory.exists():
         utils.error("%s not deleted." % directory)
     directory.mkdir()
