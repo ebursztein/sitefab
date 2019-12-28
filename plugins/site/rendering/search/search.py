@@ -28,14 +28,17 @@ class Search(SiteRendering):
         js_posts = {}
         log_info += "<table><tr><th>Title</th><th>Terms</th></tr>"
         for post in site.posts:
+            terms = [t[0] for t in post.nlp.terms][:num_terms]
+
             js_post = {
                 "id": post.id,
                 "title": post.nlp.clean_fields.title,
                 "authors": post.nlp.clean_fields.authors,
                 "conference": "%s %s" % (post.nlp.clean_fields.conference_short_name, # noqa
                                          post.nlp.clean_fields.conference_name),  # noqa
-                "terms": post.nlp.terms[:num_terms]
+                "terms": terms
             }
+
             js_posts[post.id] = js_post
             log_info += "<tr><td>%s</td><td>%s</td></tr>" % (js_post['title'],
                                                              js_posts['terms'])
