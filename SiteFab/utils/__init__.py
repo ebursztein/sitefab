@@ -78,10 +78,13 @@ def print_color_list(lst, prefix='|-'):
         count += 1
 
 
-# [Object dict] #
-def create_objdict():
+# [Object dict]
+def create_objdict(dictionnary=None):
     "Create a an empty objdict object"
-    return objdict()
+    if dictionnary:
+        return dict_to_objdict(dictionnary)
+    else:
+        return objdict()
 
 
 def dict_to_objdict(dictionnary=None):
