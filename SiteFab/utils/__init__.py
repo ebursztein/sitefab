@@ -43,7 +43,7 @@ def warning(txt):
 
 def error(error_msg):
     cprint("\n[Error] %s" % error_msg, 'red')
-    sys.exit(-1)
+    raise Exception(error_msg)
 
 
 def detailed_error(module, function, error_msg):
