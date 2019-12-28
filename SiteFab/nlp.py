@@ -24,7 +24,14 @@ def softmax(results, reverse=False):
     Returns:
         [type]: [description]
     """
-    x = np.array([i[1] for i in results])
+
+    if len(np.asarray(results).shape) == 1:
+        # !case when there are less than 3 words as the rank algo won't work
+        fill_value = 1 / len(results)
+        x = np.full(len(results), fill_value)
+        results = [[t, 0] for t in results]
+    else:
+        x = np.array([i[1] for i in results])
 
     if reverse:
         x = 1 - x
@@ -53,12 +60,13 @@ def extract_key_terms(doc, num_terms=50, ngrams=(1, 2, 3), algo='yake'):
         return []
 
     # special case
-    if len(doc) == 1:
-        return [str(doc[0])]
+    if len(doc) < 3:
+        return softmax(str(doc).split(' '))
 
     if algo == 'textrank':
         return softmax(keyterms.textrank(doc, n_keyterms=NUM_TERMS))
     elif algo == 'yake':
+        print('here')
         return softmax(yake(doc, ngrams=ngrams, topn=NUM_TERMS),
                        reverse=True)
     elif algo == 'scake':
@@ -226,6 +234,7 @@ def analyze_post(post, debug=False):
     # !note we restrict ngram to one as we only want the lemmized top terms.
     nlp.title_terms = extract_key_terms(title_doc, num_terms=NUM_TERMS,
                                         algo=TERM_EXTRACTOR_ALGO, ngrams=1)
+
     counters.stop('extract_key_terms')
 
     # text stats

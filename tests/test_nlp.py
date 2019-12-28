@@ -49,11 +49,24 @@ def test_empty_terms():
     assert terms == []
 
 
-def test_on_term():
+def test_single_term():
     text = "elie"
     doc = make_spacy_doc(text, lang=SPACY_MODEL)
     terms = nlp.extract_key_terms(doc, num_terms=5)
-    assert terms == ['elie']
+    assert terms[0][0] == 'elie'
+    assert terms[0][1] == 1.0
+
+
+def test_two_term_behavhior():
+    """Case when there is less than 3 words and rank algo can't be used.
+    """
+    text = "search page"
+    doc = make_spacy_doc(text, lang=SPACY_MODEL)
+    terms = nlp.extract_key_terms(doc, num_terms=5)
+    assert 'search' == terms[0][0]
+    assert 0.5 == terms[0][1]
+    assert 'page' == terms[1][0]
+    assert 0.5 == terms[1][1]
 
 
 def test_analyze_post(empty_post):
