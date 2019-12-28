@@ -23,11 +23,13 @@ setup(name='sitefab',
                         'Pygments',
                         'pytz',
                         'diskcache',
-                        'stop-words',
                         'xxhash',
                         'pillow',
                         'perfcounters',
-                        'terminaltables'
+                        'terminaltables',
+                        'textacy',
+                        'spacy',
+                        'spacy-lookups-data'
                         ],
       classifiers=[
           'Development Status :: 5 - Production/Stable',

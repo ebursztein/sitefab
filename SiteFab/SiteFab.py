@@ -14,6 +14,7 @@ from sitefab.Plugins import Plugins
 from sitefab.PostCollections import PostCollections
 from sitefab.linter.linter import Linter
 from sitefab import utils
+from sitefab import nlp
 
 
 class SiteFab(object):
@@ -183,6 +184,10 @@ class SiteFab(object):
                 utils.warning(s)
                 continue
 
+            # NLP
+            post.nlp = nlp.analyze_post(post)
+
+            # Add posts to our list
             self.posts.append(post)
 
             # insert in template list
