@@ -23,6 +23,7 @@ class ReadTime(PostProcessor):
                 ['read time', post.meta.read_time]
             ]
 
-            return (SiteFab.OK, post.meta.title, tabulate(info))
+            return (SiteFab.OK, post.meta.title, tabulate(info,
+                                                          tablefmt='html'))
         else:
             return (SiteFab.SKIPPED, post.meta.title, "")
