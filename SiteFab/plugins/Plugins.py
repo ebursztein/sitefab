@@ -2,89 +2,28 @@
 SiteFab Plugin system
 """
 
+import logging
 import os
 from pathlib import Path
+
 from termcolor import colored, cprint
+from terminaltables import SingleTable
+from toposort import toposort_flatten
 from tqdm import tqdm
 from yapsy.PluginManager import PluginManager
-import logging
-from toposort import toposort_flatten
-from terminaltables import SingleTable
 
-from . import utils
+from sitefab import utils
+
+from .CollectionProcessor import CollectionProcessor
+from .PostProcessor import PostProcessor
+from .SitePreparsing import SitePreparsing
+from .SiteProcessor import SiteProcessor
+from .SiteRendering import SiteRendering
+from .TemplateFilter import TemplateFilter
 
 logging.basicConfig(level=logging.INFO)
 
 
-class PostProcessor():
-    "Plugins that process each post between the parsing and the rendering"
-
-    def process(self, post, site, config):
-        """ Process a parsed post to add extra meta or change its HTML
-            :param post post: the post to process
-            :param FabSite site: the site object
-            :param dict config: plugin configuration
-        """
-
-
-class CollectionProcessor():
-    "Plugins that process each collection between parsing and rendering"
-
-    def process(self, post, site, config):
-        """ Process a parsed post to add extra meta or change its HTML
-            :param collection collection: the collection to process
-            :param FabSite site: the site object
-            :param dict config: plugin configuration
-        """
-
-
-class SitePreparsing():
-    """Site wide plugins that execute before the parsing start.
-    Plugin are called only once."""
-
-    def process(self, unused, site, config):
-        """ Process the content of the site once
-        :param FabSite site: the site object
-        :param dict config: plugin configuration
-        """
-
-
-class SiteProcessor():
-    "Plugins that process the whole site once"
-
-    def process(self, unused, site, config):
-        """ Process the content of the site once
-            :param FabSite site: the site object
-            :param dict config: plugin configuration
-        """
-
-
-class SiteRendering():
-    "Plugins that render additional pages. Plugin only called once"
-
-    def process(self, unused, site, config):
-        """ Generate additional page or file
-            :param FabSite site: the site object
-            :param dict config: plugin configuration
-        """
-
-
-class TemplateFilter():
-    "Plugins that define jinja2 filters to be used in templates"
-
-    @staticmethod
-    def myfilter(filter_input, filter_arg):
-        """Act as a jinja2 template
-
-        Args:
-            filter_input (str): the input passed to the filter
-            filter_arg(str): optional arg to the filter
-        Return:
-            str: modified input
-        """
-
-
-# [Plugin management]
 class Plugins():
     """
     Class responsible to manage the plugins
@@ -92,12 +31,23 @@ class Plugins():
     """
 
     categories = [
-        ["SitePreparsing", SitePreparsing, "Site wide plugins that execute before the parsing start."],
-        ["SiteProcessor", SiteProcessor, "Plugins that process the whole site once after parsing."],
-        ["SiteRendering", SiteRendering,  "Plugins that render additional pages after the rendering."],
-        ["PostProcessor", PostProcessor, "Plugins that process each post after they are parsed"],
-        ["CollectionProcessor", CollectionProcessor, "Plugins that process each collection after posts are parsed"],
-        ["TemplateFilter", TemplateFilter, "Plugins that define jinja2 filters to be used in templates"],
+        ["SitePreparsing", SitePreparsing,
+         "Site wide plugins that execute before the parsing start."],
+
+        ["SiteProcessor", SiteProcessor,
+         "Plugins that process the whole site once after parsing."],
+
+        ["SiteRendering", SiteRendering,
+         "Plugins that render additional pages after the rendering."],
+
+        ["PostProcessor", PostProcessor,
+         "Plugins that process each post after they are parsed"],
+
+        ["CollectionProcessor", CollectionProcessor,
+         "Plugins that process each collection after posts are parsed"],
+
+        ["TemplateFilter", TemplateFilter,
+         "Plugins that define jinja2 filters to be used in templates"],
     ]
 
     # for plugin info structure
@@ -108,18 +58,24 @@ class Plugins():
     PLUGIN_MODULE_NAME = 4
     PLUGIN_VERSION = 5
 
-    def __init__(self, plugin_directory, debug_log_fname, plugins_config):
+    def __init__(self, plugin_directories, debug_log_fname, plugins_config):
         "Load plugins"
 
         categories_filter = {}
         for cat in self.categories:
             categories_filter[cat[0]] = cat[1]
 
+        # single or multi-directory handling
+        if not isinstance(plugin_directories, list):
+            plugin_directories = [plugin_directories]
+
         self.plugins = PluginManager(plugin_info_ext='sitefab-plugin',
                                      categories_filter=categories_filter)
-        self.plugins.setPluginPlaces([plugin_directory])
+        self.plugins.setPluginPlaces(plugin_directories)
+
         self.plugins.locatePlugins()
         self.plugins.loadPlugins()
+
         self.plugins_config = plugins_config
 
         # List of enabled plugins
@@ -352,12 +308,13 @@ class Plugins():
         # dependencies computation. Due to  potential dependencies on plugins from previous stage this must be done after collecting the plugins to be executed.
         for plugin in module_name_to_plugin.values():
             all_dependencies = self.get_plugin_dependencies(plugin)
-            dependencies = set() # topological sort requires use of set
+            dependencies = set()  # topological sort requires use of set
             module_name = self.get_plugin_module_name(plugin)
 
             for dep_module_name in all_dependencies:
                 if dep_module_name not in self.plugins_enabled:
-                    utils.error("Plugin:%s can't be executed because plugin %s is not enable" % (module_name, dep_module_name))
+                    utils.error("Plugin:%s can't be executed because plugin %s is not enable" % (
+                        module_name, dep_module_name))
 
                 # only add to the dependencies map the plugins that are at the same stage
                 if dep_module_name in module_name_to_plugin:
@@ -365,17 +322,19 @@ class Plugins():
                 else:
                     # check if already executed
                     if dep_module_name not in self.plugins_executed:
-                        utils.error("Plugin:%s can't be executed because plugin %s was not executed in previous stage" % (module_name, dep_module_name))
+                        utils.error("Plugin:%s can't be executed because plugin %s was not executed in previous stage" % (
+                            module_name, dep_module_name))
 
             dependencie_map[module_name] = dependencies
 
-        #print dependencie_map
+        # print dependencie_map
 
         # Topological sorting
         try:
             plugins_to_process = toposort_flatten(dependencie_map)
         except Exception as e:
-            utils.error("Circular dependencies between plugins. Can't execute plugins:%s" % e)
+            utils.error(
+                "Circular dependencies between plugins. Can't execute plugins:%s" % e)
 
         s = "|-%s plugins" % (unit.strip().capitalize())
         desc = colored(s, "magenta")
@@ -384,7 +343,8 @@ class Plugins():
             if module_name in module_name_to_plugin:
                 plugin = module_name_to_plugin[module_name]
             else:
-                raise Exception("The following plugin module name listed in dependencies don't exist %s " % module_name)
+                raise Exception(
+                    "The following plugin module name listed in dependencies don't exist %s " % module_name)
 
             pclass = plugin_class.lower()
             filename = "%s.%s.html" % (pclass, module_name)
