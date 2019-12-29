@@ -335,8 +335,11 @@ class Plugins():
         :return: plugins execution statistics
         """
 
-        dependencie_map = {} #dependencies map
-        module_name_to_plugin = {} # used to get back from the module name to the plugin
+        # dependencies map
+        dependencie_map = {}
+
+        # used to get back from the module name to the plugin
+        module_name_to_plugin = {}
 
         plugins = self.plugins.getPluginsOfCategory(plugin_class)
 
