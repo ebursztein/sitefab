@@ -1,8 +1,0 @@
-[Core]
-Name = Collection full url
-Module = compute_full_collection_url
-
-[Documentation]
-Filename = README.md
-Version = 1
-Description = Compute the full qualified url for collection

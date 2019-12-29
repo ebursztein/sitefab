@@ -1,1 +1,0 @@
-window.posts = JS_POSTS_PLUGIN_REPLACE;

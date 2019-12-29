@@ -1,8 +1,0 @@
-input_dir: "generated/static/images/"
-output_dir: "generated/static/images_resized/" #don't output under input dir to avoid overloading other images plugins
-
-additional_formats: [".webp"]
-thumbnail_size: [300, 400, 500, 600, 700, 800, 900, 1000]
-
-cache_min_image_width: 500  # Minimal size for image to be cached
-multithreading: true

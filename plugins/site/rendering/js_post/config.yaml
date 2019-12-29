@@ -1,3 +1,0 @@
-output_path: "static/js/" # where to output the search.js. relative to the output dir
-meta_fields_to_output: ['title', 'category', 'authors'] # list of meta data fields to add to the output
-plugin_data_to_output: ['responsive_banner', 'thumbnail_banner'] # list of plugin data to output

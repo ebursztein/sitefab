@@ -1,3 +1,0 @@
-output_path: "static/js/" # where to output the search.js. relative to the output dir
-num_suggestions: 1000 # number of suggestions to store in the javascript trie
-excluded_terms: ['post', 'top'] # list of terms to exclude from the auto-competion

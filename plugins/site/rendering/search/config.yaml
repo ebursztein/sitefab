@@ -1,2 +1,0 @@
-output_path: "static/js/" # where to output the search.js. relative to the output dir
-num_terms: 20

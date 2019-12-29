@@ -1,5 +1,0 @@
-targets:
-  - "assets/js > generated/static/js"
-  - "assets/css > generated/static/css"
-  - "assets/images > generated/static/images"
-  - "assets/svg > generated/static/svg"

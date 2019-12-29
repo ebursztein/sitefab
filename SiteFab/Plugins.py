@@ -352,7 +352,7 @@ class Plugins():
         # dependencies computation. Due to  potential dependencies on plugins from previous stage this must be done after collecting the plugins to be executed.
         for plugin in module_name_to_plugin.values():
             all_dependencies = self.get_plugin_dependencies(plugin)
-            dependencies  = set() # topological sort requires use of set
+            dependencies = set() # topological sort requires use of set
             module_name = self.get_plugin_module_name(plugin)
 
             for dep_module_name in all_dependencies:
@@ -376,9 +376,6 @@ class Plugins():
             plugins_to_process = toposort_flatten(dependencie_map)
         except Exception as e:
             utils.error("Circular dependencies between plugins. Can't execute plugins:%s" % e)
-
-        #print plugins_to_process
-        #print module_name_to_plugin
 
         s = "|-%s plugins" % (unit.strip().capitalize())
         desc = colored(s, "magenta")
@@ -414,7 +411,6 @@ class Plugins():
             results.append([plugin.name, plugin_results])
             site.logger.write_log(log_id)
         return results
-
 
     def get_template_filters(self):
         """Load template filters and return a dictionary list
