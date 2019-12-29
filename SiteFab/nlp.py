@@ -66,7 +66,6 @@ def extract_key_terms(doc, num_terms=50, ngrams=(1, 2, 3), algo='yake'):
     if algo == 'textrank':
         return softmax(keyterms.textrank(doc, n_keyterms=NUM_TERMS))
     elif algo == 'yake':
-        print('here')
         return softmax(yake(doc, ngrams=ngrams, topn=NUM_TERMS),
                        reverse=True)
     elif algo == 'scake':

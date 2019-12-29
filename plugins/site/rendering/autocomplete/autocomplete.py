@@ -1,10 +1,12 @@
+import json
 from collections import defaultdict
 from pathlib import Path
-import json
 
+from tabulate import tabulate
+
+from sitefab import files
 from sitefab.Plugins import SiteRendering
 from sitefab.SiteFab import SiteFab
-from sitefab import files
 
 
 class Autocomplete(SiteRendering):
@@ -34,7 +36,7 @@ class Autocomplete(SiteRendering):
         for post in site.posts:
 
             # authors
-            for author in post.nlp.cleaned_field.authors:
+            for author in post.nlp.clean_fields.authors:
                 term_post_frequency[author] += 1
                 term_score[author] += 1  # ensure authors always first
                 for part in author.split(' '):
@@ -55,17 +57,17 @@ class Autocomplete(SiteRendering):
 
         output = []
         log_info += "num of terms considered: %s<br>" % len(term_score)
-        log_info += """<table><tr><th>term</th><th>Post frequency</th>
-                       <th>score</th></tr>"""
 
         top_terms = sorted(term_score, key=term_score.get, reverse=True)
         for term in top_terms[:num_suggestions]:
             score = term_score[term]
             post_frequency = term_post_frequency[term]
-            log_info += """<tr><td>%s</td><td>%s</td><td>%s</td>
-                    <td>%s</td></tr>""" % (term, post_frequency, score)
-            output.append([score, post_frequency, score])
-        log_info += "</table>"
+            output.append([term, post_frequency, score])
+
+        # log results
+        log_info += tabulate(output,
+                             headers=['term', 'post frequency', score],
+                             tablefmt='html')
 
         # replacing placeholder with computation result
         output_string = json.dumps(output)
@@ -73,7 +75,7 @@ class Autocomplete(SiteRendering):
 
         # output
         path = site.get_output_dir() / output_path
-        log_info += "output directory: %s" % path
+        log_info += "<br> output directory: %s" % path
         files.write_file(path, js_filename, js)
 
         return (SiteFab.OK, plugin_name, log_info)
