@@ -90,7 +90,7 @@ class Parser():
         # we compile them.
         if not self.jinja2:
             self.jinja2 = jinja2.Environment(loader=jinja2.DictLoader(
-                self.templates))
+                                             self.templates))
 
         parsed_post = utils.dict_to_objdict()
 
