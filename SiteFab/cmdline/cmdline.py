@@ -34,7 +34,7 @@ def print_plugins_list(site, only_enable=True):
             if status:
                 status = colored("[enable] ", 'green')
             else:
-                status = colored("[disable]", 'red')
+                status = colored("[disable] ", 'red')
 
         s = "%-20s (%s):\t %s" % (name, version, desc)
 
