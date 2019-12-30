@@ -32,7 +32,7 @@ def print_plugins_list(site, only_enable=True):
             status = ""
         else:
             if status:
-                status = colored("[enable] ", 'green')
+                status = colored("[enable]  ", 'green')
             else:
                 status = colored("[disable] ", 'red')
 

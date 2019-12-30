@@ -79,7 +79,8 @@ class SiteFab(object):
             plugins_config = defaultdict(dict)
             for config_fname in files.get_files_list(config_dir, '*.yaml'):
                 plugin_name = config_fname.stem
-                category = config_fname.parts[-2]
+                category = "%s%s" % (str(config_fname.parts[-3]).capitalize(),
+                                     str(config_fname.parts[-2]).capitalize())
                 config = files.load_config(config_fname)
                 plugins_config[category][plugin_name] = config
 
