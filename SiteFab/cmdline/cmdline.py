@@ -70,7 +70,7 @@ def generate(config, version):
     dirs.append("Logs:\t\t%s" % site.get_logs_dir())
     dirs.append("Content:\t%s" % site.get_content_dir())
     dirs.append("Template:\t%s" % site.get_template_dir())
-    dirs.append("Plugins:\t%s" % site.get_plugins_dir())
+    dirs.append("Plugins:\t%s" % site.get_plugins_dirs())
     dirs.append("Cache:\t%s" % site.get_cache_dir())
     print_color_list(dirs)
     print("\n")

@@ -132,7 +132,7 @@ class Plugins():
         """
         try:
             fname = plugin.details.get("Configuration", "Filename")
-        except:
+        except: # noqa
             return ""
         fname = fname.replace('"', '')
         path = self.get_plugin_dir(plugin)
@@ -143,7 +143,7 @@ class Plugins():
         """
         try:
             fname = plugin.details.get("Documentation", "Filename")
-        except:
+        except: # noqa
             return ""
         path = self.get_plugin_dir(plugin)
         return path / fname
@@ -182,7 +182,7 @@ class Plugins():
         class_name = self.get_plugin_class_name(plugin)
         try:
             config = self.plugins_config[class_name][module_name]
-        except:
+        except:  # noqa
             config = {}
         return config
 
@@ -219,7 +219,7 @@ class Plugins():
     def get_plugins_info(self, category=None):
         """Return the list of plugins available with their type
 
-        :param str category: restrict to plugins that belong to a given category
+        :param str category: restrict to plugins of a given category.
 
         :rtype: list(str)
         :return: list of plugins name
@@ -235,7 +235,7 @@ class Plugins():
                 module_name = self.get_plugin_module_name(plugin)
                 try:
                     version = plugin.version
-                except:
+                except: # noqa
                     version = "NA"
 
                 s = [cat, plugin.name, plugin.description, enabled,
@@ -285,7 +285,8 @@ class Plugins():
         :param list items: list of items to process
         :param str plugin_type: the plugin_class to use
         :param str unit: the unit to use in the display
-        :param SiteFab site: pointer to the site object to be passed to the plugins
+        :param SiteFab site: pointer to the site object to be passed
+        to the plugins
 
         :rtype: dict(dict(list))
         :return: plugins execution statistics
@@ -305,7 +306,10 @@ class Plugins():
                 module_name = self.get_plugin_module_name(plugin)
                 module_name_to_plugin[module_name] = plugin
 
-        # dependencies computation. Due to  potential dependencies on plugins from previous stage this must be done after collecting the plugins to be executed.
+        # dependencies computation.
+        # Due to  potential dependencies on plugins from previous stage
+        # this must be computed after collecting which
+        # plugins were executed.
         for plugin in module_name_to_plugin.values():
             all_dependencies = self.get_plugin_dependencies(plugin)
             dependencies = set()  # topological sort requires use of set
@@ -313,17 +317,20 @@ class Plugins():
 
             for dep_module_name in all_dependencies:
                 if dep_module_name not in self.plugins_enabled:
-                    utils.error("Plugin:%s can't be executed because plugin %s is not enable" % (
-                        module_name, dep_module_name))
+                    utils.error("Plugin:%s can't be executed because\
+                                plugin %s is not enable" % (module_name,
+                                dep_module_name))
 
-                # only add to the dependencies map the plugins that are at the same stage
+                # only add to the dependencies map the plugins
+                # that are from the same stage
                 if dep_module_name in module_name_to_plugin:
                     dependencies.add(dep_module_name)
                 else:
                     # check if already executed
                     if dep_module_name not in self.plugins_executed:
-                        utils.error("Plugin:%s can't be executed because plugin %s was not executed in previous stage" % (
-                            module_name, dep_module_name))
+                        utils.error("Plugin:%s can't be executed because\
+                                    plugin %s was not executed in previous\
+                                    stage" % (module_name, dep_module_name))
 
             dependencie_map[module_name] = dependencies
 
@@ -333,18 +340,20 @@ class Plugins():
         try:
             plugins_to_process = toposort_flatten(dependencie_map)
         except Exception as e:
-            utils.error(
-                "Circular dependencies between plugins. Can't execute plugins:%s" % e)
+            utils.error("Circular dependencies between plugins.\
+                Can't execute plugins:%s" % e)
 
         s = "|-%s plugins" % (unit.strip().capitalize())
         desc = colored(s, "magenta")
         results = []
-        for module_name in tqdm(plugins_to_process, unit=' plugin', desc=desc, leave=True):
+        for module_name in tqdm(plugins_to_process, unit=' plugin',
+                                desc=desc, leave=True):
             if module_name in module_name_to_plugin:
                 plugin = module_name_to_plugin[module_name]
             else:
                 raise Exception(
-                    "The following plugin module name listed in dependencies don't exist %s " % module_name)
+                    "The following plugin module name listed in\
+                    dependencies don't exist % s " % module_name)
 
             pclass = plugin_class.lower()
             filename = "%s.%s.html" % (pclass, module_name)
