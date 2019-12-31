@@ -260,19 +260,27 @@ class Plugins():
             row.append(colored(plugin_name, c))
 
             if stats[site.OK]:
-                row.append(colored(stats[site.OK], "green"))
+                if stats[site.OK] == 1:
+                    val = '  ✔️ '
+                else:
+                    val = colored(stats[site.OK], 'green')
+                row.append(val)
             else:
-                row.append('')
+                row.append(' ')
 
             if stats[site.SKIPPED]:
                 row.append(colored(stats[site.SKIPPED], "yellow"))
             else:
-                row.append('')
+                row.append(' ')
 
             if stats[site.ERROR]:
-                row.append(colored(stats[site.ERROR], "red"))
+                if stats[site.ERROR] == 1:
+                    val = '  ❌  '
+                else:
+                    val = colored(stats[site.ERROR], "red")
+                row. append(val)
             else:
-                row.append('')
+                row.append(' ')
 
             table_data.append(row)
             count += 1
