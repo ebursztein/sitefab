@@ -271,7 +271,7 @@ class SiteFab(object):
         self.cnts.stop('Rendering')
 
     def finale(self):
-        "Last stage"
+        "Final stage"
 
         # Write reminainig logs
         self.logger.write_log_index()
@@ -287,31 +287,49 @@ class SiteFab(object):
         cprint("Content", 'magenta')
         cprint("|-Num posts: %s" % len(self.posts), "cyan")
         cprint("|-Num categories: %s" %
-               self.posts_by_category.get_num_collections(), "cyan")
+               self.posts_by_category.get_num_collections(), "yellow")
         cprint("|-Num tags: %s" %
                self.posts_by_tag.get_num_collections(), "cyan")
         cprint("|-Num templates: %s" %
-               self.posts_by_template.get_num_collections(), "cyan")
+               self.posts_by_template.get_num_collections(), "yellow")
 
+        # PLUGINS
         cprint("\nPlugins", 'magenta')
         cprint("|-Num plugins: %s" % len(self.plugins.plugins_enabled), "cyan")
-        if self.plugin_results[self.ERROR]:
-            cprint("|-Num Errors:%s (check the logs!)" %
-                   self.plugin_results[self.ERROR], 'red')
+
+        if self.plugin_results[self.OK]:
+            cprint("|-Num OK:%s " %
+                   self.plugin_results[self.OK], 'green')
 
         if self.plugin_results[self.SKIPPED]:
             cprint("|-Num Skipped:%s " %
                    self.plugin_results[self.SKIPPED], 'yellow')
 
-        cprint("\nLinter", 'magenta')
-        self.linter.render_report()
-        if self.linter.num_post_with_errors():
-            cprint("|-Num post with errors:%s (check the logs!)" %
-                   self.linter.num_post_with_errors(), 'red')
+        if self.plugin_results[self.ERROR]:
+            cprint("|-Num Errors:%s" %
+                   self.plugin_results[self.ERROR], 'red')
 
-        if self.linter.num_post_with_warnings():
-            cprint("|-Num post with warning:%s" %
-                   self.linter.num_post_with_warnings(), 'yellow')
+        # LINTER
+        cprint("\nLinter", 'magenta')
+        self.linter.render_report()  # write the logs
+
+        cprint("|-Posts OK:%s" %
+               self.linter.num_post_ok(), 'green')
+        cprint("|-Posts with warnings:%s" %
+               self.linter.num_post_with_warnings(), 'yellow')
+        cprint("|-Posts with errors:%s" % self.linter.num_post_with_errors(),
+               'red')
+
+        # Output
+        cprint("\nOutput", 'magenta')
+        cprint('|-Log index: %s' % (self.get_logs_dir() / 'index.html'),
+               'blue')
+        cprint('|-Linter log: %s' % (self.get_logs_dir() / 'linter.html'),
+               'cyan')
+        cprint('|-Generated site: %s' % (self.get_output_dir()), 'yellow')
+
+        print('\n')
+        cprint('🎉 Generation complete!', 'green')
 
     # Post functions #
     def render_posts(self):
@@ -329,7 +347,7 @@ class SiteFab(object):
                                  microdata=self.posts_by_microdata.get_as_dict()  # noqa: E501
                                 )
 
-            # Liniting
+            # Linting
             linter_results = self.linter.lint(post, rv, self)
             # Are we stopping on linting errors?
             if linter_results.has_errors and self.config.linter.stop_on_error:

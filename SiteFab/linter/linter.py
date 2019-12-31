@@ -40,6 +40,15 @@ class Linter:
                 cnt += p.has_warnings
         return cnt
 
+    def num_post_ok(self):
+        "num post with no wrror or warnings"
+        cnt = 0
+
+        for p in self.results.values():
+            if not p.has_errors and not p.has_warnings:
+                cnt += 1
+        return cnt
+
     def lint(self, post, rendered_post, site):
         """ Load yaml configuration
 
