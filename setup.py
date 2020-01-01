@@ -18,15 +18,17 @@ def install_spacy_model():
 class PostDevelopCommand(develop):
     """Post-installation for development mode."""
     def run(self):
-        install_spacy_model()
         develop.run(self)
+        # post install of spacy model
+        install_spacy_model()
 
 
 class PostInstallCommand(install):
     """Post-installation for installation mode."""
     def run(self):
-        install_spacy_model()
         install.run(self)
+        # post install of spacy model
+        install_spacy_model()
 
 
 setup(
