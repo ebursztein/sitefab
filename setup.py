@@ -30,7 +30,7 @@ setup(name='sitefab',
                         'textacy',
                         'spacy',
                         'spacy-lookups-data',
-                        'mistune'
+                        'mistune==0.8.4'
                         ],
       classifiers=[
           'Development Status :: 5 - Production/Stable',
