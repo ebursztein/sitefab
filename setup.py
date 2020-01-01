@@ -3,7 +3,7 @@ from setuptools import setup
 from setuptools import find_packages
 from setuptools.command.develop import develop
 from setuptools.command.install import install
-from subprocess import check_call
+from subprocess import call
 
 long_description = open("README.md").read()
 version = '1.0.%s' % int(time())
@@ -11,8 +11,8 @@ version = '1.0.%s' % int(time())
 
 def install_spacy_model():
     "we need to download the spacy model and rebuild"
-    check_call("python -m spacy download en_core_web_sm".split())
-    check_call("pip install -U --force  spacy-lookups-data".split())
+    call("python -m spacy download en_core_web_sm".split())
+    call("pip install -U --force spacy-lookups-data".split())
 
 
 class PostDevelopCommand(develop):
