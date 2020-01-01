@@ -65,18 +65,22 @@ parser:
 
 **important**: while the parser do add the needed HTML and CSS classname, the CSS is **not** included in the page for obvious reason. It is your responsability to embed the CSS of the template of your choice directly into your CSS file. You can get them [here on github](https://github.com/richleland/pygments-css)
 
-### Date manipulation
+### Custom template filters
 
-FIXME
+FIXME (in plugins/template)
 
-### Plugin data
 
-#### how to get image size
+## Accessing plugin data
+
+### how to get image size
 
 Getting the image width for an image for which the url is `src`:
 ```python
 plugin_data['image_info'][src]['width']
 ```
+
+FIXME: more example -> link to the plugin list
+
 
 ## Related posts
 if the related_post plugin is activated, related posts are available as follow:

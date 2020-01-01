@@ -33,17 +33,3 @@ def test_objdict_to_dict():
     assert d['arrayofarray'][0][0] == 1   # testing nested array
     assert d['arrayofarray'][1][1] == 4   # testing nested array
 
-
-def test_img_extensions():
-    values = [
-        [".png", "PNG", "image/png"],
-        [".webp", "WEBP", "image/webp"],
-        [".jpeg", "JPEG", "image/jpeg"],
-        [".jpg", "JPEG", "image/jpeg"],
-        ["unkn", None, None]
-    ]
-    for value in values:
-        codename, extension = utils.get_img_extension_alternative_naming(
-            value[0])
-        assert codename == value[1]
-        assert extension == value[2]

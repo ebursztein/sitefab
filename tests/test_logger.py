@@ -3,7 +3,7 @@ from pathlib import Path
 
 def test_config_paths(sitefab):
     # path
-    partial_correct_path = Path('config/generator_templates/logs')
+    partial_correct_path = Path('config/templates/logs')
     assert str(partial_correct_path) in str(sitefab.logger.config.template_dir)
 
     # templates

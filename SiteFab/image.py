@@ -2,6 +2,7 @@
 from io import BytesIO
 from .utils import hexdigest
 
+
 def image_hash(raw_image):
     """Compute imgae hash
 
@@ -13,8 +14,9 @@ def image_hash(raw_image):
     """
     return hexdigest(raw_image)
 
+
 def convert_image(img, extension_codename, compression_level=9,
-                  jpeg_quality=85, webp_quality=85):
+                  jpeg_quality=85, webp_quality=85, return_as_bytesio=True):
     """Generate an image in the requested format
 
     Args:
@@ -30,16 +32,22 @@ def convert_image(img, extension_codename, compression_level=9,
 
         webp_quality (int, optional): Webp quality level. Defaults to 85.
 
+        save (bool, optional): save image in a byteIO, if false return the
+        image it self.
+        Defauls to True.
+
     Returns:
-        BytesIO: the converted image as byteIO.
+        BytesIO or Image: the converted image as byteIO if return_as_bytesio
+        is true or as Image otherwise.
     """
 
     img_io = BytesIO()
 
     # encoding
     if extension_codename == 'PNG':
-        img.save(img_io, extension_codename, optimize=True,
-                 compress_level=compression_level)
+        if return_as_bytesio:
+            img.save(img_io, extension_codename, optimize=True,
+                     compress_level=compression_level)
 
     elif extension_codename == 'WEBP':
         if img.mode == "P":
@@ -58,7 +66,10 @@ def convert_image(img, extension_codename, compression_level=9,
     elif extension_codename == "GIF":
         img.save(img_io, extension_codename, optimize=True)
 
-    return img_io
+    if return_as_bytesio:
+        return img_io
+    else:
+        return img
 
 
 def read_image_bytes(path):
