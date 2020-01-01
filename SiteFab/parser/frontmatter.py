@@ -99,4 +99,5 @@ def parse(post):
         else:
             meta_data = parse_fields(m)
             meta = utils.dict_to_objdict(meta_data)
+
     return [meta, md]

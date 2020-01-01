@@ -43,7 +43,7 @@ class SiteFab(object):
         self.current_dir = Path.cwd()
 
         # make the config file path absolute to avoid weird cases
-        config_filename = Path(config_filename).resolve()
+        self.config_filename = Path(config_filename).resolve()
         if not config_filename:
             raise Exception("Supply a configuration filename")
 

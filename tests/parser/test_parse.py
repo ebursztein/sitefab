@@ -5,7 +5,7 @@ from ..conftest import TEST_ROOT_DIR
 
 def test_parsing_real_md(sitefab):
     parser = Parser(sitefab.config.parser, sitefab)
-    fn = TEST_ROOT_DIR / 'sitefab_template/content/posts/18-4-of-us-internet-users-got-at-least-one-of-their-account-compromised.md'  # noqa
+    fn = sitefab.config.root_dir / 'content/posts/18-4-of-us-internet-users-got-at-least-one-of-their-account-compromised.md'  # noqa
     md = read_file(fn)
     post = parser.parse(md)
     assert 'internet' in post.html

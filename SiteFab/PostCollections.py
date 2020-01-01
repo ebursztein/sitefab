@@ -7,7 +7,8 @@ from . import utils, files
 class PostCollections():
     "Handle posts collections"
 
-    def __init__(self, site, template=None, output_path=None, web_path=None, min_posts=0):
+    def __init__(self, site, template=None, output_path=None, web_path=None,
+                 min_posts=0):
         """Init the collections
 
             Args:
