@@ -48,13 +48,13 @@ class SiteFab(object):
             raise Exception("Supply a configuration filename")
 
         # exist?
-        if config_filename.is_file():  # absolute path
-            self.config = files.load_config(config_filename)
+        if self.config_filename.is_file():  # absolute path
+            self.config = files.load_config(self.config_filename)
         else:
-            utils.error("Config file %s not found" % config_filename)
+            utils.error("Config file %s not found" % self.config_filename)
 
         # site root dir is -1 from where the config is
-        self.config.root_dir = config_filename.parents[1]
+        self.config.root_dir = self.config_filename.parents[1]
         self.config.build = utils.create_objdict()
 
         # expose sitefab version to the templates
