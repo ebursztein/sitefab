@@ -12,7 +12,7 @@ version = '1.0.%s' % int(time())
 def install_spacy_model():
     "we need to download the spacy model and rebuild"
     call("python -m spacy download en_core_web_sm".split())
-    call("pip install -U --force spacy-lookups-data".split())
+    call("pip install -U spacy-lookups-data".split())
 
 
 class PostDevelopCommand(develop):
@@ -59,7 +59,6 @@ setup(
             'terminaltables',
             'textacy',
             'spacy',
-            'spacy-lookups-data',
             'mistune==0.8.4'],
     cmdclass={
             'develop': PostDevelopCommand,
