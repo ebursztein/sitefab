@@ -29,7 +29,8 @@ setup(name='sitefab',
                         'terminaltables',
                         'textacy',
                         'spacy',
-                        'spacy-lookups-data'
+                        'spacy-lookups-data',
+                        'mistune'
                         ],
       classifiers=[
           'Development Status :: 5 - Production/Stable',
