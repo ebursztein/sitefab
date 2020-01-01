@@ -2,7 +2,7 @@ from setuptools import setup
 from setuptools import find_packages
 
 long_description = open("README.md").read()
-version = '2.0.0'
+version = '1.0.0alpha'
 setup(name='sitefab',
       version=version,
       description='A flexible yet simple website static generator for humans',
