@@ -10,6 +10,7 @@ from sitefab.utils import create_objdict
 # FIXME: use the config
 NUM_TERMS = 50
 SPACY_MODEL = 'en_core_web_sm'  # 'en_core_web_lg'
+# python -m spacy download en_core_web_sm
 TERM_EXTRACTOR_ALGO = 'yake'  # yake, sgrank, textrank
 NGRAMS = (1, 2, 3)  # default
 
