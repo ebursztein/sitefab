@@ -35,8 +35,6 @@ jobs:
         
     - name: Test with pytest
       run: |
-        pip install pytest
-        pip install pytest-cov
         pytest --cov=sitefab --cov-report=xml
     
     - name: Upload coverage to Codecov  
