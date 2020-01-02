@@ -22,8 +22,9 @@ jobs:
         python -m pip install -r test_requirements.txt
     
     - name: Install package
-      run: | 
-        python setup.py install
+      run: |
+        pip uninstall sitefab
+        python setup.py develop
         pip list
         
 #     - name: Lint with flake8
