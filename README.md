@@ -1,13 +1,17 @@
-# SiteFab
+# SiteFab: A powerful and easy to use cross-platform website static generator
 
-A flexible yet simple website static generator.
+
+[![Linux Status](https://github.com/ebursztein/sitefab/workflows/Linux/badge.svg)](https://github.com/ebursztein/sitefab/actions)
+[![macOS Status](https://github.com/ebursztein/sitefab/workflows/macOS/badge.svg)](https://github.com/ebursztein/sitefab/actions)
+[![Code coverage](https://codecov.io/gh/ebursztein/sitefab/branch/master/graph/badge.svg)](https://codecov.io/gh/ebursztein/sitefab)
 
 ## Getting Started
+
 Follow our [Getting Started Guide](/documentation/getting_started.md) to get up and runnning in less than 10 minutes.
 
 ## Key Features
 
-Here are some of the key highlevel functionalities that makes SiteFab the static generator of choice for modern websites: 
+Here are some of the key highlevel functionalities that makes SiteFab the static generator of choice for modern websites:
 
 - **State of the art images processing stack**: The images stack generate out of the box all you need to use image in optimal fashion including: reactive images for the `<picture>` element, webp versions for the browsers who support it, frozen thumbnail for the loading and cropped thumbnails for previews.
 - **Bleeding edge natural language processing stack**: Leveraging the latest advance in NLP Sitefab offers: An accurate list of related posts (LSI algorithm), a client side faceted search and a smart client-side autocompletion
@@ -35,7 +39,7 @@ Here are some of the key highlevel functionalities that makes SiteFab the static
 ## Philosophy
 
 More than its technical features what separates SiteFab from the other site generators is its philosophy.
-Namely SiteFab is about favoring configuration over convention, be content agnostic and to treat 
+Namely SiteFab is about favoring configuration over convention, be content agnostic and to treat
 content as atomic elements.
 
 Concretly it mean the following:
@@ -44,12 +48,12 @@ Concretly it mean the following:
  do what the configuration say nothing more, nothing less. Post configuration are located in the content file itself and site wide
  option is centralized in a single file that must be specified when sitefab is invoked.
 
-- **Agnostic**: There is only one type of content called post. Site Fab makes no assumption about the content stored 
+- **Agnostic**: There is only one type of content called post. Site Fab makes no assumption about the content stored
     in the .md file. Its job is to apply the configuration specified in the frontmatter to render the file and ensure that
     the plugins specified in the site configuration are properly executed.
 
 - **Content as atomic elements**: Each piece of content is self contained by having its its own configuration in its frontmatter. For
- example if the post need to be output in the RSS feed then it need to be specified frontmatter. Similarly the template to use 
+ example if the post need to be output in the RSS feed then it need to be specified frontmatter. Similarly the template to use
  and where the file should be written is specified in the post frontmatter. This allows to accomodate both complex sites with per page
  configuration and very simple site that reuse the same template again and again.
 
