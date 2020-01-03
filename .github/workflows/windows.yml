@@ -13,9 +13,10 @@ jobs:
     
     - name: Install dependencies
       run: |
-        python -m venv .sitefab
-        .sitefab\Scripts\activate
         python -m pip install --upgrade pip
+        pip install virtualenv
+        virtualenv .sitefab
+        .sitefab\Scripts\activate.bat
         pip install setuptools wheel twine
         python -m pip install -r test_requirements.txt
     
