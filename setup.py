@@ -34,13 +34,20 @@ class PostInstallCommand(install):
 setup(
     name='sitefab',
     version=version,
-    description='A flexible yet simple website static generator for humans',
+    description='State of the art static website generator for humans',
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='Elie Bursztein',
     author_email='code@elie.net',
     url='https://github.com/ebursztein/sitefab',
     license='Apache 2',
+    entry_points={
+        'console_scripts': ['sitefab=sitefab.cmdline.cmdline:main'],
+    },
+    cmdclass={
+            'develop': PostDevelopCommand,
+            'install': PostInstallCommand
+            },
     install_requires=[
             'pyyaml',
             'jinja2',
@@ -48,7 +55,6 @@ setup(
             'termcolor',
             'yapsy',
             'gensim',
-            '3to2',
             'toposort',
             'Pygments',
             'pytz',
@@ -60,10 +66,6 @@ setup(
             'textacy',
             'spacy',
             'mistune==0.8.4'],
-    cmdclass={
-            'develop': PostDevelopCommand,
-            'install': PostInstallCommand
-            },
     classifiers=[
             'Development Status :: 5 - Production/Stable',
             'Environment :: Console',

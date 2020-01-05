@@ -120,7 +120,7 @@ def print_help():
     sys.exit(2)
 
 
-if __name__ == '__main__':
+def main():
     config = None
     short_options = "c:h"
     long_options = ["config=", "help"]
@@ -174,3 +174,7 @@ if __name__ == '__main__':
             print_help()
     else:
         print_help()
+
+
+if __name__ == '__main__':
+    main()
