@@ -1,4 +1,4 @@
-# SiteFa: state of the art static website generator for humans
+# SiteFab: state of the art static website generator for humans
 
 [![Linux Status](https://github.com/ebursztein/sitefab/workflows/Linux/badge.svg)](https://github.com/ebursztein/sitefab/actions)
 [![macOS Status](https://github.com/ebursztein/sitefab/workflows/macOS/badge.svg)](https://github.com/ebursztein/sitefab/actions)
