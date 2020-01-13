@@ -11,3 +11,4 @@ cache.db
 tmp.py
 .pytest_cache/
 tests/sitefab_template
+.venv
