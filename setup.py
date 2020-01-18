@@ -48,6 +48,7 @@ setup(
             'develop': PostDevelopCommand,
             'install': PostInstallCommand
             },
+    package_data={"": ["*.yaml"]},
     install_requires=[
             'Cython',
             'pyyaml',
