@@ -3,6 +3,7 @@ from setuptools import setup
 from setuptools import find_packages
 from setuptools.command.develop import develop
 from setuptools.command.install import install
+from setuptools.command.egg_info import egg_info
 from subprocess import call
 
 long_description = open("README.md").read()
@@ -31,6 +32,14 @@ class PostInstallCommand(install):
         install_spacy_model()
 
 
+class PostEggCommand(install):
+    """Post-installation for installation mode."""
+    def run(self):
+        egg_info.run(self)
+        # post install of spacy model
+        install_spacy_model()
+
+
 setup(
     name='sitefab',
     version=version,
@@ -46,7 +55,8 @@ setup(
     },
     cmdclass={
             'develop': PostDevelopCommand,
-            'install': PostInstallCommand
+            'install': PostInstallCommand,
+            'egg_info': PostEggCommand
             },
     package_data={"": ["*.yaml"]},
     install_requires=[
