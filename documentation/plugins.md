@@ -2,13 +2,36 @@
 
 This document describe how to write a plugin for SiteFab. A list of available plugins is available [here](/documentation/plugin_list.md)
 
+Writing a plugin is easy. First you have to decide whether what type of plugins you
+want as it change where to put it. Then you need to use the correct plugin class
+so SiteFab knows when to run it and call it with the information you need. Plugins
+are dynamically loaded everytime you run SiteFab so once you have the code and
+the config in place they will be called automatically without any additional
+changes.
+
+
+## Plugin type
+
+For the plugin type you have two options:
+
+1. **For private plugins**: you create a directory in your site project and then
+in the *sitefab.yaml* you declare it as plugin dir. This allows you to have SiteFab
+to run your custom code and revise it as you please.
+
+2. **Public plugins**: If your plugin can benefit the community you can simply
+do a pull request to add it to the [Plugin repo](https://github.com/ebursztein/sitefab-plugins).
+Make sure to document it properly so people know how to use and who wrote it.
+
+
 ## Workflow
 
-FIXME: add a diagram of how the plugins are called
+FIXME: add a diagram of how th
+e plugins are called
 
 ## Plugins directory structure
 
-Plugins are stored in the **Plugins/** directory which is organized as follow:
+Typically Plugins are stored in the **Plugins/** directory which is organized
+as follow:
 
 - The first level represent the entity the plugin apply to
 - The 2nd level represent the phase in which the plugin is to be applied
@@ -91,7 +114,7 @@ class FullUrl(PostProcessor):
 
 Each plugin only implements the function **process()** which return True if executed, False otherwise.
 
-As visible in the import, plugins must inherit from one of the plugin class available in SiteFab/plugins.py. 
+As visible in the import, plugins must inherit from one of the plugin class available in SiteFab/plugins.py.
 The class is used to define at which stage of the pipeline the plugin will be executed and the information passed to it. See below for the list of plugin class available and their process function prototype.
 
 **Important**: While every plugin has access to the full site object to get the information it need, the site object should not be manipulated directly except if it is a site plugin. Choosing the most specific plugin type possible.
@@ -150,7 +173,7 @@ A description of what the plugin do.
 
 ## Usage
 
-How to use the plugin. Preferably with a full template code example 
+How to use the plugin. Preferably with a full template code example
 and a description of the options
 
 ### Usage example
@@ -188,9 +211,9 @@ class ContentPreparsing():
     "Plugins that process content files before the parsing"
 
     def process(self, filename, site, config):
-        """ Process a parsed post to add extra meta or change its HTML  
+        """ Process a parsed post to add extra meta or change its HTML
             :param str filename: the filename of the content file process
-            :param FabSite site: the site object 
+            :param FabSite site: the site object
         """
 ```
 
@@ -205,7 +228,7 @@ class PostProcessor():
     "Plugins that process each post between the parsing and the rendering"
 
     def process(self, post, site, config):
-        """ Process a parsed post to add extra meta or change its HTML  
+        """ Process a parsed post to add extra meta or change its HTML
             :param post post: the post to process
             :param FabSite site: the site object
         """
@@ -247,8 +270,8 @@ class ExtraRendering():
     "Plugins that render additional pages"
 
     def process(self, unused, site, config):
-        """ Generate additional page or file  
-            :param FabSite site: the site object 
+        """ Generate additional page or file
+            :param FabSite site: the site object
         """
 ```
 
