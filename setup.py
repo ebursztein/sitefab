@@ -49,6 +49,7 @@ setup(
             'install': PostInstallCommand
             },
     install_requires=[
+            'Cython',
             'pyyaml',
             'jinja2',
             'tqdm',
