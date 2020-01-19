@@ -24,7 +24,7 @@ jobs:
     - name: Install package
       run: |
         pip uninstall sitefab
-        python setup.py develop
+        python setup.py install
         pip list
         
     - name: Test with pytest
