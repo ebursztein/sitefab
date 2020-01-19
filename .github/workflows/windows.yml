@@ -18,6 +18,7 @@ jobs:
         virtualenv .sitefab
         .sitefab\Scripts\activate.bat
         pip install setuptools wheel twine
+        pip install Cython
         python -m pip install -r test_requirements.txt
     
     - name: Install package
