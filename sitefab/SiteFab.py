@@ -356,7 +356,10 @@ class SiteFab(object):
                     print("\t-%s:%s" % (err[0], err[1]))
                 sys.exit(-1)
 
-            path = self.get_output_dir() / post.meta.permanent_url
+            perm_url = post.meta.permanent_url
+            if len(perm_url) and perm_url[0] == '/':
+                perm_url = perm_url[1:]
+            path = self.get_output_dir() / perm_url
             files.write_file(path, 'index.html', rv)
 
     # Templates functions #
@@ -402,7 +405,7 @@ class SiteFab(object):
     def get_output_dir(self):
         "return the absolute path of the ouput dir"
         return self.config.root_dir / self.config.dir.output
-
+        
     def get_content_dir(self):
         "return the absolute path of the content dir"
         return self.config.root_dir / self.config.dir.content
