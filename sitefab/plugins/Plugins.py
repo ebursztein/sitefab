@@ -125,7 +125,7 @@ class Plugins():
         """
 
         module_path = Path(plugin.details.get("Core", "module"))
-        return module_path.parents(1)
+        return module_path.parent
 
     def get_plugin_default_configuration_filename(self, plugin):
         """ Return the path to the plugin default configuration filename

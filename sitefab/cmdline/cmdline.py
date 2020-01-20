@@ -10,7 +10,7 @@ from sitefab import __version__ as version
 from sitefab.SiteFab import SiteFab
 from termcolor import colored, cprint
 from sitefab.utils import print_color_list, section, print_header
-from sitefab.admin import build
+from sitefab.docs.plugins import generate_plugins_readme
 
 
 def print_plugins_list(site, only_enable=True):
@@ -100,21 +100,20 @@ def print_help():
 
     cprint("Usage: sitefab -c <config_file> command", 'yellow')
 
+    # end user
     cmds = [
         "generate: generate the site",
-        "deploy: deploy generated site to remote server",
         "plugins: list available plugins",
-        "upgrade: upgrade SiteFab plugins."
         ]
 
     cprint("Available Commands", 'magenta')
     print_color_list(cmds, prefix="\t")
 
-    # dev_cmds = [
-    #    "sitfab_build: generate the default configs and documentation",
-    #    ]
-
-    # cprint("Developper command", 'magenta')
+    # dev
+    #  dev_cmds = [
+    #     "gen_plugins_readme: generate plugins README.md from plugins infos",
+    # ]
+    # cprint("Developper command", 'blue')
     # print_color_list(dev_cmds, prefix="\t")
 
     sys.exit(2)
@@ -122,8 +121,8 @@ def print_help():
 
 def main():
     config = None
-    short_options = "c:h"
-    long_options = ["config=", "help"]
+    short_options = "c:h:o:"
+    long_options = ["config=", "help", "output_file="]
 
     # pretty banner
     print_header(version)
@@ -141,7 +140,9 @@ def main():
             config = arg
         elif opt in ('-h', '--help'):
             print_help()
-
+        elif opt in ('-o', '--output_file'):
+            # used for documentation generation
+            output_fname = arg
     # arguments
     if len(args):
         cmd = args[0]
@@ -159,16 +160,11 @@ def main():
             cprint("Plugins status", 'magenta')
             print_plugins_list(site, only_enable=False)
 
-        elif cmd == "upgrade":
+        # doc command
+        elif cmd == "gen_plugins_readme":
+            # this function rebuild the plugin readme
             site = SiteFab(config, version)
-            cprint("Upgrading", 'magenta')
-            build.sitefab_upgrade(site)
-
-        # Developper command
-        elif cmd == "sitefab_build":
-            # this function rebuild the documentation & configurations
-            site = SiteFab(config, version)
-            build.sitefab_build(site)
+            generate_plugins_readme(site, output_fname)
 
         else:
             print_help()
