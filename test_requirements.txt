@@ -1,4 +1,5 @@
 GitPython
 pytest
 pytest-cov
+pytest-dependency
 termcolor
