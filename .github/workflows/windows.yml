@@ -17,15 +17,25 @@ jobs:
         pip install virtualenv
         virtualenv .sitefab
         .sitefab\Scripts\activate.bat
+            
+    - name: Install dependencies
+      run: |    
         pip install setuptools wheel twine
         pip install Cython
         python -m pip install -r test_requirements.txt
+        pip install pyyaml jinja2 tqdm termcolor yapsy gensim toposort Pygments
+        pip install pytz diskcache xxhash pillow perfcounters terminaltables
+        pip install textacy spacy mistune==0.8.4
+        pip list
+    
+    - name: Spacy model
+      run: |
+        python -m spacy download en_core_web_sm
+        python -m pip install -U spacy-lookups-data
     
     - name: Install package
       run: |
-        pip uninstall sitefab
         python setup.py install
-        pip list
         
     - name: Test with pytest
       run: |
