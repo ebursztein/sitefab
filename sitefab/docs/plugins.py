@@ -22,7 +22,7 @@ def generate_plugins_readme(site, output_fname):
         doc_path = str(doc_path)
         if 'plugins' in doc_path:
             doc_path = doc_path.replace('\\', '/').split('plugins')[1]
-            name = "[%s](tree/master%s)" % (name, doc_path)
+            name = "[%s](%s)" % (name, doc_path)
         plugin_list_md += "| %s | %s | %s |\n" % (name, description,
                                                   dependencies)
 

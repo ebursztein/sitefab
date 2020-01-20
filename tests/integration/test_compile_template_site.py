@@ -1,6 +1,5 @@
 import pytest
 from sitefab.cmdline.cmdline import generate, version
-from sitefab.files import get_files_list
 from ..conftest import TEMPLATE_DATA_PATH
 
 
