@@ -329,7 +329,7 @@ class SiteFab(object):
         cprint('|-Generated site: %s' % (self.get_output_dir()), 'yellow')
 
         print('\n')
-        cprint('😄 Generation complete!', 'green')
+        cprint('Generation complete :)', 'green')
 
     # Post functions #
     def render_posts(self):
@@ -405,7 +405,7 @@ class SiteFab(object):
     def get_output_dir(self):
         "return the absolute path of the ouput dir"
         return self.config.root_dir / self.config.dir.output
-        
+
     def get_content_dir(self):
         "return the absolute path of the content dir"
         return self.config.root_dir / self.config.dir.content

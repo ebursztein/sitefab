@@ -261,7 +261,7 @@ class Plugins():
 
             if stats[site.OK]:
                 if stats[site.OK] == 1:
-                    val = '  ✔️ '
+                    val = 'v'
                 else:
                     val = colored(stats[site.OK], 'green')
                 row.append(val)
@@ -275,7 +275,7 @@ class Plugins():
 
             if stats[site.ERROR]:
                 if stats[site.ERROR] == 1:
-                    val = '  ❌  '
+                    val = 'x'
                 else:
                     val = colored(stats[site.ERROR], "red")
                 row. append(val)
