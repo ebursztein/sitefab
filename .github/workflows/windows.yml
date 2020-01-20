@@ -11,7 +11,7 @@ jobs:
       with:
         python-version: '3.x' 
     
-    - name: Install dependencies
+    - name: Environement setup
       run: |
         python -m pip install --upgrade pip
         pip install virtualenv
@@ -23,9 +23,7 @@ jobs:
         pip install setuptools wheel twine
         pip install Cython
         python -m pip install -r test_requirements.txt
-        pip install pyyaml jinja2 tqdm termcolor yapsy gensim toposort Pygments
-        pip install pytz diskcache xxhash pillow perfcounters terminaltables
-        pip install textacy spacy mistune==0.8.4
+        pip install -U pyyaml jinja2 tqdm termcolor yapsy gensim toposort Pygments pytz diskcache xxhash pillow perfcounters terminaltables textacy spacy mistune==0.8.4
         pip list
     
     - name: Spacy model
