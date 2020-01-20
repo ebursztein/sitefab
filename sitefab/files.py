@@ -40,7 +40,7 @@ def load_config(config_file):
 
     # parse  yaml
     try:
-        config_yaml = yaml.load(stream)
+        config_yaml = yaml.load(stream, Loader=yaml.SafeLoader)
     except yaml.YAMLError as exc:
         print(exc)
         return None
