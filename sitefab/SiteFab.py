@@ -328,8 +328,7 @@ class SiteFab(object):
                'cyan')
         cprint('|-Generated site: %s' % (self.get_output_dir()), 'yellow')
 
-        print('\n')
-        cprint('Generation complete :)', 'green')
+        cprint('Generation complete - site is ready :)', 'green')
 
     # Post functions #
     def render_posts(self):

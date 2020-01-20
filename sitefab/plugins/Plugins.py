@@ -259,26 +259,29 @@ class Plugins():
                 c = "blue"
             row.append(colored(plugin_name, c))
 
+            # ok
             if stats[site.OK]:
                 if stats[site.OK] == 1:
                     val = 'v'
                 else:
-                    val = colored(stats[site.OK], 'green')
-                row.append(val)
+                    val = stats[site.OK]
+                row.append(colored(val, 'green'))
             else:
                 row.append(' ')
 
+            # warning
             if stats[site.SKIPPED]:
                 row.append(colored(stats[site.SKIPPED], "yellow"))
             else:
                 row.append(' ')
 
+            # error
             if stats[site.ERROR]:
                 if stats[site.ERROR] == 1:
                     val = 'x'
                 else:
-                    val = colored(stats[site.ERROR], "red")
-                row. append(val)
+                    val = stats[site.ERROR]
+                row.append(colored(val, "red"))
             else:
                 row.append(' ')
 
