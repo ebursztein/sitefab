@@ -190,7 +190,7 @@ class SiteFab(object):
                 continue
 
             # Ignore posts set for future date
-            if post.meta.creation_date_ts > int(time.time()):
+            if self.config.parser.skip_future and post.meta.creation_date_ts > int(time.time()):
                 s = "Post in the future - skipping %s" % (post.meta.title)
                 utils.warning(s)
                 continue
