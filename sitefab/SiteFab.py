@@ -1,5 +1,6 @@
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 from tqdm import tqdm
 from collections import defaultdict
@@ -337,6 +338,7 @@ class SiteFab(object):
             template_name = "%s.html" % post.meta.template
             template = self.jinja2.get_template(template_name)
             rv = template.render(content=post.html, meta=post.meta,
+                                 year=datetime.today().year,
                                  posts=self.posts,
                                  plugin_data=self.plugin_data,
                                  config=self.config,
