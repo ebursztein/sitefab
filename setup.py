@@ -65,8 +65,8 @@ setup(
             'pillow',
             'perfcounters',
             'terminaltables',
-            'textacy',
-            'spacy',
+            'textacy==0.10.1',
+            'spacy==2.3.2',
             'mistune==0.8.4'],
     classifiers=[
             'Development Status :: 5 - Production/Stable',
