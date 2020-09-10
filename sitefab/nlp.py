@@ -1,11 +1,14 @@
 import numpy as np
 from perfcounters import PerfCounters
 from tabulate import tabulate
-from textacy import TextStats, keyterms, make_spacy_doc, preprocessing
+from textacy import TextStats, make_spacy_doc, preprocessing
+from textacy.text_stats import readability
 from textacy.ke.yake import yake
+from textacy.ke.textrank import textrank
+from textacy.ke.sgrank import sgrank
 from textacy.ke.scake import scake
 
-from sitefab.utils import create_objdict
+from sitefab.utils import create_objdict, dict_to_objdict
 
 # FIXME: use the config
 NUM_TERMS = 50
@@ -65,15 +68,15 @@ def extract_key_terms(doc, num_terms=50, ngrams=(1, 2, 3), algo='yake'):
         return softmax(str(doc).split(' '))
 
     if algo == 'textrank':
-        return softmax(keyterms.textrank(doc, n_keyterms=NUM_TERMS))
+        return softmax(textrank(doc, n_keyterms=NUM_TERMS))
     elif algo == 'yake':
         return softmax(yake(doc, ngrams=ngrams, topn=NUM_TERMS),
                        reverse=True)
     elif algo == 'scake':
         return softmax(scake(doc, topn=NUM_TERMS))
     elif algo == 'sgrank':
-        return softmax(keyterms.sgrank(doc, ngrams=ngrams,
-                                       n_keyterms=NUM_TERMS))
+        return softmax(sgrank(doc, ngrams=ngrams,
+                              n_keyterms=NUM_TERMS))
     else:
         err = 'Unknown key term extraction method:%s' % algo
         raise Exception(err)
@@ -121,8 +124,8 @@ def generate_clean_fields(post):
     # conference
     clean_fields.conference_name = []
     if post.meta.conference_name:
-            clean_fields.conference_name = text_cleanup(
-                post.meta.conference_name)
+        clean_fields.conference_name = text_cleanup(
+            post.meta.conference_name)
 
     clean_fields.conference_short_name = ""
     if post.meta.conference_short_name:
@@ -175,25 +178,30 @@ def benchmark_term_extractor(doc, counters):
 def compute_stats(doc):
     ts = TextStats(doc)
     stats = create_objdict()
-    stats.readability = create_objdict(ts.readability_stats)
-
-    fields = {'n_sents': 'sentences',
-              'n_words': 'words',
-              'n_unique_words': 'unique_words',
-              'n_chars': 'chars',
-              'n_long_words': 'long_words',
-              'n_syllables': 'syllables',
-              'n_monosyllable_words': 'monsyllable_words',
-              'n_polysyllable_words': 'pollysyllable_words'
+    counts =  {'sentences': ts.n_sents,
+              'words': ts.n_words,
+              'unique_words': ts.n_unique_words,
+              'chars': ts.n_chars,
+              'chars_per_word': ts.n_chars_per_word,
+              'long_words': ts.n_long_words,
+              'syllables': ts.n_syllables,
+              'syllables_per_word': ts.n_syllables_per_word,
+              'monosyllable_words': ts.n_monosyllable_words,
+              'polysyllable_words': ts.n_polysyllable_words
               }
-
-    stats.counts = create_objdict()
-    for src, dst in fields.items():
-        if src in ts.basic_counts:
-            stats.counts[dst] = ts.basic_counts[src]
-        else:
-            stats.counts[dst] = 0
-
+    stats.counts = dict_to_objdict(counts)
+    readability = {}
+    if stats.counts.words > 0 :
+        readability = {'flesch_kincaid_grade_level': ts.flesch_kincaid_grade_level,
+                    'flesch_reading_ease': ts.flesch_reading_ease,
+                    'smog_index': ts.smog_index,
+                    'gunning_fog_index': ts.gunning_fog_index,
+                    'coleman_liau_index': ts.coleman_liau_index,
+                    'automated_readability_index': ts.automated_readability_index,
+                    'lix': ts.lix,
+                    'gulpease_index': ts.gulpease_index,
+                    'wiener_sachtextformel': ts.wiener_sachtextformel}
+    stats.readability = dict_to_objdict(readability)
     return stats
 
 

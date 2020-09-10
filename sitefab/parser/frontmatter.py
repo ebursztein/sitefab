@@ -1,6 +1,5 @@
 import re
 import yaml
-from yaml import YAMLError
 import datetime
 import time
 from sitefab import utils
@@ -89,8 +88,8 @@ def parse(post):
         md = md.replace(frontmatter, "")
         frontmatter = frontmatter.replace("---", '')
         try:
-            m = yaml.load(frontmatter)  # using YAML :)
-        except YAMLError as ye:
+            m = yaml.load(frontmatter, Loader=yaml.SafeLoader)  # using YAML :)
+        except yaml.YAMLError as ye:
             print(ye)
             m = None
 
