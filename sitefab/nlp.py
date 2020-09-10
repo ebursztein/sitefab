@@ -178,7 +178,7 @@ def benchmark_term_extractor(doc, counters):
 def compute_stats(doc):
     ts = TextStats(doc)
     stats = create_objdict()
-    counts =  {'sentences': ts.n_sents,
+    counts = {'sentences': ts.n_sents,
               'words': ts.n_words,
               'unique_words': ts.n_unique_words,
               'chars': ts.n_chars,
@@ -191,16 +191,17 @@ def compute_stats(doc):
               }
     stats.counts = dict_to_objdict(counts)
     readability = {}
-    if stats.counts.words > 0 :
+    if stats.counts.words > 0:
         readability = {'flesch_kincaid_grade_level': ts.flesch_kincaid_grade_level,
-                    'flesch_reading_ease': ts.flesch_reading_ease,
-                    'smog_index': ts.smog_index,
-                    'gunning_fog_index': ts.gunning_fog_index,
-                    'coleman_liau_index': ts.coleman_liau_index,
-                    'automated_readability_index': ts.automated_readability_index,
-                    'lix': ts.lix,
-                    'gulpease_index': ts.gulpease_index,
-                    'wiener_sachtextformel': ts.wiener_sachtextformel}
+                       'flesch_reading_ease': ts.flesch_reading_ease,
+                       'smog_index': 0,
+                       'gunning_fog_index': ts.gunning_fog_index,
+                       'coleman_liau_index': ts.coleman_liau_index,
+                       'automated_readability_index': ts.automated_readability_index,
+                       'lix': ts.lix,
+                       }
+    if stats.counts.sentences >= 30:
+        readability['smog_index'] = ts.smog_index
     stats.readability = dict_to_objdict(readability)
     return stats
 
