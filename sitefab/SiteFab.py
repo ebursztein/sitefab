@@ -1,5 +1,8 @@
 import sys
 import time
+import json
+from multiprocessing import Pool
+from itertools import repeat
 from datetime import datetime
 from pathlib import Path
 from tqdm import tqdm
@@ -16,6 +19,13 @@ from sitefab.PostCollections import PostCollections
 from sitefab.linter.linter import Linter
 from sitefab import utils
 from sitefab import nlp
+
+
+def parse_post(json_post):
+    post_dict = json.loads(json_post)
+    post = utils.dict_to_objdict(post_dict)
+    post.nlp = nlp.analyze_post(post)
+    return json.dumps(post)
 
 
 class SiteFab(object):
@@ -176,61 +186,83 @@ class SiteFab(object):
                             unit=' files', desc="Files", leave=True)
         errors = []
         post_idx = 1
+        threads = self.config.threads
         # NOTE: passing self.config.parser might seems strange
         # but it is required to get the pluging workings
         parser = Parser(self.config.parser, self)
-        for filename in filenames:
-            file_content = files.read_file(filename)
-            post = parser.parse(file_content)
-            post.filename = filename
-            post.id = post_idx
-            post_idx += 1
 
-            # do not process hidden post
-            if post.meta.hidden:
-                continue
-
-            # Ignore posts set for future date
-            if self.config.parser.skip_future and post.meta.creation_date_ts > int(time.time()):
-                s = "Post in the future - skipping %s" % (post.meta.title)
-                utils.warning(s)
-                continue
-
-            # NLP
-            post.nlp = nlp.analyze_post(post)
-
-            # Add posts to our list
-            self.posts.append(post)
-
-            # insert in template list
-            if not post.meta.template:
-                errors += "%s has no template defined." % post.filename
-                errors += "Can't render it"
-                continue
-
-            self.posts_by_template.add(post.meta.template, post)
-
-            # insert in microformat list
-            if post.meta.microdata_type:
-                self.posts_by_microdata.add(post.meta.microdata_type, post)
-
-            # insert in category
-            if post.meta.category:
-                self.posts_by_category.add(post.meta.category, post)
-                # tags is what is rendered
-                self.posts_by_tag.add(post.meta.category, post)
-
-            # insert in tags
-            if post.meta.tags:
-                for tag in post.meta.tags:
-                    self.posts_by_tag.add(tag, post)
-
-            progress_bar.update(1)
-
+        if threads > 1:
+            todo_nlp_posts = []
+            for filename in filenames:
+                file_content = files.read_file(filename)
+                post = parser.parse(file_content)
+                post.filename = str(filename)
+                post.id = post_idx
+                post_idx += 1
+                todo_nlp_posts.append(json.dumps(post))
+            pool = Pool(threads)
+            for parsed_post_json in pool.imap_unordered(parse_post, todo_nlp_posts):
+                parsed_post = json.loads(parsed_post_json)
+                post = utils.dict_to_objdict(parsed_post)
+                self.process_post(post)
+                progress_bar.update(1)
+            pool.close()
+            pool.join()
+        else:
+            for filename in filenames:
+                file_content = files.read_file(filename)
+                post = parser.parse(file_content)
+                post.filename = str(filename)
+                post.id = post_idx
+                parsed_post_json = parse_post(json.dumps(post))
+                parsed_post = json.loads(parsed_post_json)
+                self.process_post(utils.dict_to_objdict(parsed_post))
+                progress_bar.update(1)
+                post_idx += 1
+    
+        progress_bar.close()
         if len(errors):
             utils.error("\n".join(errors))
 
         self.cnts.stop('Parsing')
+
+
+    def process_post(self, post):
+         # do not process hidden post
+        if post.meta.hidden:
+            return True
+        # Ignore posts set for future date
+        if self.config.parser.skip_future and post.meta.creation_date_ts > int(time.time()):
+            s = "Post in the future - skipping %s" % (post.meta.title)
+            utils.warning(s)
+            return True
+
+        # Add posts to our list
+        self.posts.append(post)
+        # insert in template list
+        if not post.meta.template:
+            errors += "%s has no template defined." % post.filename
+            errors += "Can't render it"
+            return True
+
+        self.posts_by_template.add(post.meta.template, post)
+
+        # insert in microformat list
+        if post.meta.microdata_type:
+            self.posts_by_microdata.add(post.meta.microdata_type, post)
+
+        # insert in category
+        if post.meta.category:
+            self.posts_by_category.add(post.meta.category, post)
+            # tags is what is rendered
+            self.posts_by_tag.add(post.meta.category, post)
+
+        # insert in tags
+        if post.meta.tags:
+            for tag in post.meta.tags:
+                self.posts_by_tag.add(tag, post)
+        return True
+
 
     def process(self):
         "Processing stage"
