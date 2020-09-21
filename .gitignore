@@ -14,3 +14,4 @@ tests/sitefab_template
 .venv
 .history/
 build/
+.coverage
