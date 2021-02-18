@@ -13,6 +13,8 @@ Here is how to install SiteFab, Create a new site and compile it in less than
 
 # install the main package
 pip install sitefab
+spacy download en_core_web_sm
+pip install -U spacy-lookups-data
 
 # clone the site template as base
 git clone https://github.com/ebursztein/sitefab-template.git mysite/

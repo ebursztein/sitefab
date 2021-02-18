@@ -6,7 +6,7 @@ from setuptools.command.install import install
 from subprocess import call
 
 long_description = open("README.md").read()
-version = '1.0.%s' % int(time())
+version = '1.1.%s' % int(time())
 
 
 def install_spacy_model():
@@ -49,14 +49,15 @@ setup(
             'install': PostInstallCommand,
             },
     package_data={"": ["*.yaml"]},
-    install_requires=[
-            'Cython',
+    setup_requires=["Cython", "cytoolz"],
+    install_requires=[  
+            'numpy',
             'pyyaml',
             'jinja2',
             'tqdm',
             'termcolor',
             'yapsy',
-            'gensim',
+            'gensim==3.8.3',
             'toposort',
             'Pygments',
             'pytz',

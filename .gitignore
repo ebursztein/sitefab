@@ -15,3 +15,5 @@ tests/sitefab_template
 .history/
 build/
 .coverage
+.eggs
+.vscode
