@@ -17,7 +17,13 @@ jobs:
         pip install setuptools wheel twine
         pip install cython cytoolz
         pip install numpy
+        pip install spacy==2.3.2
+        pip install textacy==0.10.1 spacy
+        python -m spacy download en_core_web_sm
+        python -m pip install -U spacy-lookups-data
         python -m pip install -r test_requirements.txt
+
+        
     
     - name: Install package
       run: |
