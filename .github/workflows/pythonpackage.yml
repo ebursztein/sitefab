@@ -16,7 +16,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install setuptools wheel twine
         pip install cython cytoolz
-        pip install numpy
+        pip install numpy scipy matplotlib ipython jupyter pandas sympy nose
+        pip install gensim==3.8.3
         pip install spacy==2.3.2
         pip install textacy==0.10.1 spacy
         python -m spacy download en_core_web_sm
