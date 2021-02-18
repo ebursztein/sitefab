@@ -23,12 +23,13 @@ def test_stats():
     assert stats.counts.words == 11
 
 
-def test_empyty_stats():
+def test_empty_stats():
     text = ""
     doc = make_spacy_doc(text, lang=SPACY_MODEL)
     stats = nlp.compute_stats(doc)
     assert stats.counts.sentences == 0
     assert stats.counts.words == 0
+    assert stats.readibility == None
 
 
 def test_terms():

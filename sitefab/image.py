@@ -15,8 +15,14 @@ def image_hash(raw_image):
     return hexdigest(raw_image)
 
 
-def convert_image(img, extension_codename, compression_level=9,
-                  jpeg_quality=85, webp_quality=85, return_as_bytesio=True):
+def convert_image(img,
+                  extension_codename,
+                  compression_level=9,
+                  jpeg_quality=85,
+                  webp_quality=85,
+                  return_as_bytesio=True,
+                  webp_lossless=False,
+                  webp_method=6):
     """Generate an image in the requested format
 
     Args:
@@ -25,16 +31,19 @@ def convert_image(img, extension_codename, compression_level=9,
         extension_codename (PIL extension name): normalize extension name.
         See: get_img_extension_alternative_naming to generate those
 
-        compression_level (int, optional): Webp, png compression level.
-        Defaults to 9.
+        compression_level (int, optional): Png compression level.
+        Defaults to 6.
 
         jpeg_quality (int, optional): Jpeg quality level. Defaults to 85.
 
         webp_quality (int, optional): Webp quality level. Defaults to 85.
 
-        save (bool, optional): save image in a byteIO, if false return the
-        image it self.
-        Defauls to True.
+        return_as_bytesio (bool, optional): save image in a byteIO,
+        if false return the image it self. Defauls to True.
+
+        webp_lossless (boolean, optional): Default is False,
+        only True when saving in webp.
+        webp_method (int, optional): Default is 6. Best method to save webp images.
 
     Returns:
         BytesIO or Image: the converted image as byteIO if return_as_bytesio
@@ -46,7 +55,9 @@ def convert_image(img, extension_codename, compression_level=9,
     # encoding
     if extension_codename == 'PNG':
         if return_as_bytesio:
-            img.save(img_io, extension_codename, optimize=True,
+            img.save(img_io,
+                     extension_codename,
+                     optimize=True,
                      compress_level=compression_level)
 
     elif extension_codename == 'WEBP':
@@ -54,13 +65,19 @@ def convert_image(img, extension_codename, compression_level=9,
             img = img.convert('RGBA')
         if img.mode == "L":
             img = img.convert('RGB')
-        img.save(img_io, extension_codename, optimize=True,
-                 compress_level=compression_level, quality=webp_quality)
+
+        img.save(img_io,
+                 extension_codename,
+                 method=webp_method,
+                 quality=webp_quality,
+                 lossless=webp_lossless)
 
     elif extension_codename == "JPEG":
         if img.mode != "RGB":
             img = img.convert('RGB')
-        img.save(img_io, extension_codename, optimize=True,
+        img.save(img_io,
+                 extension_codename,
+                 optimize=True,
                  quality=jpeg_quality)
 
     elif extension_codename == "GIF":
