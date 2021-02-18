@@ -49,7 +49,7 @@ setup(
             'install': PostInstallCommand,
             },
     package_data={"": ["*.yaml"]},
-    setup_requires=["Cython", "cytoolz"],
+    setup_requires=["Cython"],
     install_requires=[  
             'numpy',
             'pyyaml',
