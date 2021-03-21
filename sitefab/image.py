@@ -17,9 +17,8 @@ def image_hash(raw_image):
 
 def convert_image(img,
                   extension_codename,
-                  compression_level=9,
                   jpeg_quality=85,
-                  webp_quality=85,
+                  webp_quality=80,
                   return_as_bytesio=True,
                   webp_lossless=False,
                   webp_method=6):
@@ -43,7 +42,9 @@ def convert_image(img,
 
         webp_lossless (boolean, optional): Default is False,
         only True when saving in webp.
-        webp_method (int, optional): Default is 6. Best method to save webp images.
+
+        webp_method (int, optional): Defaults to 6 the best quality to
+        save webp images.
 
     Returns:
         BytesIO or Image: the converted image as byteIO if return_as_bytesio
@@ -55,12 +56,18 @@ def convert_image(img,
     # encoding
     if extension_codename == 'PNG':
         if return_as_bytesio:
+            # no need to pass compress_level value as optimize set it to 9
             img.save(img_io,
                      extension_codename,
-                     optimize=True,
-                     compress_level=compression_level)
+                     optimize=True)
 
     elif extension_codename == 'WEBP':
+
+        # if lossless quality == compression effort.
+        # ! keep it at 80 as 100 is insanely slow
+        if webp_lossless:
+            webp_quality = 80
+
         if img.mode == "P":
             img = img.convert('RGBA')
         if img.mode == "L":
