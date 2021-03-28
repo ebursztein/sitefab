@@ -70,10 +70,9 @@ def pytest_configure(config):
     except:  # noqa
         cprint('Warning: part of directory not deleted - should be fine thus',
                'yellow')
-
     # recreate if correctly deleted
     if not TEMPLATE_DATA_ROOT.exists():
-        TEMPLATE_DATA_ROOT.mkdir()
+        TEMPLATE_DATA_ROOT.mkdir(parents=True)
 
     cprint('[SiteFab Templates]', 'magenta')
     if TEMPLATE_DATA_PATH.exists():
