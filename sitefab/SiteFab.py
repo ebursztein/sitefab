@@ -2,7 +2,6 @@ import sys
 import time
 import json
 from multiprocessing import Pool
-from itertools import repeat
 from datetime import datetime
 from pathlib import Path
 from tqdm import tqdm
@@ -219,50 +218,44 @@ class SiteFab(object):
                 self.process_post(utils.dict_to_objdict(parsed_post))
                 progress_bar.update(1)
                 post_idx += 1
-    
+
         progress_bar.close()
         if len(errors):
             utils.error("\n".join(errors))
 
         self.cnts.stop('Parsing')
 
-
     def process_post(self, post):
-         # do not process hidden post
-        if post.meta.hidden:
-            return True
         # Ignore posts set for future date
         if self.config.parser.skip_future and post.meta.creation_date_ts > int(time.time()):
             s = "Post in the future - skipping %s" % (post.meta.title)
             utils.warning(s)
             return True
 
-        # Add posts to our list
+        # Add posts to our list (including hidden one for rendering)
         self.posts.append(post)
+
         # insert in template list
         if not post.meta.template:
-            errors += "%s has no template defined." % post.filename
-            errors += "Can't render it"
             return True
 
         self.posts_by_template.add(post.meta.template, post)
 
         # insert in microformat list
-        if post.meta.microdata_type:
+        if post.meta.microdata_type and not post.meta.hidden:
             self.posts_by_microdata.add(post.meta.microdata_type, post)
 
-        # insert in category
-        if post.meta.category:
+        # insert in category if not hidden
+        if post.meta.category and not post.meta.hidden:
             self.posts_by_category.add(post.meta.category, post)
             # tags is what is rendered
             self.posts_by_tag.add(post.meta.category, post)
 
         # insert in tags
-        if post.meta.tags:
+        if post.meta.tags and not post.meta.hidden:
             for tag in post.meta.tags:
                 self.posts_by_tag.add(tag, post)
         return True
-
 
     def process(self):
         "Processing stage"
