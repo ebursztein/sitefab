@@ -68,7 +68,7 @@ setup(
             'terminaltables',
             'textacy==0.10.1',
             'spacy==2.3.2',
-            'mistune==0.8.4'],
+            'mistune==2.0.3'],
     classifiers=[
             'Development Status :: 5 - Production/Stable',
             'Environment :: Console',
