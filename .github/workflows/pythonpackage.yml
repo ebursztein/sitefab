@@ -11,24 +11,25 @@ jobs:
       with:
         python-version: '3.x' 
     
+    # - name: Install dependencies
+    #   run: |
+    #     python -m pip install --upgrade pip
+    #     pip install setuptools wheel twine
+    #     pip install cython cytoolz
+    #     pip install numpy scipy matplotlib ipython jupyter pandas sympy nose
+    #     pip install gensim==3.8.3
+    #     pip install spacy==2.3.2
+    #     pip install textacy==0.10.1 spacy
+    #     python -m spacy download en_core_web_sm
+    #     python -m pip install -U spacy-lookups-data
+    #     python -m pip install -r test_requirements.txt
+
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install setuptools wheel twine
-        pip install cython cytoolz
-        pip install numpy scipy matplotlib ipython jupyter pandas sympy nose
-        pip install gensim==3.8.3
-        pip install spacy==2.3.2
-        pip install textacy==0.10.1 spacy
-        python -m spacy download en_core_web_sm
-        python -m pip install -U spacy-lookups-data
-        python -m pip install -r test_requirements.txt
-
-        
+        pip install -r test_requirements.txt
     
     - name: Install package
       run: |
-        pip uninstall sitefab
         python setup.py develop
         pip list
         
