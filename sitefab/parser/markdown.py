@@ -5,19 +5,18 @@ import re
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name, guess_lexer
 
-
-from mistune import Renderer, escape
+from mistune import escape
+from mistune.renderers import HTMLRenderer as MistuneRenderer
 from sitefab import utils
 
 youtube_matcher = re.compile("v=([^&]+)")
 
 
-class HTMLRendererMixin(object):
+class CustomHTMLRenderer(MistuneRenderer):
     """Customized HTML renderer"""
-    def link(self, link, title, content):
+    def link(self, link, text=None, title=None):
         embed = False
         src = link
-
         # Youtube
         if (("https://youtu.be/" in link or "https://www.youtube.com/" in link)
                 and ("&no_embed=1" not in link)):
@@ -40,14 +39,21 @@ class HTMLRendererMixin(object):
                         print(self.meta.title)
                 template = self.jinja2.get_template('youtube')
                 self.info.videos.append(src)
-
         # Normal links or not embedded youtube videos
+        elif '#toc-' in link:
+            print(link)
+            print(text)
+            title = text
+            template = self.jinja2.get_template('a')
+            self.info.links.append(src)
         else:
             src = link.replace("&no_embed=1", "")
             template = self.jinja2.get_template('a')
             self.info.links.append(src)
-
-        rv = template.render(href=src, text=content, title=title, embed=embed,
+            if not title:
+                title = text
+        rv = template.render(href=src, text=text, title=title,
+                             embed=embed,
                              site=self.site, meta=self.meta)
         # rv = rv.encode('utf-8')
         return rv
@@ -62,14 +68,14 @@ class HTMLRendererMixin(object):
         # rv = rv.encode('utf-8')
         return rv
 
-    def header(self, text, level, raw=None):
+    def heading(self, text, level, **attrs):
 
         template = self.jinja2.get_template('h')
         rv = template.render(level=level, text=text, id=self.toc_count,
                              site=self.site, meta=self.meta)
         # rv = rv.encode('utf-8')
 
-        self.toc_tree.append((self.toc_count, text, level, raw))
+        self.toc_tree.append((self.toc_count, text, level))
         self.toc_count += 1
         return rv
 
@@ -80,10 +86,10 @@ class HTMLRendererMixin(object):
         # rv = rv.encode('utf-8')
         return rv
 
-    def block_code(self, code, lang):
+    def block_code(self, code, info=None):
         "Block code highlighter and formater"
         try:
-            if not lang:
+            if not info:
                 lexer = guess_lexer(code, stripall=True)
             else:
                 lexer = get_lexer_by_name(lang, stripall=True)
@@ -95,7 +101,7 @@ class HTMLRendererMixin(object):
         self.info.code.append(code)
 
         template = self.jinja2.get_template('code')
-        rv = template.render(code=code, lang=lang, site=self.site,
+        rv = template.render(code=code, lang=None, site=self.site,
                              meta=self.meta)
         # rv = rv.encode('utf-8')
         return rv
@@ -157,7 +163,7 @@ class HTMLRendererMixin(object):
         """
         lst = []
         for toc in self.toc_tree:
-            index, text, l, raw = toc
+            index, text, l = toc
             lst.append((text, l, index))
         return lst
 
@@ -179,7 +185,7 @@ class HTMLRendererMixin(object):
         yield '<ul id="table-of-content">\n'
 
         for toc in self.toc_tree:
-            index, text, l, raw = toc
+            index, text, l = toc
 
             if l > level:
                 # ignore this level
@@ -212,5 +218,5 @@ class HTMLRendererMixin(object):
         yield '</ul>\n'
 
 
-class HTMLRenderer(HTMLRendererMixin, Renderer):
+class HTMLRenderer(CustomHTMLRenderer):
     pass

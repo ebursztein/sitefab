@@ -38,5 +38,5 @@ def html2text(html):
     s = MLStripper()
     s.feed(html)
     text = s.get_data()
-    text = preprocessing.normalize_whitespace(text)
+    text = preprocessing.normalize.whitespace(text)
     return text
