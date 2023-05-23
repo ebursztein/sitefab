@@ -82,7 +82,7 @@ setup(
             'pyphen==0.14.0',
             'pytz==2022.7.1',
             'PyYAML==6.0',
-            'requests==2.28.2',
+            'requests==2.31.0',
             'scikit-learn==1.2.2',
             'scipy==1.10.1',
             'smart-open==6.3.0',
