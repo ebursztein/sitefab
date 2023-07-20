@@ -78,7 +78,7 @@ setup(
             'Pillow==9.4.0',
             'preshed==3.0.8',
             'pydantic==1.10.7',
-            'Pygments==2.14.0',
+            'Pygments==2.15.0',
             'pyphen==0.14.0',
             'pytz==2022.7.1',
             'PyYAML==6.0',
