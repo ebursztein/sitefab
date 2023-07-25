@@ -53,7 +53,7 @@ setup(
     install_requires=[
             'blis==0.7.9',
             'cachetools==5.3.0',
-            'certifi==2022.12.7',
+            'certifi==2023.7.22',
             'charset-normalizer==3.1.0',
             'click==8.1.3',
             'catalogue==2.0.8',
